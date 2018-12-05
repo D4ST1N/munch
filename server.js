@@ -49,19 +49,19 @@ io.on('connection', function(socket) {
     const player = players[id] || {};
 
     if (movement.left) {
-      player.x -= 5;
+      player.x -= 2.5;
     }
 
     if (movement.up) {
-      player.y -= 5;
+      player.y -= 2.5;
     }
 
     if (movement.right) {
-      player.x += 5;
+      player.x += 2.5;
     }
 
     if (movement.down) {
-      player.y += 5;
+      player.y += 2.5;
     }
   });
 
@@ -73,14 +73,14 @@ io.on('connection', function(socket) {
 });
 
 const filteredPlayers = () => (
-  Object.keys(players)
-        .filter(player => player.active)
-        .reduce((obj, key) => {
-          obj[key] = players[key];
+  Object.entries(players)
+        .filter(([id, player]) => player.active)
+        .reduce((obj, [id, player]) => {
+          obj[id] = player;
           return obj;
         }, {})
 );
 
 setInterval(function() {
-  io.sockets.emit('state', players);
+  io.sockets.emit('state', filteredPlayers());
 }, 1000 / 60);

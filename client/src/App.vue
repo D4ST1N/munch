@@ -1,7 +1,8 @@
 <template>
   <div id="app">
-    <canvas ref="field" width="800" height="600" class="field"></canvas>
-    <div class="fps">{{ fps }}</div>
+    <canvas ref="field" width="800" height="600" class="field" @click="shoot"></canvas>
+    <div class="fps" @click="showColorChange = true">{{ fps }}</div>
+    <PlayerSettings v-if="showColorChange" @changeColor="changePlayerColor" />
   </div>
 </template>
 
@@ -9,12 +10,15 @@
 import renderer from './assets/mixins/render';
 import gameConfig  from './config';
 import cookie from './assets/utils/cookie';
+import PlayerSettings from './components/PlayerSettings';
 
 const socket = window.io();
 
 export default {
   name: 'app',
-  components: {},
+  components: {
+    PlayerSettings,
+  },
   mixins: [renderer],
 
   data() {
@@ -32,22 +36,29 @@ export default {
         down: false,
       },
       playersState: {},
+      playerColor: '#fff',
       ratio: 1,
       playerId: null,
+      showColorChange: false,
+      bullets: [],
     }
   },
 
   mounted() {
     const playerId = cookie.get('playerId');
-    console.log(playerId);
+    const playerColor = cookie.get('playerColor');
+
+    if (playerColor) {
+      this.playerColor = playerColor;
+    } else {
+      this.showColorChange = true;
+    }
 
     if (playerId) {
       socket.emit('playerConnect', playerId);
       this.playerId = playerId;
     } else {
-      console.log(1);
       socket.on('message', (id) => {
-        console.log(id);
         cookie.set('playerId', id);
         this.playerId = id;
       });
@@ -95,24 +106,41 @@ export default {
     },
 
     update(newPlayersState) {
-      console.log(newPlayersState);
       this.playersState = newPlayersState;
+      this.bullets.forEach((bullet) => {
+        bullet.pos.x += bullet.direction.x * this.ratio;
+        bullet.pos.y += bullet.direction.y * this.ratio;
+      });
     },
 
     render() {
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-      Object.values(this.playersState).forEach((player) => {
+      Object.entries(this.playersState).forEach(([id, player]) => {
         this.renderRectangle({
           pos: {
             x: player.x * this.ratio,
             y: player.y * this.ratio,
           },
           size: {
-            width: 25 * this.ratio,
-            height: 25 * this.ratio,
+            width: 24 * this.ratio,
+            height: 24 * this.ratio,
           },
-          color: 'white',
+          color: id === this.playerId ? this.playerColor : 'white',
+        });
+      });
+
+      this.bullets.forEach((bullet) => {
+        this.renderRectangle({
+          pos: {
+            x: bullet.pos.x * this.ratio,
+            y: bullet.pos.y * this.ratio,
+          },
+          size: {
+            width: 4 * this.ratio,
+            height: 4 * this.ratio,
+          },
+          color: 'red',
         });
       });
     },
@@ -165,7 +193,53 @@ export default {
         width: gameConfig.gameFieldSize.width * this.ratio,
         height: gameConfig.gameFieldSize.height * this.ratio,
       };
-    }
+    },
+
+    changePlayerColor(color) {
+      this.playerColor = color;
+      this.showColorChange = false;
+    },
+
+    shoot(event) {
+      console.log(this.playersState);
+      const rect = event.target.getBoundingClientRect();
+      const x = event.clientX - rect.left; //x position within the element.
+      const y = event.clientY - rect.top;  //y position within the element.
+      const startPos = {
+        x: this.playersState[this.playerId].x + 12,
+        y: this.playersState[this.playerId].y + 12,
+      };
+      console.log(x / this.ratio, y / this.ratio);
+
+      const width = Math.abs(x - startPos.x);
+      const height = Math.abs(y - startPos.y);
+      const bullet = {
+        pos: startPos,
+        direction: {},
+      };
+
+      console.log(width, height);
+
+      if (width > height) {
+        bullet.direction.x = 1;
+        bullet.direction.y = 1 / (width / height);
+      } else {
+        bullet.direction.x = 1 / (height / width);
+        bullet.direction.y = 1;
+      }
+
+      console.log(bullet.direction);
+
+      if (startPos.x > x) {
+        bullet.direction.x *= -1;
+      }
+
+      if (startPos.y > y) {
+        bullet.direction.y *= -1;
+      }
+
+      this.bullets.push(bullet);
+    },
   }
 };
 </script>
