@@ -44,5 +44,44 @@ export default {
 
       this.context.restore();
     },
+
+    /**
+     * Draw line on canvas
+     * @param line {Object} line data
+     * @param line.from {Object} line start coordinates
+     * @param line.from.x {Number} line start coordinate x-axis
+     * @param line.from.y {Number} line start coordinate y-axis
+     * @param line.to {Object} line end coordinates
+     * @param line.to.x {Number} line end coordinate x-axis
+     * @param line.to.y {Number} line end coordinate y-axis
+     * @param line.color {String} line color
+     */
+    renderLine(line) {
+      this.context.beginPath();
+      this.context.moveTo(line.from.x, line.from.y);
+      this.context.lineTo(line.to.x, line.to.y);
+      this.context.strokeStyle = line.color;
+      this.context.stroke();
+    },
+
+    /**
+     * Draw circle on canvas
+     * @param circle {Object} circle data
+     * @param circle.color {String} circle color
+     * @param circle.pos {Object} circle position
+     * @param circle.pos.x {Number} circle coordinate x-axis
+     * @param circle.pos.y {Number} circle coordinate y-axis
+     * @param circle.size {Number} circle size
+     */
+    renderCircle(circle) {
+      this.context.save();
+
+      this.context.fillStyle = circle.color;
+      this.context.beginPath();
+      this.context.arc(circle.pos.x, circle.pos.y, circle.size, 0, 2 * Math.PI);
+      this.context.fill();
+
+      this.context.restore();
+    },
   }
 }

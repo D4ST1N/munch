@@ -1,0 +1,11 @@
+{
+  "fieldSize": {
+    "width": 1600,
+    "height": 850
+  },
+  "playerSize": 16,
+  "bulletSize": 2,
+  "playerShootSpeed": 1000,
+  "playerSpeed": 4,
+  "bulletSpeed": 7.5
+}
