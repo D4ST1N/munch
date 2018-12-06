@@ -41,10 +41,8 @@ export default {
       playerId: null,
       showColorChange: false,
       bullets: [],
-      bulletSpeed: 7.5,
       rays: [],
       lastShoot: performance.now(),
-      playerShootSpeed: 1000,
       now: performance.now(),
       config: null,
     }
@@ -132,7 +130,7 @@ export default {
             x: player.x * this.ratio,
             y: player.y * this.ratio,
           },
-          size: 16 * this.ratio,
+          size: this.config.playerSize * this.ratio,
           color: id === this.playerId ? this.playerColor : 'white',
         });
       });
@@ -140,11 +138,11 @@ export default {
       if (this.playersState[this.playerId]) {
         const x = this.playersState[this.playerId].x;
         const y = this.playersState[this.playerId].y;
-        const reloadPercent = Math.min((this.now - this.lastShoot) / this.playerShootSpeed, 1);
+        const reloadPercent = Math.min((this.now - this.lastShoot) / this.config.playerShootSpeed, 1);
         const percent = -0.5 + (reloadPercent * 100) / 50;
 
         this.context.beginPath();
-        this.context.arc(x * this.ratio, y * this.ratio, 16 * this.ratio, -0.5 * Math.PI, percent * Math.PI);
+        this.context.arc(x * this.ratio, y * this.ratio, this.config.playerSize * this.ratio, -0.5 * Math.PI, percent * Math.PI);
         this.context.strokeStyle = 'rgba(142,36,170 ,1)';
         this.context.lineWidth = 2;
         this.context.stroke();
@@ -157,8 +155,8 @@ export default {
             y: bullet.pos.y * this.ratio,
           },
           size: {
-            width: 4 * this.ratio,
-            height: 4 * this.ratio,
+            width: this.config.bulletSize * this.ratio,
+            height: this.config.bulletSize * this.ratio,
           },
           color: 'red',
         });
@@ -221,7 +219,7 @@ export default {
     },
 
     shoot(event) {
-      if (this.now - this.lastShoot < this.playerShootSpeed) {
+      if (this.now - this.lastShoot < this.config.playerShootSpeed) {
         return;
       }
 
@@ -243,7 +241,7 @@ export default {
       };
 
       const distance = Math.sqrt(width**2 + height**2);
-      const difference = distance / this.bulletSpeed;
+      const difference = distance / this.config.bulletSpeed;
 
       bullet.direction.x = width / difference;
       bullet.direction.y = height / difference;

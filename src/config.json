@@ -4,8 +4,8 @@
     "height": 850
   },
   "playerSize": 16,
-  "bulletSize": 2,
-  "playerShootSpeed": 1000,
+  "bulletSize": 4,
+  "playerShootSpeed": 750,
   "playerSpeed": 4,
   "bulletSpeed": 7.5
 }
