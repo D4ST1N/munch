@@ -5,7 +5,7 @@
   },
   "playerSize": 16,
   "bulletSize": 4,
-  "playerShootSpeed": 750,
+  "playerShootSpeed": 625,
   "playerSpeed": 4,
   "bulletSpeed": 7.5
 }

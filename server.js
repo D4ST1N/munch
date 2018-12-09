@@ -31,22 +31,12 @@ const bullets = [];
 
 // sockets
 io.on('connection', function(socket) {
-  socket.on('newPlayer', function() {
-    console.log('new ', socket.id);
-    players[socket.id] = {
-      x: 300,
-      y: 300,
-      active: true,
-    };
-
-    io.sockets.emit('message', socket.id);
-  });
-
   socket.on('playerConnect', function (playerId) {
-    console.log('old ', playerId);
+    console.log('Player connected: ', playerId);
     players[playerId] = players[playerId] || {
       x: 300,
       y: 300,
+      shootSpeedBonus: 0,
     };
     players[playerId].active = true;
   });
@@ -91,6 +81,8 @@ io.on('connection', function(socket) {
   });
 
   socket.on('disconnect', () => {
+    console.log('disconnected! ', socket.id);
+
     if (players[socket.id]) {
       players[socket.id].active = false;
     }
@@ -128,8 +120,9 @@ const clearBulletsList = () => {
 };
 
 const checkCollision = () => {
-  Object.values(filteredPlayers()).forEach((player) => {
+  Object.entries(filteredPlayers()).forEach(([name, player]) => {
     let result = false;
+    let who = '';
 
     for (let i = 0; i < bullets.length; ) {
       if (collision.test.rectCircle({
@@ -143,6 +136,7 @@ const checkCollision = () => {
         size: 16,
       })) {
         result = true;
+        who = bullets[i].who;
         bullets.splice(i, 1);
       } else {
         i++;
@@ -151,6 +145,12 @@ const checkCollision = () => {
 
     if (result) {
       console.log('shooted!');
+      io.sockets.emit('message', {
+        who,
+        type: 'frag',
+        whom: name,
+      });
+      players[who].shootSpeedBonus += 50;
       player.active = false;
     }
   });

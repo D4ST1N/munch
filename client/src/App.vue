@@ -1,8 +1,10 @@
 <template>
   <div id="app">
     <canvas ref="field" width="800" height="600" class="field" @click="shoot"></canvas>
-    <div class="fps" @click="showColorChange = true">{{ fps }}</div>
-    <PlayerSettings v-if="showColorChange" @changeColor="changePlayerColor" />
+    <div class="fps">{{ fps }}</div>
+    <PlayerSettings v-if="showColorChange" @close="setPlayerInfo" />
+    <EventLog />
+    <DiePopup @restart="restart" />
   </div>
 </template>
 
@@ -11,6 +13,8 @@ import axios from 'axios';
 import renderer from './assets/mixins/render';
 import cookie from './assets/utils/cookie';
 import PlayerSettings from './components/PlayerSettings';
+import EventLog from './components/EventLog';
+import DiePopup from './components/DiePopup';
 
 const socket = window.io();
 
@@ -18,6 +22,8 @@ export default {
   name: 'app',
   components: {
     PlayerSettings,
+    EventLog,
+    DiePopup,
   },
   mixins: [renderer],
 
@@ -37,8 +43,8 @@ export default {
       },
       playersState: {},
       playerColor: '#fff',
+      playerName: '',
       ratio: 1,
-      playerId: null,
       showColorChange: false,
       bullets: [],
       rays: [],
@@ -52,35 +58,39 @@ export default {
     axios.get('/config')
          .then((response) => {
            this.config = response.data;
-           this.init();
-           this.start();
+
+           const playerColor = cookie.get('playerColor');
+           const playerName = cookie.get('playerName');
+
+           if (playerColor && playerName) {
+             this.playerName = playerName;
+             this.playerColor = playerColor;
+
+             socket.emit('playerConnect', playerName);
+
+             this.init();
+             this.start();
+           } else {
+             this.showColorChange = true;
+           }
          })
          .catch(console.error);
   },
 
   methods: {
+    restart() {
+      socket.emit('playerConnect', this.playerName);
+    },
+
     init() {
-      const playerId = cookie.get('playerId');
-      const playerColor = cookie.get('playerColor');
-
-      if (playerColor) {
-        this.playerColor = playerColor;
-      } else {
-        this.showColorChange = true;
-      }
-
-      if (playerId) {
-        socket.emit('playerConnect', playerId);
-        this.playerId = playerId;
-      } else {
-        socket.on('message', (id) => {
-          cookie.set('playerId', id);
-          this.playerId = id;
-        });
-        socket.emit('newPlayer');
-      }
-
       socket.on('state', this.update);
+      socket.on('message', (message) => {
+        this.$root.$emit('event', message);
+
+        if (message.type === 'frag' && message.whom === this.playerName) {
+          this.$root.$emit('playerShooted', message.who);
+        }
+      });
 
       this.canvas = this.$refs.field;
       this.context = this.canvas.getContext('2d');
@@ -111,7 +121,7 @@ export default {
       const delta = this.gameTick / 1000;
       this.fps = Math.round(1 / delta);
       this.lastTime = now;
-      socket.emit('movement', { id: this.playerId, movement: this.movement });
+      socket.emit('movement', { id: this.playerName, movement: this.movement });
       this.render();
       this.raf = requestAnimationFrame(this.main);
     },
@@ -131,14 +141,26 @@ export default {
             y: player.y * this.ratio,
           },
           size: this.config.playerSize * this.ratio,
-          color: id === this.playerId ? this.playerColor : 'white',
+          color: id === this.playerName ? this.playerColor : 'white',
+        });
+        this.renderText({
+          pos: {
+            x: player.x * this.ratio,
+            y: (player.y - 24) * this.ratio,
+          },
+          text: id,
+          color: '#fff',
+          font: `${ 14 * this.ratio }px serif`,
+          maxSize: this.config.playerSize * 4 * this.ratio,
         });
       });
 
-      if (this.playersState[this.playerId]) {
-        const x = this.playersState[this.playerId].x;
-        const y = this.playersState[this.playerId].y;
-        const reloadPercent = Math.min((this.now - this.lastShoot) / this.config.playerShootSpeed, 1);
+      if (this.playersState[this.playerName]) {
+        const playerData = this.playersState[this.playerName];
+        const x = this.playersState[this.playerName].x;
+        const y = this.playersState[this.playerName].y;
+        const trueShootSpeed = this.config.playerShootSpeed - playerData.shootSpeedBonus;
+        const reloadPercent = Math.min((this.now - this.lastShoot) / trueShootSpeed, 1);
         const percent = -0.5 + (reloadPercent * 100) / 50;
 
         this.context.beginPath();
@@ -158,7 +180,7 @@ export default {
             width: this.config.bulletSize * this.ratio,
             height: this.config.bulletSize * this.ratio,
           },
-          color: 'red',
+          color: 'white',
         });
       });
     },
@@ -175,7 +197,11 @@ export default {
           this.movement.right = true;
           break;
         case 'KeyS':
-          this.movement.down = true;
+          if (event.ctrlKey && event.shiftKey) {
+            this.showColorChange = true;
+          } else {
+            this.movement.down = true;
+          }
           break;
       }
     },
@@ -213,13 +239,24 @@ export default {
       };
     },
 
+    setPlayerInfo({ name, color }) {
+      this.playerName = name;
+      this.playerColor = color;
+      this.showColorChange = false;
+
+      socket.emit('playerConnect', name);
+
+      this.init();
+      this.start();
+    },
+
     changePlayerColor(color) {
       this.playerColor = color;
       this.showColorChange = false;
     },
 
     shoot(event) {
-      if (this.now - this.lastShoot < this.config.playerShootSpeed) {
+      if (this.now - this.lastShoot < this.config.playerShootSpeed - this.playersState[this.playerName].shootSpeedBonus) {
         return;
       }
 
@@ -228,8 +265,8 @@ export default {
       const y = (event.clientY - rect.top) / this.ratio;
 
       const startPos = {
-        x: this.playersState[this.playerId].x,
-        y: this.playersState[this.playerId].y,
+        x: this.playersState[this.playerName].x,
+        y: this.playersState[this.playerName].y,
       };
 
       const width = Math.abs(x - startPos.x);
@@ -238,6 +275,7 @@ export default {
       const bullet = {
         pos: startPos,
         direction: {},
+        who: this.playerName,
       };
 
       const distance = Math.sqrt(width**2 + height**2);
@@ -292,5 +330,6 @@ export default {
     position: fixed;
     top: 10px;
     left: calc(50% - 15px);
+    pointer-events: none;
   }
 </style>

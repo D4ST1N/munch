@@ -83,5 +83,27 @@ export default {
 
       this.context.restore();
     },
+
+    /**
+     * Draw text on canvas
+     * @param text {Object} text data
+     * @param text.pos {Object} text position
+     * @param text.pos.x {Number} text coordinate x-axis
+     * @param text.pos.y {Number} text coordinate y-axis
+     * @param text.color {String} text color
+     * @param text.text {String} text content
+     * @param [text.font] {String} text font
+     * @param [text.maxSize] {Number} text font
+     */
+    renderText(text) {
+      if (!text || typeof text.pos !== 'object') {
+        return;
+      }
+
+      this.context.font = text.font;
+      this.context.textAlign = 'center';
+      this.context.fillStyle = text.color;
+      this.context.fillText(text.text, text.pos.x , text.pos.y, text.maxSize);
+    },
   }
 }
