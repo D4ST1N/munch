@@ -27,6 +27,7 @@ server.listen(5000, function() {
 
 
 const players = {};
+const score = {};
 const bullets = [];
 
 // sockets
@@ -39,6 +40,8 @@ io.on('connection', function(socket) {
       shootSpeedBonus: 0,
     };
     players[playerId].active = true;
+    score[playerId] = score[playerId] || 0;
+    io.sockets.emit('score', score);
   });
 
   socket.on('movement', function({ id, movement }) {
@@ -150,8 +153,10 @@ const checkCollision = () => {
         type: 'frag',
         whom: name,
       });
-      players[who].shootSpeedBonus += 50;
+      players[who].shootSpeedBonus += 5;
       player.active = false;
+      score[who] += 1;
+      io.sockets.emit('score', score);
     }
   });
 };

@@ -5,6 +5,7 @@
     <PlayerSettings v-if="showColorChange" @close="setPlayerInfo" />
     <EventLog />
     <DiePopup @restart="restart" />
+    <ScoreBoard />
   </div>
 </template>
 
@@ -15,6 +16,7 @@ import cookie from './assets/utils/cookie';
 import PlayerSettings from './components/PlayerSettings';
 import EventLog from './components/EventLog';
 import DiePopup from './components/DiePopup';
+import ScoreBoard from './components/ScoreBoard';
 
 const socket = window.io();
 
@@ -24,6 +26,7 @@ export default {
     PlayerSettings,
     EventLog,
     DiePopup,
+    ScoreBoard,
   },
   mixins: [renderer],
 
@@ -90,6 +93,9 @@ export default {
         if (message.type === 'frag' && message.whom === this.playerName) {
           this.$root.$emit('playerShooted', message.who);
         }
+      });
+      socket.on('score', (score) => {
+        this.$root.$emit('score', score);
       });
 
       this.canvas = this.$refs.field;
