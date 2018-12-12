@@ -38,6 +38,7 @@
     top: 10px;
     right: 10px;
     color: #fff;
+    pointer-events: none;
 
     &__wrapper {
       display: flex;

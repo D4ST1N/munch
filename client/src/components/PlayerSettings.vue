@@ -60,11 +60,14 @@
       },
 
       close() {
+        const oldName = cookie.get('playerName');
         cookie.set('playerColor', this.selectedColor);
         cookie.set('playerName', this.name);
         this.$emit('close', {
+          oldName,
           name: this.name,
           color: this.selectedColor,
+          isNew: this.firstLoad,
         });
       }
     }
@@ -77,18 +80,23 @@
     display: flex;
     width: 50%;
     height: auto;
-    top: 40px;
+    max-height: calc(100% - 40px);
+    top: 20px;
     left: 25%;
+    z-index: 1;
+
+    @media (max-width: 1200px) {
+      width: calc(100% - 40px);
+      left: 20px;
+    }
 
     &__content  {
       width: 100%;
       background: #37474F;
       padding: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      flex-direction: column;
       color: #ffffff;
       box-shadow: 0 0 16px 0 rgba(55, 77, 79, .6);
+      overflow: auto;
     }
 
     &__name {
@@ -109,9 +117,6 @@
     }
 
     &__colors {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
     }
 
     &__color {
@@ -143,6 +148,7 @@
     &__done {
       padding: 8px;
       font-size: 24px;
+      width: 100%;
       color: #fff;
       background: rgba(33,150,243 ,1);
       border: 0;

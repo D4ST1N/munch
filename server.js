@@ -44,6 +44,14 @@ io.on('connection', function(socket) {
     io.sockets.emit('score', score);
   });
 
+  socket.on('changePlayerName', ({ name, oldName }) => {
+    players[name] = Object.assign({}, players[oldName]);
+    score[name] = score[oldName];
+    delete players[oldName];
+    delete score[oldName];
+    io.sockets.emit('score', score);
+  });
+
   socket.on('movement', function({ id, movement }) {
     if (!id || !movement) return;
 

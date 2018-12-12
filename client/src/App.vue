@@ -1,22 +1,32 @@
 <template>
   <div id="app">
-    <canvas ref="field" width="800" height="600" class="field" @click="shoot"></canvas>
+    <canvas
+      ref="field"
+      width="800"
+      height="600"
+      :class="{ 'field': true, 'field--mobile': isMobile() }"
+      @click="shoot"
+      @touchstart="touchShoot"
+    ></canvas>
     <div class="fps">{{ fps }}</div>
     <PlayerSettings v-if="showColorChange" @close="setPlayerInfo" />
     <EventLog />
     <DiePopup @restart="restart" />
     <ScoreBoard />
+    <MobileControl v-if="isMobile()" @mobileControl="mobileControl" />
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import renderer from './assets/mixins/render';
-import cookie from './assets/utils/cookie';
-import PlayerSettings from './components/PlayerSettings';
-import EventLog from './components/EventLog';
-import DiePopup from './components/DiePopup';
-import ScoreBoard from './components/ScoreBoard';
+import axios              from 'axios';
+import renderer           from './assets/mixins/render';
+import cookie             from './assets/utils/cookie';
+import PlayerSettings     from './components/PlayerSettings';
+import EventLog           from './components/EventLog';
+import DiePopup           from './components/DiePopup';
+import ScoreBoard         from './components/ScoreBoard';
+import MobileControl      from './components/MobileControl';
+import getElementPosition from './assets/utils/getElementPosition';
 
 const socket = window.io();
 
@@ -27,6 +37,7 @@ export default {
     EventLog,
     DiePopup,
     ScoreBoard,
+    MobileControl,
   },
   mixins: [renderer],
 
@@ -229,8 +240,12 @@ export default {
       }
     },
 
+    mobileControl(movement) {
+      this.movement = movement;
+    },
+
     getRatio() {
-      const width = window.innerWidth;
+      const width = window.innerWidth - (this.isMobile() ? 100 : 0);
       const height = window.innerHeight;
       const widthRatio = width / this.config.fieldSize.width;
       const heightRation = height / this.config.fieldSize.height;
@@ -245,15 +260,21 @@ export default {
       };
     },
 
-    setPlayerInfo({ name, color }) {
+    setPlayerInfo({ name, color, isNew, oldName }) {
       this.playerName = name;
       this.playerColor = color;
       this.showColorChange = false;
 
-      socket.emit('playerConnect', name);
-
-      this.init();
-      this.start();
+      if (isNew) {
+        socket.emit('playerConnect', name);
+        this.init();
+        this.start();
+      } else {
+        socket.emit('changePlayerName', {
+          name,
+          oldName,
+        });
+      }
     },
 
     changePlayerColor(color) {
@@ -261,14 +282,21 @@ export default {
       this.showColorChange = false;
     },
 
+    touchShoot(event) {
+      console.log(event.targetTouches[0]);
+      this.shoot(event.targetTouches[0]);
+    },
+
     shoot(event) {
       if (this.now - this.lastShoot < this.config.playerShootSpeed - this.playersState[this.playerName].shootSpeedBonus) {
         return;
       }
 
-      const rect = event.target.getBoundingClientRect();
-      const x = (event.clientX - rect.left) / this.ratio;
-      const y = (event.clientY - rect.top) / this.ratio;
+      const position = getElementPosition(event);
+      console.log(event.clientX, event.clientY);
+      console.log(position);
+      const x = position.x / this.ratio;
+      const y = position.y / this.ratio;
 
       const startPos = {
         x: this.playersState[this.playerName].x,
@@ -304,6 +332,10 @@ export default {
       socket.emit('shoot', bullet);
       this.lastShoot = this.now;
     },
+
+    isMobile() {
+      return (navigator.userAgent.match(/Android|iPhone/ig) || []).length;
+    },
   }
 };
 </script>
@@ -327,9 +359,13 @@ export default {
   .field {
     position: fixed;
     top: 50%;
-    left: 50%;
     transform: translate(-50%, -50%);
     background: rgba(33,150,243 ,1);
+
+    &--mobile {
+      right: 0;
+      transform: translate(0, -50%);
+    }
   }
 
   .fps {

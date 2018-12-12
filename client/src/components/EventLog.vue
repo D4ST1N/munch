@@ -21,6 +21,13 @@ export default {
   created() {
     this.$root.$on('event', (event) => {
       this.events.push(event);
+      setTimeout(() => {
+        const index = this.events.indexOf(event);
+
+        if (index !== -1) {
+          this.events.splice(index, 1);
+        }
+      }, 15000);
     });
   }
 };
