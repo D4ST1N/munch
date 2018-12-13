@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   test: {
     squareSquare(square1, square2, area = 0) {
       return square1.pos.x - area / 2 < square2.pos.x + square2.size
@@ -114,4 +114,4 @@ module.exports = {
       return (r >= 0 && r <= 1) && (s >= 0 && s <= 1);
     }
   },
-}
+};

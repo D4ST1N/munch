@@ -2,7 +2,7 @@
   <div class="event-log">
     <div v-for="event in events" class="event-log__event">
       {{ event.who }}
-      <img src="../assets/img/gun.png" class="gun">
+      <img src="../../assets/img/gun.png" class="gun">
       {{ event.whom }}
     </div>
   </div>

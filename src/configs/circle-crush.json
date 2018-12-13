@@ -6,6 +6,8 @@
   "playerSize": 16,
   "bulletSize": 6,
   "playerShootSpeed": 625,
+  "playerShootSpeedBonusPerKill": 2.5,
   "playerSpeed": 4,
+  "playerSpeedBonusPerKill": 0.02,
   "bulletSpeed": 7.5
 }

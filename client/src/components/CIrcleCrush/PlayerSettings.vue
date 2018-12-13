@@ -22,8 +22,8 @@
 </template>
 
 <script>
-  import gameConfig from '../config';
-  import cookie from '../assets/utils/cookie';
+  import gameConfig from '../../config';
+  import cookie from '../../assets/utils/cookie';
 
   export default {
     name: "PlayerSettings",

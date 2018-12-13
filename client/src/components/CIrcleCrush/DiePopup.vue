@@ -36,11 +36,15 @@ export default {
   .die-popup {
     position: fixed;
     width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     left: calc(50% - 200px);
     top: 20vh;
     background: rgba(38,50,56 ,1);
     color: #fff;
-    padding: 50px 10px;
+    padding: 20px 40px;
     box-sizing: border-box;
     box-shadow: 0 0 0 100vh rgba(38, 50, 56, .75);
 

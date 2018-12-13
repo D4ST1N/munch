@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import getElementPosition from '../assets/utils/getElementPosition';
+import getElementPosition from '../../assets/utils/getElementPosition';
 
 export default {
   name: 'MobileControl',

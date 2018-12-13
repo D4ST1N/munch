@@ -26,6 +26,7 @@
 
     created() {
       this.$root.$on('score', (score) => {
+        console.log(score);
         this.score = score;
       });
     }
