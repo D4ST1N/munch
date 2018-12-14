@@ -27,6 +27,7 @@ import DiePopup           from './DiePopup';
 import ScoreBoard         from './ScoreBoard';
 import MobileControl      from './MobileControl';
 import getElementPosition from '../../assets/utils/getElementPosition';
+import makeTransparent    from '../../assets/utils/makeTransparent';
 
 const socket = window.io();
 
@@ -65,6 +66,8 @@ export default {
       lastShoot: performance.now(),
       now: performance.now(),
       config: null,
+      barricades: [],
+      tick: 0,
     };
   },
 
@@ -80,7 +83,7 @@ export default {
              this.playerName = playerName;
              this.playerColor = playerColor;
 
-             socket.emit('playerConnect', playerName);
+             socket.emit('playerReconnect', playerName, sessionStorage.getItem('gameId'));
 
              this.init();
              this.start();
@@ -98,6 +101,9 @@ export default {
 
     init() {
       socket.on('state', this.update);
+      socket.on('barricades', (barricades) => {
+        this.barricades = barricades;
+      });
       socket.on('message', (message) => {
         this.$root.$emit('event', message);
 
@@ -105,7 +111,8 @@ export default {
           this.$root.$emit('playerShooted', message.who);
         }
       });
-      socket.on('score', (score) => {
+      socket.on('score', (score, gameId) => {
+        sessionStorage.setItem('gameId', gameId);
         this.$root.$emit('score', score);
       });
 
@@ -144,6 +151,7 @@ export default {
     },
 
     update({ players, bullets }) {
+      this.tick = this.tick === 5 ? 0 : this.tick + 1;
       this.playersState = players;
       this.bullets = bullets;
     },
@@ -151,14 +159,46 @@ export default {
     render() {
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+      this.barricades.forEach((barricade) => {
+        this.renderRectangle({
+          pos: {
+            x: barricade.pos.x * this.ratio,
+            y: barricade.pos.y * this.ratio,
+          },
+          size: {
+            width: barricade.size.width * this.ratio,
+            height: barricade.size.height * this.ratio,
+          },
+          color: barricade.color,
+        });
+      });
+
+      this.bullets.forEach((bullet) => {
+        this.renderRectangle({
+          pos: {
+            x: bullet.pos.x * this.ratio,
+            y: bullet.pos.y * this.ratio,
+          },
+          size: {
+            width: this.config.bulletSize * this.ratio,
+            height: this.config.bulletSize * this.ratio,
+          },
+          color: 'white',
+        });
+      });
+
       Object.entries(this.playersState).forEach(([id, player]) => {
+        const opacity = player.isImmune ? (this.tick < 3 ? 0.25 : 1) : 1;
         this.renderCircle({
           pos: {
             x: player.x * this.ratio,
             y: player.y * this.ratio,
           },
           size: this.config.playerSize * this.ratio,
-          color: id === this.playerName ? this.playerColor : 'white',
+          color: makeTransparent(
+            (id === this.playerName ? this.playerColor : 'rgba(255, 255, 255, 1)'),
+            opacity
+          ),
         });
         this.renderText({
           pos: {
@@ -186,38 +226,28 @@ export default {
         this.context.lineWidth = 2;
         this.context.stroke();
       }
-
-      this.bullets.forEach((bullet) => {
-        this.renderRectangle({
-          pos: {
-            x: bullet.pos.x * this.ratio,
-            y: bullet.pos.y * this.ratio,
-          },
-          size: {
-            width: this.config.bulletSize * this.ratio,
-            height: this.config.bulletSize * this.ratio,
-          },
-          color: 'white',
-        });
-      });
     },
 
     handleKeyDown(event) {
       switch (event.code) {
         case 'KeyA':
           this.movement.left = true;
+          this.movement.right = false;
           break;
         case 'KeyW':
           this.movement.up = true;
+          this.movement.down = false;
           break;
         case 'KeyD':
           this.movement.right = true;
+          this.movement.left = false;
           break;
         case 'KeyS':
           if (event.ctrlKey && event.shiftKey) {
             this.showColorChange = true;
           } else {
             this.movement.down = true;
+            this.movement.up = false;
           }
           break;
       }
@@ -323,15 +353,6 @@ export default {
       if (startPos.y > y) {
         bullet.direction.y *= -1;
       }
-
-      const coefficient = (this.config.playerSize
-        + this.config.playerSpeed
-        + this.playersState[this.playerName].playerSpeedBonus
-        + this.config.bulletSize)
-        / this.config.bulletSpeed;
-
-      bullet.pos.x += bullet.direction.x * coefficient;
-      bullet.pos.y += bullet.direction.y * coefficient;
 
       socket.emit('shoot', bullet);
       this.lastShoot = this.now;

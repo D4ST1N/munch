@@ -7,7 +7,15 @@
   "bulletSize": 6,
   "playerShootSpeed": 625,
   "playerShootSpeedBonusPerKill": 2.5,
-  "playerSpeed": 4,
-  "playerSpeedBonusPerKill": 0.02,
-  "bulletSpeed": 7.5
+  "playerSpeed": 5,
+  "playerSpeedBonusPerKill": 0.025,
+  "bulletSpeed": 9,
+  "barricades": {
+    "count": 15,
+    "minWidth": 50,
+    "maxWidth": 500,
+    "minHeight": 10,
+    "maxHeight": 50
+  },
+  "playerInvulnerabilityTime": 2000
 }

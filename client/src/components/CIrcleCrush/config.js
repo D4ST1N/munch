@@ -1,52 +1,48 @@
 export default {
-  gameFieldSize: {
-    width: 1024,
-    height: 768,
-  },
   availableColors: [
     {
       name: 'gray',
-      color: '#EEEEEE',
+      color: 'rgba(238,238,238 ,1)',
     },
     {
       name: 'Blue gray',
-      color: '#B0BEC5',
+      color: 'rgba(176,190,197 ,1)',
     },
     {
       name: 'Amber',
-      color: '#FFE082',
+      color: 'rgba(255,224,130 ,1)',
     },
     {
       name: 'Lime',
-      color: '#E6EE9C',
+      color: 'rgba(230,238,156 ,1)',
     },
     {
       name: 'Green',
-      color: '#A5D6A7',
+      color: 'rgba(165,214,167 ,1)',
     },
     {
       name: 'Teal',
-      color: '#80CBC4',
+      color: 'rgba(128,203,196 ,1)',
     },
     {
       name: 'Cyan',
-      color: '#80DEEA',
+      color: 'rgba(128,222,234 ,1)',
     },
     {
       name: 'Deep purple',
-      color: '#B39DDB',
+      color: 'rgba(179,157,219 ,1)',
     },
     {
       name: 'Purple',
-      color: '#CE93D8',
+      color: 'rgba(206,147,216 ,1)',
     },
     {
       name: 'Pink',
-      color: '#F48FB1',
+      color: 'rgba(244,143,177 ,1)',
     },
     {
       name: 'Red',
-      color: '#ef9a9a',
+      color: 'rgba(239,154,154 ,1)',
     },
   ]
 };

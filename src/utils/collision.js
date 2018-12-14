@@ -15,19 +15,22 @@ export default {
     },
 
     rectCircle(rect, circle) {
-      const distX = Math.abs(circle.pos.x - rect.pos.x - rect.size / 2);
-      const distY = Math.abs(circle.pos.y - rect.pos.y - rect.size / 2);
+      const width = typeof rect.size === 'object' ? rect.size.width : rect.size;
+      const height = typeof rect.size === 'object' ? rect.size.height : rect.size;
 
-      if (distX > (rect.size / 2 + circle.size) || distY > (rect.size / 2 + circle.size)) {
+      const distX = Math.abs(circle.pos.x - rect.pos.x - width / 2);
+      const distY = Math.abs(circle.pos.y - rect.pos.y - height / 2);
+
+      if (distX > (width / 2 + circle.size) || distY > (height / 2 + circle.size)) {
         return false;
       }
 
-      if (distX <= (rect.size / 2) || distY <= (rect.size / 2)) {
+      if (distX <= (width / 2) || distY <= (height / 2)) {
         return true;
       }
 
-      const dx = distX - rect.size / 2;
-      const dy = distY - rect.size / 2;
+      const dx = distX - width / 2;
+      const dy = distY - height / 2;
 
       return (dx * dx + dy * dy <= (circle.size * circle.size));
     },

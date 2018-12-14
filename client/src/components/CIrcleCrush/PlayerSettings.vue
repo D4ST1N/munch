@@ -22,7 +22,7 @@
 </template>
 
 <script>
-  import gameConfig from '../../config';
+  import gameConfig from './config';
   import cookie from '../../assets/utils/cookie';
 
   export default {

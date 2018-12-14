@@ -19,6 +19,7 @@
   "homepage": "https://github.com/D4ST1N/munch#readme",
   "dependencies": {
     "express": "^4.16.4",
+    "perf_hooks": "0.0.1",
     "socket.io": "^2.2.0"
   },
   "devDependencies": {
