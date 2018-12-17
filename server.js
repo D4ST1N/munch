@@ -1,9 +1,11 @@
-const express = require('express');
-const http = require('http');
-const path = require('path');
+import express          from 'express';
+import http             from 'http';
+import path             from 'path';
+import circleCrush      from './src/modules/circle-crush';
+import explodingKittens from './src/modules/exploding-kittens';
+
 const app = express();
 const server = http.Server(app);
-const circleCrush = require('./src/modules/circle-crush');
 
 app.set('port', 5000);
 app.use('/static', express.static(__dirname + '/client/dist'));
@@ -14,6 +16,12 @@ app.get('/', (request, response) => {
 });
 
 app.get('/circle-crush', (request, response) => {
+  circleCrush(server);
+  response.sendFile(path.join(__dirname, '/client/dist/index.html'));
+});
+
+app.get('/exploding-kittens', (request, response) => {
+  explodingKittens(server);
   response.sendFile(path.join(__dirname, '/client/dist/index.html'));
 });
 
@@ -26,4 +34,3 @@ server.listen(5000, function() {
   console.log('Server is starting on port 5000');
 });
 
-circleCrush(server);

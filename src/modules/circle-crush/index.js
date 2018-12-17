@@ -1,9 +1,9 @@
 import socketIO        from 'socket.io';
 import { performance } from 'perf_hooks';
-import collision       from '../utils/collision';
-import config          from '../configs/circle-crush';
-import randomInt       from '../utils/randomInt';
-import createBarricade from '../utils/createBarricade';
+import collision       from '../../utils/collision';
+import config          from '../../configs/circle-crush';
+import randomInt       from '../../utils/randomInt';
+import createBarricade from '../../utils/createBarricade';
 
 const players = {};
 const score = {};
