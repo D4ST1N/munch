@@ -74,7 +74,7 @@
   };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
   .player-settings {
     position: fixed;
     display: flex;

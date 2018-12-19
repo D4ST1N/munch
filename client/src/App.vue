@@ -24,4 +24,8 @@ export default {
     background: rgba(96,125,139 ,1);
     user-select: none;
   }
+
+  * {
+    box-sizing: border-box;
+  }
 </style>

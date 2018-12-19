@@ -33,7 +33,7 @@
   }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
   .scoreboard {
     position: fixed;
     top: 10px;

@@ -82,7 +82,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
   .mobile-control {
     position: fixed;
     left: 5px;

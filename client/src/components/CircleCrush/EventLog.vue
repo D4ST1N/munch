@@ -33,7 +33,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
   .event-log {
     position: fixed;
     top: 10px;

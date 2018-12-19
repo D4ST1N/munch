@@ -29,7 +29,7 @@ import MobileControl      from './MobileControl';
 import getElementPosition from '../../assets/utils/getElementPosition';
 import makeTransparent    from '../../assets/utils/makeTransparent';
 
-const socket = window.io();
+let socket;
 
 export default {
   name: 'CircleCrush',
@@ -72,6 +72,7 @@ export default {
   },
 
   created() {
+    socket = window.io({ path: '/ws/circle-crush' });
     axios.get('/circle-crush/config')
          .then((response) => {
            this.config = response.data;
@@ -365,7 +366,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
   .field {
     position: fixed;
     top: 50%;

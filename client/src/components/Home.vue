@@ -8,7 +8,7 @@
     </router-link>
     <router-link to="/exploding-kittens" class="home__link">
       <div class="menu-item">
-        <img src="../assets/img/image.jpg" alt="" class="menu-item__icon">
+        <img src="../assets/img/kittens.png" alt="" class="menu-item__icon">
         Exploding kittens
       </div>
     </router-link>
@@ -24,6 +24,7 @@ export default {
 <style scoped lang="scss">
   .home {
     margin: 20px;
+    display: flex;
 
     &__link {
       display: inline-block;

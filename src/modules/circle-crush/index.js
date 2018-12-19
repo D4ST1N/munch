@@ -12,7 +12,7 @@ const barricades = [];
 const gameId = Math.random().toString(16).slice(2);
 
 const init = (server) => {
-  const io = socketIO(server);
+  const io = socketIO(server, { path: '/ws/circle-crush'});
 
   while (barricades.length < config.barricades.count) {
     barricades.push(createBarricade());

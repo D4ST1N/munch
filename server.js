@@ -6,6 +6,8 @@ import explodingKittens from './src/modules/exploding-kittens';
 
 const app = express();
 const server = http.Server(app);
+circleCrush(server);
+explodingKittens(server);
 
 app.set('port', 5000);
 app.use('/static', express.static(__dirname + '/client/dist'));
@@ -16,12 +18,10 @@ app.get('/', (request, response) => {
 });
 
 app.get('/circle-crush', (request, response) => {
-  circleCrush(server);
   response.sendFile(path.join(__dirname, '/client/dist/index.html'));
 });
 
 app.get('/exploding-kittens', (request, response) => {
-  explodingKittens(server);
   response.sendFile(path.join(__dirname, '/client/dist/index.html'));
 });
 
