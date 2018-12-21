@@ -39,19 +39,26 @@ export default {
   methods: {
     setName(name) {
       this.name = name;
+
       socket = window.io({ path: '/ws/exploding-kittens'});
+
+      socket.emit('playerRejoin', this.name);
+
       socket.on('gameStatus', (stats) => {
         console.log('gameStatus', stats);
         this.$root.$emit('gameStatus', stats);
       });
+
       socket.on('deck', (deck) => {
         console.log('deck', deck);
         this.$root.$emit('updateDeck', deck);
       });
+
       socket.on('gameStart', () => {
         console.log('gameStart');
         this.$root.$emit('gameStart');
       });
+
       socket.on('message', console.log);
     },
 

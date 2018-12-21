@@ -36,8 +36,12 @@ export default {
     save() {
       cookie.set('playerName', this.name);
       this.$emit('auth', this.name);
-    }
-  }
+      this.$store.commit('authorization', this.name);
+      this.$store.commit('connect');
+
+      this.$router.go(-1);
+    },
+  },
 };
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" class="game-ui">
+  <div class="game-ui">
     <PlayerDeck />
   </div>
 </template>
@@ -15,14 +15,10 @@ export default {
 
   data() {
     return {
-      show: false,
     };
   },
 
   created() {
-    this.$root.$on('gameStart', () => {
-      this.show = true;
-    });
   },
 };
 </script>

@@ -1,67 +1,80 @@
 {
   "cards": [
     {
-      "name": "Вибухове кошеня",
-      "description": "Негайно покажи цю карту",
+      "id": "exploding-kitten",
+      "name": "CARDS.EXPLODING_KITTEN.NAME",
+      "description": "CARDS.EXPLODING_KITTEN.DESCRIPTION",
       "count": 2
     },
     {
-      "name": "Знешкодь",
-      "description": "Поверни останню витягнуту карту назад у колоду",
+      "id": "defuse",
+      "name": "CARDS.DEFUSE.NAME",
+      "description": "CARDS.DEFUSE.DESCRIPTION",
       "count": 6
     },
     {
-      "name": "Атакуй",
-      "description": "Припини свій хід, не витягуючи карту. Наступний гравець ходить двічі",
+      "id": "attack",
+      "name": "CARDS.ATTACK.NAME",
+      "description": "DESCRIPTION",
       "count": 6
     },
     {
-      "name": "Перетасуй",
-      "description": "Перетасуй колоду",
+      "id": "shuffle",
+      "name": "CARDS.SHUFFLE.NAME",
+      "description": "CARDS.SHUFFLE.DESCRIPTION",
       "count": 6
     },
     {
-      "name": "Зазирни у майбутнє",
-      "description": "Таємно підгледь три верхні карти колоди",
+      "id": "see-the-future",
+      "name": "CARDS.SEE_THE_FUTURE.NAME",
+      "description": "CARDS.SEE_THE_FUTURE.DESCRIPTION",
       "count": 6
     },
     {
-      "name": "Стоп",
-      "description": "Зупини дію карти будь-якого гравця у будь-який час",
+      "id": "favor",
+      "name": "CARDS.FAVOR.NAME",
+      "description": "CARDS.FAVOR.DESCRIPTION",
       "count": 6
     },
     {
-      "name": "Зроби ласку",
-      "description": "Попроси у будь-якого гравця карту на його вибір",
+      "id": "nope",
+      "name": "CARDS.NOPE.NAME",
+      "description": "CARDS.NOPE.DESCRIPTION",
       "count": 6
     },
     {
-      "name": "Пропусти хід",
-      "description": "Заверши свій хід, не витягуючи карту",
+      "id": "skip",
+      "name": "CARDS.SKIP.NAME",
+      "description": "CARDS.SKIP.DESCRIPTION",
       "count": 6
     },
     {
-      "name": "Котобородач",
+      "id": "beard-cat",
+      "name": "CARDS.BEARD_CAT.NAME",
       "description": "",
       "count": 4
     },
     {
-      "name": "Чебурекокіт",
+      "id": "burrito-cat",
+      "name": "CARDS.BURRITO_CAT.NAME",
       "description": "",
       "count": 4
     },
     {
-      "name": "Веселкова нудота",
+      "id": "rainbow-cat",
+      "name": "CARDS.RAINBOW_CAT",
       "description": "",
       "count": 4
     },
     {
-      "name": "Волохатий бульбокіт",
+      "id": "potato-cat",
+      "name": "CARDS.POTATO_CAT",
       "description": "",
       "count": 4
     },
     {
-      "name": "Кавунокіт",
+      "id": "watermelon-cat",
+      "name": "CARDS.WATERMELON_CAT",
       "description": "",
       "count": 4
     }

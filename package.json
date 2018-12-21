@@ -1,6 +1,6 @@
 {
   "name": "munch",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -20,7 +20,8 @@
   "dependencies": {
     "express": "^4.16.4",
     "perf_hooks": "0.0.1",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.2.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.0",

@@ -1,7 +1,7 @@
 <template>
   <div class="player-deck">
     <div v-for="card in deck" class="player-deck__card">
-      {{ card.name }}
+      {{ $text(card.name) }}
     </div>
   </div>
 </template>
@@ -17,10 +17,22 @@ export default {
   },
 
   created() {
-    this.$root.$on('updateDeck', (deck) => {
+    this.$store.getters.socket.emit(
+      'getPlayerDeck',
+      {
+        name: this.$store.getters.player.name,
+        roomId: this.$route.params.id
+      },
+      this.updatePlayerDeck
+    );
+    this.$root.$on('updateDeck', this.updatePlayerDeck)
+  },
+
+  methods: {
+    updatePlayerDeck(deck) {
       this.deck = deck;
-    })
-  }
+    },
+  },
 };
 </script>
 
@@ -42,6 +54,7 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
+      text-align: center;
       font-size: 24px;
       margin: 8px;
       box-shadow: 2px 2px 12px 0 rgba(38,50,56 ,.8);
