@@ -20,7 +20,7 @@ export default function getCards(deck, count, disabledCards = [], specificCard) 
     const cardIndex = deck.length - disabledCount - 1;
     const lastCard = deck[cardIndex];
 
-    if (disabledCards.includes(lastCard.id)) {
+    if (disabledCards.includes(lastCard.props.id)) {
       disabledCount++;
 
       continue;

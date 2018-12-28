@@ -1,0 +1,27 @@
+@keyframes notification-in {
+  0% {
+    transform: translate(0, -50vh) scale(2.5);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+@keyframes notification-out {
+  0% {
+    transform-origin: 16px 50%;
+    transform: translate(0, 0) rotate(0);
+  }
+  33% {
+    transform-origin: 16px 50%;
+    transform: translate(0, 0) rotate(115deg);
+  }
+  48% {
+    transform-origin: 16px 50%;
+    transform: translate(0, 0) rotate(72deg);
+  }
+  100% {
+    transform-origin: 50% 50%;
+    transform: translate(10px, 60vh) rotate(8deg);
+  }
+}

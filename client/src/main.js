@@ -3,10 +3,14 @@ import store   from './store'
 import App     from './App.vue';
 import router  from './router';
 import getText from './assets/utils/getText';
+// UI Components
+import Button  from './components/UI/Button';
 
 Vue.prototype.$text = getText;
 Vue.config.productionTip = true;
 Vue.config.devtools = true;
+
+Vue.component('Button', Button);
 
 new Vue({
   router,

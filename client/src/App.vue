@@ -1,20 +1,26 @@
 <template>
   <div id="app">
     <router-view></router-view>
+    <NotificationCenter />
   </div>
 </template>
 
 <script>
-export default {
-  name: 'app',
-};
+  import NotificationCenter from './components/Notifications/NotificationCenter';
+
+  export default {
+    name: 'app',
+    components: {
+      NotificationCenter,
+    },
+  };
 </script>
 
 <style lang="scss">
+  @import url('https://fonts.googleapis.com/css?family=Comfortaa:300,400,700&subset=cyrillic,cyrillic-ext');
+
   #app {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Comfortaa', cursive;
     color: #2c3e50;
   }
 

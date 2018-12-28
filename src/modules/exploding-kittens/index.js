@@ -4,24 +4,57 @@ import config              from '../../configs/exploding-kittens';
 import addCards            from './addCards';
 import shuffle             from '../../utils/shuffle';
 import getPlayerStartCards from './getPlayerStartCards';
+import randomInt           from '../../utils/randomInt';
 
 export default function init(server) {
   const io = socketIO(server, { path: '/ws/exploding-kittens'});
 
   const rooms = [];
-  const deck = [];
 
   const getRoom = (roomId) => rooms.find(room => room.id === roomId);
 
   const getPlayer = (room, playerName) => room.players.find(player => player.name === playerName);
+
+  const invertDeck = (deck) => deck.map(() => ({ inverted: true }));
+
+  const getCardIndex = (deck, cardId) => deck.findIndex((card) => card.props.id === cardId);
+
+  const nextPlayer = (room) => {
+    room.playerIndex++;
+
+    if (room.playerIndex === room.players.length) {
+      room.playerIndex = 0;
+    }
+
+    if (room.players[room.playerIndex].exploded) {
+      nextPlayer(room);
+    }
+  };
 
   const isGameStarted = (roomId) => {
     const room = getRoom(roomId);
 
     if (!room) return false;
 
-    console.log(room.players);
+    if (room.status === 'started') return true;
+
     return !room.players.find(player => player.ready === false) && room.players.length > 1;
+  };
+
+  const isGameEnded = (room) => {
+    return room.players.filter(player => !player.exploded).length === 1;
+  };
+
+  const gameStart = (room) => {
+    config.cards.forEach((cardConfig) => {
+      addCards(room.deck, cardConfig);
+    });
+
+    shuffle(room.deck);
+
+    room.players.forEach((player) => {
+      player.deck = getPlayerStartCards(room.deck);
+    });
   };
 
   const playerConnect = (playerName, roomId, socket) => {
@@ -36,6 +69,7 @@ export default function init(server) {
     if (player) {
       console.log('Player reconnected: ', playerName);
 
+      player.id = socket.id;
       player.active = true;
     } else {
       console.log('Player joined: ', playerName);
@@ -45,23 +79,58 @@ export default function init(server) {
         ready: false,
         id: socket.id,
         active: true,
+        exploded: false,
       });
     }
 
+    console.log(room.status, isGameStarted(room.id));
+    console.log('join room');
     socket.join(room.id);
 
-    io.emit('roomList', rooms);
-    io.to(room.id).emit('gameStatus', room.players);
+    socket.broadcast.emit('roomList', rooms);
+
+    if (isGameStarted(room.id)) {
+      gameUpdate(room.id);
+    } else {
+      io.to(room.id).emit('gameStatus', room.players);
+    }
   };
 
-  config.cards.forEach((cardConfig) => {
-    addCards(deck, cardConfig);
-  });
+  const getPlayersList = (room) => {
+    return room.players.map((player) => ({
+      name: player.name,
+      exploded: player.exploded,
+    }));
+  };
+
+  const gameUpdate = (roomId) => {
+    const room = getRoom(roomId);
+
+    if (!room) {
+      return;
+    }
+
+    const invertedDeck = invertDeck(room.deck);
+    const currentPlayer = room.players[room.playerIndex].name;
+    const players = getPlayersList(room);
+
+    console.log('gameUpdate');
+    room.players.forEach((player) => {
+      console.log('send game update to ', player.id);
+      io.to(player.id).emit('gameUpdate', {
+        players,
+        currentPlayer,
+        gameDeck: invertedDeck,
+        gameTrash: room.trash,
+        playerDeck: player.deck,
+      });
+    });
+  };
 
   io.on('connection', (socket) => {
     socket.emit('roomList', rooms);
 
-    socket.on('knockKnock', (roomId, callback) => {
+    socket.on('knockKnock', ({ roomId }, callback) => {
       console.log('Knock Knock');
       callback(!!getRoom(roomId));
     });
@@ -70,13 +139,87 @@ export default function init(server) {
       callback(rooms);
     });
 
-    socket.on('getGameStatus', (roomId, callback) => {
-      console.log(isGameStarted(roomId));
+    socket.on('getGameStatus', ({ roomId }, callback) => {
+      console.log('getGameStatus');
       callback(isGameStarted(roomId));
     });
 
     socket.on('getPlayerDeck', ({ roomId, name }, callback) => {
+      console.log(getRoom(roomId), getPlayer(getRoom(roomId), name));
       callback(getPlayer(getRoom(roomId), name).deck);
+    });
+
+    socket.on('getDeck', ({ roomId }, callback) => {
+      const room = getRoom(roomId);
+
+      if (!room) {
+        return;
+      }
+
+      callback(invertDeck(room.deck));
+    });
+
+    socket.on('playerGetCard', ({ roomId, name }) => {
+      const room = getRoom(roomId);
+
+      if (!room) {
+        return;
+      }
+
+      const player = room.players[room.playerIndex];
+
+      if (player.name !== name) {
+        return;
+      }
+
+      const card = room.deck.pop();
+
+      console.log('player get', card.props.id, 'card');
+
+      if (card.props.id === 'exploding-kitten') {
+        const defuseIndex = getCardIndex(player.deck, 'defuse');
+
+        if (defuseIndex !== -1) {
+          console.log('player has defuse');
+
+          room.trash.push(player.deck.splice(defuseIndex, 1));
+          room.deck.splice(randomInt(0, room.deck.length - 1), 0, card);
+          io.to(player.id).emit('playerDefuseExplodingKitten');
+        } else {
+          console.log('player exploded');
+
+          player.exploded = true;
+          io.to(player.id).emit('playerExploded');
+
+          if (isGameEnded(room)) {
+            io.to(room.players.find(player => !player.exploded).id).emit('playerWin');
+          }
+        }
+
+        nextPlayer(room);
+        gameUpdate(roomId);
+
+        return;
+      }
+
+      player.deck.push(card);
+
+      nextPlayer(room);
+      gameUpdate(roomId);
+    });
+
+    socket.on('getPlayersList', ({ roomId }, callback) => {
+      const room = getRoom(roomId);
+
+      if (!room) {
+        return;
+      }
+
+      console.log(room.playerIndex, room.players[room.playerIndex].name);
+      callback(room.players.map((player) => ({
+        name: player.name,
+        current: room.players[room.playerIndex].name === player.name,
+      })));
     });
 
     socket.on('createRoom', () => {
@@ -85,13 +228,14 @@ export default function init(server) {
       rooms.push({
         id: uuid(),
         players: [],
+        deck: [],
+        trash: [],
+        playerIndex: 0,
+        status: 'wait'
       });
 
       io.emit('roomList', rooms);
     });
-    // io.sockets.emit('deck', shuffle(deck));
-    // io.sockets.emit('deck', getPlayerStartCards(deck));
-    // io.sockets.emit('gameStatus', players);
 
     socket.on('playerJoin', ({ name, roomId }) => {
       playerConnect(name, roomId, socket);
@@ -114,27 +258,33 @@ export default function init(server) {
 
       player.ready = true;
 
-      io.to(roomId).emit('gameStatus', room.players);
+      console.log('emit status', player.name);
+      io.to(room.id).emit('gameStatus', room.players);
 
       if (!isGameStarted(roomId)) {
         return;
       }
 
-      shuffle(deck);
+      room.status = 'started';
+      gameStart(room);
 
-      io.to(roomId).emit('gameStart');
+      console.log('game start');
+      io.to(room.id).emit('gameStart');
 
-      room.players.forEach((player) => {
-        console.log('send deck to player ', player.name);
-
-        player.deck = getPlayerStartCards(deck);
-        io.to(player.id).emit('deck', player.deck);
-      });
+      gameUpdate(roomId);
+      // io.to(room.id).emit('playerMove', room.players[room.playerIndex].name);
+      //
+      // room.players.forEach((player) => {
+      //   console.log('send deck to player ', player.name);
+      //
+      //   player.deck = getPlayerStartCards(room.deck);
+      //   io.to(player.id).emit('deck', player.deck);
+      // });
     });
 
-    socket.on('playerReconnect', (playerName) => {
-      console.log('Player reconnected: ', playerName);
-    });
+    // socket.on('playerReconnect', (playerName) => {
+    //   console.log('Player reconnected: ', playerName);
+    // });
 
     socket.on('disconnect', () => {
       rooms.forEach((room) => {

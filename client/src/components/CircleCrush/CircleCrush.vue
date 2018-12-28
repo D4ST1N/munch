@@ -221,11 +221,17 @@ export default {
         const reloadPercent = Math.min((this.now - this.lastShoot) / trueShootSpeed, 1);
         const percent = -0.5 + (reloadPercent * 100) / 50;
 
-        this.context.beginPath();
-        this.context.arc(x * this.ratio, y * this.ratio, this.config.playerSize * this.ratio, -0.5 * Math.PI, percent * Math.PI);
-        this.context.strokeStyle = 'rgba(142,36,170 ,1)';
-        this.context.lineWidth = 2;
-        this.context.stroke();
+        this.renderCircleProgress({
+          percent,
+          pos: {
+            x: x * this.ratio,
+            y: y * this.ratio,
+          },
+          radius: this.config.playerSize * this.ratio,
+          start: -0.5,
+          color: 'rgba(142,36,170 ,1)',
+          width: 2,
+        });
       }
     },
 

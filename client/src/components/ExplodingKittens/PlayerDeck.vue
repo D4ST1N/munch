@@ -1,39 +1,39 @@
 <template>
   <div class="player-deck">
-    <div v-for="card in deck" class="player-deck__card">
-      {{ $text(card.name) }}
-    </div>
+    <Card v-for="card in deck" :card="card"></Card>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'PlayerDeck',
+  import Card from './Card';
 
-  data() {
-    return {
-      deck: [],
-    };
-  },
-
-  created() {
-    this.$store.getters.socket.emit(
-      'getPlayerDeck',
-      {
-        name: this.$store.getters.player.name,
-        roomId: this.$route.params.id
-      },
-      this.updatePlayerDeck
-    );
-    this.$root.$on('updateDeck', this.updatePlayerDeck)
-  },
-
-  methods: {
-    updatePlayerDeck(deck) {
-      this.deck = deck;
+  export default {
+    name: 'PlayerDeck',
+    components: {
+      Card,
     },
-  },
-};
+
+    data() {
+      return {
+        deck: [],
+      };
+    },
+
+    created() {
+      this.$store.getters.socket.on('gameUpdate', this.updateStats);
+    },
+
+    methods: {
+      updatePlayerDeck(deck) {
+        console.log(deck);
+        this.deck = deck;
+      },
+
+      updateStats(gameData) {
+        this.updatePlayerDeck(gameData.playerDeck);
+      },
+    },
+  };
 </script>
 
 <style lang="scss">
@@ -44,20 +44,6 @@ export default {
     width: 100%;
     display: flex;
     justify-content: center;
-
-    &__card {
-      padding: 10px;
-      background: #fff;
-      width: 200px;
-      height: 280px;
-      border-radius: 5px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      font-size: 24px;
-      margin: 8px;
-      box-shadow: 2px 2px 12px 0 rgba(38,50,56 ,.8);
-    }
+    overflow-x: auto;
   }
 </style>

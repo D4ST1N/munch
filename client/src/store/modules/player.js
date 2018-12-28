@@ -11,6 +11,7 @@ const mutations = {
   },
 
   connect(state) {
+    console.log('connecting to socket');
     state.socket = window.io({ path: '/ws/exploding-kittens'});
   },
 };

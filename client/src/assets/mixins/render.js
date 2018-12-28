@@ -85,6 +85,32 @@ export default {
     },
 
     /**
+     * Draw circle progress on canvas
+     * @param progress {Object} progress data
+     * @param progress.pos {Object} progress position
+     * @param progress.pos.x {Number} progress coordinate x-axis
+     * @param progress.pos.y {Number} progress coordinate y-axis
+     * @param progress.radius {number} progress radius
+     * @param progress.start {number} progress start
+     * @param progress.percent {number} progress percent
+     * @param progress.color {string} progress color
+     * @param progress.width {number} progress circle width
+     */
+    renderCircleProgress(progress) {
+      this.context.beginPath();
+      this.context.arc(
+        progress.pos.x,
+        progress.pos.y,
+        progress.radius,
+        progress.start * Math.PI,
+        progress.percent * Math.PI,
+      );
+      this.context.strokeStyle = progress.color;
+      this.context.lineWidth = progress.width;
+      this.context.stroke();
+    },
+
+    /**
      * Draw text on canvas
      * @param text {Object} text data
      * @param text.pos {Object} text position

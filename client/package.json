@@ -1,6 +1,6 @@
 {
   "name": "munch",
-  "version": "1.1.1",
+  "version": "1.2.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -10,6 +10,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "socket.io": "^2.2.0",
+    "uuid": "^3.3.2",
     "uws": "^10.148.1",
     "vue": "^2.5.17",
     "vue-router": "^3.0.2",

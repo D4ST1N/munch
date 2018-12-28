@@ -23,30 +23,31 @@
 </template>
 
 <script>
-export default {
-  name: 'GameRoomsList',
+  export default {
+    name: 'GameRoomsList',
 
-  data() {
-    return {
-      rooms: [],
-    };
-  },
-
-  created() {
-    this.$store.getters.socket.emit('getRoomList', this.updateRoomList);
-    this.$store.getters.socket.on('roomList', this.updateRoomList);
-  },
-
-  methods: {
-    updateRoomList(rooms) {
-      this.rooms = rooms;
+    data() {
+      return {
+        rooms: [],
+      };
     },
 
-    createRoom() {
-      this.$store.getters.socket.emit('createRoom');
+    created() {
+      this.$store.getters.socket.emit('getRoomList', this.updateRoomList);
+      this.$store.getters.socket.on('roomList', this.updateRoomList);
     },
-  }
-};
+
+    methods: {
+      updateRoomList(rooms) {
+        console.log('room list');
+        this.rooms = rooms;
+      },
+
+      createRoom() {
+        this.$store.getters.socket.emit('createRoom');
+      },
+    }
+  };
 </script>
 
 <style lang="scss">

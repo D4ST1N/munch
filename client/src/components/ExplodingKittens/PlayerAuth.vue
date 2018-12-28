@@ -12,37 +12,37 @@
 </template>
 
 <script>
-import cookie from '../../assets/utils/cookie';
+  import cookie from '../../assets/utils/cookie';
 
-export default {
-  name: 'PlayerAuth',
+  export default {
+    name: 'PlayerAuth',
 
-  data() {
-    return {
-      name: '',
-    };
-  },
-
-  created() {
-    const playerName = cookie.get('playerName');
-
-    if (playerName) {
-      this.name = playerName;
-      this.save();
-    }
-  },
-
-  methods: {
-    save() {
-      cookie.set('playerName', this.name);
-      this.$emit('auth', this.name);
-      this.$store.commit('authorization', this.name);
-      this.$store.commit('connect');
-
-      this.$router.go(-1);
+    data() {
+      return {
+        name: '',
+      };
     },
-  },
-};
+
+    created() {
+      const playerName = cookie.get('playerName');
+
+      if (playerName) {
+        this.name = playerName;
+        this.save();
+      }
+    },
+
+    methods: {
+      save() {
+        cookie.set('playerName', this.name);
+        this.$emit('auth', this.name);
+        this.$store.commit('authorization', this.name);
+        this.$store.commit('connect');
+
+        this.$router.go(-1);
+      },
+    },
+  };
 </script>
 
 <style lang="scss">
