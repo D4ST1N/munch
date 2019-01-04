@@ -61,10 +61,12 @@
 
       this.$store.getters.socket.on('gameStatus', this.onGameStatus);
       this.$store.getters.socket.on('gameStart', this.onGameStart);
-      this.$store.getters.socket.on('playerMove', this.onPlayerMove);
-      this.$store.getters.socket.on('playerExploded', this.onPlayerExploded);
+      // this.$store.getters.socket.on('playerMove', this.onPlayerMove);
+      this.$store.getters.socket.on('playerGetExplodingKitten', this.onPlayerGetExplodingKitten);
       this.$store.getters.socket.on('playerDefuseExplodingKitten', this.onPlayerDefuseExplodingKitten);
+      this.$store.getters.socket.on('playerExploded', this.onPlayerExploded);
       this.$store.getters.socket.on('playerWin', this.onPlayerWin);
+      this.$store.getters.socket.on('gameUpdate', this.onGameUpdate);
 
       // setTimeout(() => {
       //   this.$root.$emit('showDialog', {
@@ -93,10 +95,12 @@
     beforeDestroy() {
       this.$store.getters.socket.off('gameStatus', this.onGameStatus);
       this.$store.getters.socket.off('gameStart', this.onGameStart);
-      this.$store.getters.socket.off('playerMove', this.onPlayerMove);
-      this.$store.getters.socket.off('playerExploded', this.onPlayerExploded);
+      // this.$store.getters.socket.off('playerMove', this.onPlayerMove);
+      this.$store.getters.socket.off('playerGetExplodingKitten', this.onPlayerGetExplodingKitten);
       this.$store.getters.socket.off('playerDefuseExplodingKitten', this.onPlayerDefuseExplodingKitten);
+      this.$store.getters.socket.off('playerExploded', this.onPlayerExploded);
       this.$store.getters.socket.off('playerWin', this.onPlayerWin);
+      this.$store.getters.socket.off('gameUpdate', this.onGameUpdate);
     },
 
     methods: {
@@ -106,17 +110,6 @@
           name: this.$store.getters.player.name,
           roomId: this.$route.params.id
         });
-
-        this.$store.getters.socket.emit(
-          'getGameStatus',
-          {
-            roomId: this.$route.params.id
-          },
-          (started) => {
-            console.log('game start event callback', started);
-            this.gameStart(started);
-          }
-        );
       },
 
       onGameStatus(playersList) {
@@ -136,61 +129,71 @@
         this.gameStart(true);
       },
 
-      onPlayerMove(name) {
-        console.log('player move', name);
-
-        if (name === this.$store.getters.player.name) {
-          this.$root.$emit('showNotification', {
-            title: this.$text('NOTIFICATIONS.GAME.YOUR_TURN.TITLE'),
-          });
-        }
+      onGameUpdate(gameData) {
+        console.log(gameData);
+        this.$root.$emit('showMessage', {
+          text: gameData.currentPlayer === this.$store.getters.player.name
+                ? this.$text('NOTIFICATIONS.GAME.PLAYER_TURN.YOU')
+                : this.$text('NOTIFICATIONS.GAME.PLAYER_TURN.OTHER', {
+              player: gameData.currentPlayer
+            })
+        });
       },
 
-      onPlayerExploded() {
+      onPlayerGetExplodingKitten(name) {
+        this.$root.$emit('showMessage', {
+          text: name === this.$store.getters.player.name
+                ? this.$text('NOTIFICATIONS.GAME.PLAYER_GET_EXPLODING_KITTEN.YOU')
+                : this.$text('NOTIFICATIONS.GAME.PLAYER_GET_EXPLODING_KITTEN.OTHER', {
+              player: name
+            })
+        });
+      },
+
+      onPlayerExploded(name) {
         console.log('player Exploded');
-        // this.$root.$emit('showDialog', {
-        //   title: this.$text('NOTIFICATIONS.GAME.EXPLODING_DIALOG.TITLE'),
-        //   text: this.$text('NOTIFICATIONS.GAME.EXPLODING_DIALOG.TEXT'),
-        //   actions: [
-        //     {
-        //       text: this.$text('NOTIFICATIONS.GAME.DEFUSE'),
-        //       type: 'green',
-        //       size: 'medium',
-        //
-        //       action() { },
-        //     },
-        //   ],
-        //   time: 30 * 1000,
-        //
-        //   onEnd() {
-        //     this.$root.$emit('hideDialog');
-        //     this.$store.getters.socket.emit('playerExploded');
-        //   },
-        // });
         this.$root.$emit('showNotification', {
-          title: this.$text('NOTIFICATIONS.GAME.YOU_EXPLODED.TITLE'),
+          title: this.$text('NOTIFICATIONS.GAME.PLAYER_EXPLODED.YOU'),
+        });
+        this.$root.$emit('showMessage', {
+          text: name === this.$store.getters.player.name
+                ? this.$text('NOTIFICATIONS.GAME.PLAYER_EXPLODED.YOU')
+                : this.$text('NOTIFICATIONS.GAME.PLAYER_EXPLODED.OTHER', {
+              player: name
+            })
         });
       },
 
-      onPlayerDefuseExplodingKitten() {
+      onPlayerDefuseExplodingKitten(name) {
         console.log('Player defuse kitten');
-        this.$root.$emit('showNotification', {
-          title: this.$text('NOTIFICATIONS.GAME.DEFUSE_WILL_BE_USED'),
+        // this.$root.$emit('showNotification', {
+        //   title: this.$text('NOTIFICATIONS.GAME.DEFUSE_WILL_BE_USED'),
+        // });
+        this.$root.$emit('showMessage', {
+          text: name === this.$store.getters.player.name
+                ? this.$text('NOTIFICATIONS.GAME.PLAYER_DEFUSE_EXPLODING_KITTEN.YOU')
+                : this.$text('NOTIFICATIONS.GAME.PLAYER_DEFUSE_EXPLODING_KITTEN.OTHER', {
+              player: name
+            })
         });
       },
 
-      onPlayerWin() {
+      onPlayerWin(name) {
         console.log('Player Win!');
-        this.$root.$emit('showNotification', {
-          title: this.$text('NOTIFICATIONS.GAME.YOU_WIN.TITLE'),
+        this.$root.$emit('showMessage', {
+          text: name === this.$store.getters.player.name
+                ? this.$text('NOTIFICATIONS.GAME.PLAYER_WIN.YOU')
+                : this.$text('NOTIFICATIONS.GAME.PLAYER_WIN.OTHER', {
+              player: name
+            })
         });
       },
 
       gameStart(start) {
         if (start) {
           console.log('show notification', start);
-          this.$root.$emit('showNotification', {
-            title: this.$text('NOTIFICATIONS.GAME_STARTED.TITLE'),
+          this.$root.$emit('showMessage', {
+            text: this.$text('NOTIFICATIONS.GAME_STARTED.TITLE'),
           });
         }
 

@@ -1,9 +1,10 @@
 <template>
   <div
-    :class="{ 'card': true, 'card--inverted': card.inverted }"
+    :class="{ 'card': true, 'card--inverted': card.inverted, 'card--playable': type === 'playerCard' }"
+    :style="{ width: `${settings.card.width}px`, height: `${settings.card.height}px` }"
     @click="cardClick"
   >
-    <div v-if="!card.inverted" :style="{ 'border-color': card.props.color }" class="card__wrapper">
+    <div v-if="!card.inverted" class="card__wrapper">
       <div class="card__header">
         <div class="card__icon"></div>
         <div class="card__info">
@@ -21,15 +22,28 @@
           <div class="card__name">{{ $text(card.props.name) }}</div>
         </div>
       </div>
+      <div class="card__border" :style="{ 'border-color': card.props.color }"></div>
     </div>
   </div>
 </template>
 
 <script>
+  import settings from './settings';
+
   export default {
     name: 'Card',
     props: {
       card: Object,
+      type: {
+        type: String,
+        default: '',
+      },
+    },
+
+    data() {
+      return {
+        settings,
+      };
     },
 
     methods: {
@@ -43,23 +57,49 @@
 <style lang="scss">
   .card {
     background: #fff;
-    width: 200px;
-    min-width: 200px;
-    height: 280px;
     border-radius: 5px;
     margin: 8px;
     position: relative;
     box-shadow: 0 0 0 1px rgba(38,50,56 ,.4);
     cursor: pointer;
+    transition: all .375s ease;
 
     &--inverted {
       background: url('../../assets/img/card-cover.jpg') no-repeat center;
     }
 
+    &--playable {
+      position: absolute;
+      left: 50%;
+      margin: 0;
+
+      &:hover {
+        z-index: 100;
+      }
+    }
+
     &__wrapper {
-      padding: 10px;
+      padding: 18px;
       display: flex;
       flex-direction: column;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      background: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 0 1px rgba(38,50,56 ,.4);
+      justify-content: space-between;
+      transform-origin: 50% 100%;
+      transition: all .375s ease;
+
+      &:hover {
+        transform: scale(1.10);
+      }
+    }
+
+    &__border {
       position: absolute;
       width: calc(100% - 16px);
       height: calc(100% - 16px);
@@ -67,7 +107,6 @@
       top: 8px;
       border-width: 3px;
       border-style: solid;
-      justify-content: space-between;
       border-radius: 4px;
     }
 

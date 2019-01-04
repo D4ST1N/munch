@@ -56,7 +56,7 @@
   .game-deck {
     position: fixed;
     left: 100px;
-    top: calc(50% - 140px);
+    top: calc(50% - 200px);
 
     > * {
       position: absolute;

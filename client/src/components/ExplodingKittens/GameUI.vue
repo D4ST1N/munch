@@ -3,6 +3,7 @@
     <GameRoomPlayers />
     <GameDeck />
     <PlayerDeck />
+    <GameLog />
     <Dialog />
   </div>
 </template>
@@ -12,6 +13,7 @@
   import GameDeck from './GameDeck';
   import GameRoomPlayers from './GameRoomPlayers';
   import Dialog from './Dialog';
+  import GameLog from './GameLog';
 
   export default {
     name: 'GameUI',
@@ -20,6 +22,7 @@
       GameDeck,
       GameRoomPlayers,
       Dialog,
+      GameLog,
     },
 
     data() {

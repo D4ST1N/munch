@@ -65,12 +65,14 @@ export default function init(server) {
     }
 
     const player = getPlayer(room, playerName);
+    let personal = false;
 
     if (player) {
       console.log('Player reconnected: ', playerName);
 
       player.id = socket.id;
       player.active = true;
+      personal = true;
     } else {
       console.log('Player joined: ', playerName);
 
@@ -90,7 +92,8 @@ export default function init(server) {
     socket.broadcast.emit('roomList', rooms);
 
     if (isGameStarted(room.id)) {
-      gameUpdate(room.id);
+      io.to(socket.id).emit('gameStart');
+      gameUpdate(room.id, personal ? playerName : false);
     } else {
       io.to(room.id).emit('gameStatus', room.players);
     }
@@ -103,7 +106,7 @@ export default function init(server) {
     }));
   };
 
-  const gameUpdate = (roomId) => {
+  const gameUpdate = (roomId, name) => {
     const room = getRoom(roomId);
 
     if (!room) {
@@ -115,8 +118,9 @@ export default function init(server) {
     const players = getPlayersList(room);
 
     console.log('gameUpdate');
-    room.players.forEach((player) => {
-      console.log('send game update to ', player.id);
+    if (name) {
+      const player = getPlayer(room, name);
+      console.log('send game update to ', player.name);
       io.to(player.id).emit('gameUpdate', {
         players,
         currentPlayer,
@@ -124,7 +128,18 @@ export default function init(server) {
         gameTrash: room.trash,
         playerDeck: player.deck,
       });
-    });
+    } else {
+      room.players.forEach((player) => {
+        console.log('send game update to ', player.name);
+        io.to(player.id).emit('gameUpdate', {
+          players,
+          currentPlayer,
+          gameDeck: invertedDeck,
+          gameTrash: room.trash,
+          playerDeck: player.deck,
+        });
+      });
+    }
   };
 
   io.on('connection', (socket) => {
@@ -178,21 +193,23 @@ export default function init(server) {
 
       if (card.props.id === 'exploding-kitten') {
         const defuseIndex = getCardIndex(player.deck, 'defuse');
+        io.to(room.id).emit('playerGetExplodingKitten', name);
 
         if (defuseIndex !== -1) {
           console.log('player has defuse');
 
           room.trash.push(player.deck.splice(defuseIndex, 1));
           room.deck.splice(randomInt(0, room.deck.length - 1), 0, card);
-          io.to(player.id).emit('playerDefuseExplodingKitten');
+          io.to(room.id).emit('playerDefuseExplodingKitten', name);
         } else {
           console.log('player exploded');
 
           player.exploded = true;
-          io.to(player.id).emit('playerExploded');
+          io.to(room.id).emit('playerExploded', name);
 
           if (isGameEnded(room)) {
-            io.to(room.players.find(player => !player.exploded).id).emit('playerWin');
+            const winner = room.players.find(player => !player.exploded);
+            io.to(room.id).emit('playerWin', winner.name);
           }
         }
 
