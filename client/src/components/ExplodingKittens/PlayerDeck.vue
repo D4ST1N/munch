@@ -5,6 +5,7 @@
   >
     <CardFlip
       v-for="(card, index) in deck"
+      :key="card.id"
       :card="card"
       :selected="isCardSelected(card.id)"
       type="playerCard"
@@ -19,14 +20,12 @@
 </template>
 
 <script>
-  import Card from './Card';
   import CardFlip from './CardFlip';
   import settings from './settings';
 
   export default {
     name: 'PlayerDeck',
     components: {
-      Card,
       CardFlip,
     },
 
