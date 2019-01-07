@@ -25,16 +25,20 @@
         </router-link>
       </div>
     </div>
+    <Console />
   </div>
 </template>
 
 <script>
-  import GameUI from './GameUI';
+  import GameUI          from './GameUI';
+  import Console         from './Console';
+  import personalizeText from '../../assets/utils/personalizeText';
 
   export default {
     name: 'GameRoom',
     components: {
       GameUI,
+      Console,
     },
 
     data() {
@@ -43,6 +47,7 @@
         state: 'joined',
         roomExist: false,
         gameStarted: false,
+        lastShiftTime: null,
       };
     },
 
@@ -61,46 +66,17 @@
 
       this.$store.getters.socket.on('gameStatus', this.onGameStatus);
       this.$store.getters.socket.on('gameStart', this.onGameStart);
-      // this.$store.getters.socket.on('playerMove', this.onPlayerMove);
-      this.$store.getters.socket.on('playerGetExplodingKitten', this.onPlayerGetExplodingKitten);
-      this.$store.getters.socket.on('playerDefuseExplodingKitten', this.onPlayerDefuseExplodingKitten);
-      this.$store.getters.socket.on('playerExploded', this.onPlayerExploded);
-      this.$store.getters.socket.on('playerWin', this.onPlayerWin);
-      this.$store.getters.socket.on('gameUpdate', this.onGameUpdate);
+      this.$store.getters.socket.on('gameMessage', this.onGameMessage);
 
-      // setTimeout(() => {
-      //   this.$root.$emit('showDialog', {
-      //     title: this.$text('NOTIFICATIONS.GAME.EXPLODING_DIALOG.TITLE'),
-      //     text: this.$text('NOTIFICATIONS.GAME.EXPLODING_DIALOG.TEXT'),
-      //     actions: [
-      //       {
-      //         text: this.$text('NOTIFICATIONS.GAME.DEFUSE'),
-      //         description: this.$text(''),
-      //         type: 'green',
-      //         size: 'medium',
-      //
-      //         action() {},
-      //       },
-      //     ],
-      //     time: 30 * 1000,
-      //
-      //     onEnd() {
-      //       this.$root.$emit('hideDialog');
-      //       this.$store.getters.socket.emit('playerExploded');
-      //     }
-      //   });
-      // }, 8000);
+      document.body.addEventListener('keyup', this.onKeyUp);
     },
 
     beforeDestroy() {
       this.$store.getters.socket.off('gameStatus', this.onGameStatus);
       this.$store.getters.socket.off('gameStart', this.onGameStart);
-      // this.$store.getters.socket.off('playerMove', this.onPlayerMove);
-      this.$store.getters.socket.off('playerGetExplodingKitten', this.onPlayerGetExplodingKitten);
-      this.$store.getters.socket.off('playerDefuseExplodingKitten', this.onPlayerDefuseExplodingKitten);
-      this.$store.getters.socket.off('playerExploded', this.onPlayerExploded);
-      this.$store.getters.socket.off('playerWin', this.onPlayerWin);
-      this.$store.getters.socket.off('gameUpdate', this.onGameUpdate);
+      this.$store.getters.socket.off('gameMessage', this.onGameMessage);
+
+      document.body.removeEventListener('keyup', this.onKeyUp);
     },
 
     methods: {
@@ -119,8 +95,7 @@
       },
 
       onGameStart() {
-        console.log('game start event', this.gameStarted, this._uid);
-        console.log(this.$el, this._uid);
+        console.log('game start event', this.gameStarted);
 
         if (this.gameStarted) {
           return;
@@ -129,63 +104,12 @@
         this.gameStart(true);
       },
 
-      onGameUpdate(gameData) {
-        console.log(gameData);
+      onGameMessage(message) {
         this.$root.$emit('showMessage', {
-          text: gameData.currentPlayer === this.$store.getters.player.name
-                ? this.$text('NOTIFICATIONS.GAME.PLAYER_TURN.YOU')
-                : this.$text('NOTIFICATIONS.GAME.PLAYER_TURN.OTHER', {
-              player: gameData.currentPlayer
-            })
-        });
-      },
-
-      onPlayerGetExplodingKitten(name) {
-        this.$root.$emit('showMessage', {
-          text: name === this.$store.getters.player.name
-                ? this.$text('NOTIFICATIONS.GAME.PLAYER_GET_EXPLODING_KITTEN.YOU')
-                : this.$text('NOTIFICATIONS.GAME.PLAYER_GET_EXPLODING_KITTEN.OTHER', {
-              player: name
-            })
-        });
-      },
-
-      onPlayerExploded(name) {
-        console.log('player Exploded');
-        this.$root.$emit('showNotification', {
-          title: this.$text('NOTIFICATIONS.GAME.PLAYER_EXPLODED.YOU'),
-        });
-        this.$root.$emit('showMessage', {
-          text: name === this.$store.getters.player.name
-                ? this.$text('NOTIFICATIONS.GAME.PLAYER_EXPLODED.YOU')
-                : this.$text('NOTIFICATIONS.GAME.PLAYER_EXPLODED.OTHER', {
-              player: name
-            })
-        });
-      },
-
-      onPlayerDefuseExplodingKitten(name) {
-        console.log('Player defuse kitten');
-        // this.$root.$emit('showNotification', {
-        //   title: this.$text('NOTIFICATIONS.GAME.DEFUSE_WILL_BE_USED'),
-        // });
-        this.$root.$emit('showMessage', {
-          text: name === this.$store.getters.player.name
-                ? this.$text('NOTIFICATIONS.GAME.PLAYER_DEFUSE_EXPLODING_KITTEN.YOU')
-                : this.$text('NOTIFICATIONS.GAME.PLAYER_DEFUSE_EXPLODING_KITTEN.OTHER', {
-              player: name
-            })
-        });
-      },
-
-      onPlayerWin(name) {
-        console.log('Player Win!');
-        this.$root.$emit('showMessage', {
-          text: name === this.$store.getters.player.name
-                ? this.$text('NOTIFICATIONS.GAME.PLAYER_WIN.YOU')
-                : this.$text('NOTIFICATIONS.GAME.PLAYER_WIN.OTHER', {
-              player: name
-            })
+          text: this.$text(
+            personalizeText(message.text, message.options.player, this.$store.getters.player.name),
+            message.options,
+          ),
         });
       },
 
@@ -218,7 +142,19 @@
           this.state = 'joined';
         }
       },
-    }
+
+      onKeyUp(event) {
+        if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+          const now = performance.now();
+
+          if (this.lastShiftTime && now - this.lastShiftTime < 200) {
+            this.$root.$emit('showConsole');
+          } else {
+            this.lastShiftTime = now;
+          }
+        }
+      },
+    },
   };
 </script>
 

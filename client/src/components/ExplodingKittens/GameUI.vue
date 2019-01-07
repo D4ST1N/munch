@@ -3,6 +3,7 @@
     <GameRoomPlayers />
     <GameDeck />
     <PlayerDeck />
+    <PlayerMove />
     <GameLog />
     <Dialog />
   </div>
@@ -14,6 +15,7 @@
   import GameRoomPlayers from './GameRoomPlayers';
   import Dialog from './Dialog';
   import GameLog from './GameLog';
+  import PlayerMove from './PlayerMove';
 
   export default {
     name: 'GameUI',
@@ -23,6 +25,7 @@
       GameRoomPlayers,
       Dialog,
       GameLog,
+      PlayerMove,
     },
 
     data() {

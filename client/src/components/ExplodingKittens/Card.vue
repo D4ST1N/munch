@@ -1,10 +1,17 @@
 <template>
   <div
-    :class="{ 'card': true, 'card--inverted': card.inverted, 'card--playable': type === 'playerCard' }"
+    :class="{
+      'card': true,
+      'card--inverted': card.inverted,
+      'card--playable': type === 'playerCard',
+    }"
     :style="{ width: `${settings.card.width}px`, height: `${settings.card.height}px` }"
     @click="cardClick"
   >
-    <div v-if="!card.inverted" class="card__wrapper">
+    <div
+      v-if="!card.inverted"
+      :class="{ 'card__wrapper': true, 'card__wrapper--selected': selected }"
+    >
       <div class="card__header">
         <div class="card__icon"></div>
         <div class="card__info">
@@ -24,6 +31,7 @@
       </div>
       <div class="card__border" :style="{ 'border-color': card.props.color }"></div>
     </div>
+    <div class="card__wrapper card__wrapper--back"></div>
   </div>
 </template>
 
@@ -38,6 +46,10 @@
         type: String,
         default: '',
       },
+      selected: {
+        type: Boolean,
+        default: false,
+      },
     },
 
     data() {
@@ -48,7 +60,7 @@
 
     methods: {
       cardClick() {
-        this.$emit('cardClick');
+        this.$emit('cardClick', this.card);
       },
     },
   };
@@ -62,6 +74,7 @@
     position: relative;
     box-shadow: 0 0 0 1px rgba(38,50,56 ,.4);
     cursor: pointer;
+    perspective: 600px;
     transition: all .375s ease;
 
     &--inverted {
@@ -92,10 +105,30 @@
       box-shadow: 0 0 0 1px rgba(38,50,56 ,.4);
       justify-content: space-between;
       transform-origin: 50% 100%;
-      transition: all .375s ease;
+      transition: all .5s ease;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
 
       &:hover {
         transform: scale(1.10);
+      }
+
+      &--selected {
+        &::after {
+          content: '';
+          position: absolute;
+          width: 64px;
+          height: 64px;
+          top: calc(50% - 32px);
+          left: calc(50% - 32px);
+          border-radius: 50%;
+          background: #fff url("../../assets/img/checked-symbol.png") no-repeat center;
+          box-shadow: 0 0 8px 0 rgba(255, 255, 255, .6);
+        }
+      }
+
+      &--back {
+        transform: rotateY( 180deg );
       }
     }
 

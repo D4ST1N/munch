@@ -1,91 +1,91 @@
 {
   "cards": [
     {
-      "id": "exploding-kitten",
+      "type": "exploding-kitten",
       "name": "CARDS.EXPLODING_KITTEN.NAME",
       "description": "CARDS.EXPLODING_KITTEN.DESCRIPTION",
       "color": "rgba(38,50,56 ,1)",
       "count": 2
     },
     {
-      "id": "defuse",
+      "type": "defuse",
       "name": "CARDS.DEFUSE.NAME",
       "description": "CARDS.DEFUSE.DESCRIPTION",
       "color": "rgba(76,175,80 ,1)",
       "count": 6
     },
     {
-      "id": "attack",
+      "type": "attack",
       "name": "CARDS.ATTACK.NAME",
       "description": "CARDS.ATTACK.DESCRIPTION",
       "color": "rgba(245,124,0 ,1)",
       "count": 6
     },
     {
-      "id": "shuffle",
+      "type": "shuffle",
       "name": "CARDS.SHUFFLE.NAME",
       "description": "CARDS.SHUFFLE.DESCRIPTION",
       "color": "rgba(121,85,72 ,1)",
       "count": 6
     },
     {
-      "id": "see-the-future",
+      "type": "see-the-future",
       "name": "CARDS.SEE_THE_FUTURE.NAME",
       "description": "CARDS.SEE_THE_FUTURE.DESCRIPTION",
       "color": "rgba(236,64,122 ,1)",
       "count": 6
     },
     {
-      "id": "favor",
+      "type": "favor",
       "name": "CARDS.FAVOR.NAME",
       "description": "CARDS.FAVOR.DESCRIPTION",
       "color": "rgba(66,66,66 ,1)",
       "count": 6
     },
     {
-      "id": "nope",
+      "type": "nope",
       "name": "CARDS.NOPE.NAME",
       "description": "CARDS.NOPE.DESCRIPTION",
       "color": "rgba(229,57,53 ,1)",
       "count": 6
     },
     {
-      "id": "skip",
+      "type": "skip",
       "name": "CARDS.SKIP.NAME",
       "description": "CARDS.SKIP.DESCRIPTION",
       "color": "rgba(2,136,209 ,1)",
       "count": 6
     },
     {
-      "id": "beard-cat",
+      "type": "beard-cat",
       "name": "CARDS.BEARD_CAT.NAME",
       "description": "",
       "color": "rgba(224,224,224 ,1)",
       "count": 4
     },
     {
-      "id": "burrito-cat",
+      "type": "burrito-cat",
       "name": "CARDS.BURRITO_CAT.NAME",
       "description": "",
       "color": "rgba(224,224,224 ,1)",
       "count": 4
     },
     {
-      "id": "rainbow-cat",
+      "type": "rainbow-cat",
       "name": "CARDS.RAINBOW_CAT.NAME",
       "description": "",
       "color": "rgba(224,224,224 ,1)",
       "count": 4
     },
     {
-      "id": "potato-cat",
+      "type": "potato-cat",
       "name": "CARDS.POTATO_CAT.NAME",
       "description": "",
       "color": "rgba(224,224,224 ,1)",
       "count": 4
     },
     {
-      "id": "watermelon-cat",
+      "type": "watermelon-cat",
       "name": "CARDS.WATERMELON_CAT.NAME",
       "description": "",
       "color": "rgba(224,224,224 ,1)",

@@ -15,9 +15,9 @@ export default function init(server) {
 
   const getPlayer = (room, playerName) => room.players.find(player => player.name === playerName);
 
-  const invertDeck = (deck) => deck.map(() => ({ inverted: true }));
+  const invertDeck = (deck) => deck.map((card) => ({ inverted: true, id: card.id }));
 
-  const getCardIndex = (deck, cardId) => deck.findIndex((card) => card.props.id === cardId);
+  const getCardIndex = (deck, cardType) => deck.findIndex((card) => card.props.type === cardType);
 
   const nextPlayer = (room) => {
     room.playerIndex++;
@@ -28,6 +28,29 @@ export default function init(server) {
 
     if (room.players[room.playerIndex].exploded) {
       nextPlayer(room);
+    }
+  };
+
+  const sendGameMessage = (text, roomId, name) => {
+    const room = getRoom(roomId);
+    console.log('send message to', roomId);
+
+    if (!room) return false;
+
+    io.to(room.id).emit('gameMessage', {
+      text: text,
+      options: {
+        player: name || room.players[room.playerIndex].name,
+      },
+    });
+  };
+
+  const playerUseCard = (player, cardId) => {
+    console.log('Player use card', cardId);
+    const index = player.deck.findIndex(card => card.id === cardId);
+
+    if (index !== -1) {
+      player.deck.splice(index, 1);
     }
   };
 
@@ -93,6 +116,7 @@ export default function init(server) {
 
     if (isGameStarted(room.id)) {
       io.to(socket.id).emit('gameStart');
+      sendGameMessage('NOTIFICATIONS.GAME.PLAYER_TURN', roomId);
       gameUpdate(room.id, personal ? playerName : false);
     } else {
       io.to(room.id).emit('gameStatus', room.players);
@@ -189,31 +213,32 @@ export default function init(server) {
 
       const card = room.deck.pop();
 
-      console.log('player get', card.props.id, 'card');
+      console.log('player get', card.props.type, 'card');
 
-      if (card.props.id === 'exploding-kitten') {
+      if (card.props.type === 'exploding-kitten') {
         const defuseIndex = getCardIndex(player.deck, 'defuse');
-        io.to(room.id).emit('playerGetExplodingKitten', name);
+        sendGameMessage('NOTIFICATIONS.GAME.PLAYER_GET_EXPLODING_KITTEN', roomId, name);
 
         if (defuseIndex !== -1) {
           console.log('player has defuse');
 
-          room.trash.push(player.deck.splice(defuseIndex, 1));
+          room.trash.push(...player.deck.splice(defuseIndex, 1));
           room.deck.splice(randomInt(0, room.deck.length - 1), 0, card);
-          io.to(room.id).emit('playerDefuseExplodingKitten', name);
+          sendGameMessage('NOTIFICATIONS.GAME.PLAYER_DEFUSE_EXPLODING_KITTEN', roomId, name);
         } else {
           console.log('player exploded');
 
           player.exploded = true;
-          io.to(room.id).emit('playerExploded', name);
+          sendGameMessage('NOTIFICATIONS.GAME.PLAYER_EXPLODED', roomId, name);
 
           if (isGameEnded(room)) {
             const winner = room.players.find(player => !player.exploded);
-            io.to(room.id).emit('playerWin', winner.name);
+            sendGameMessage('NOTIFICATIONS.GAME.PLAYER_WIN', roomId, winner.name);
           }
         }
 
         nextPlayer(room);
+        sendGameMessage('NOTIFICATIONS.GAME.PLAYER_TURN', roomId);
         gameUpdate(roomId);
 
         return;
@@ -222,6 +247,7 @@ export default function init(server) {
       player.deck.push(card);
 
       nextPlayer(room);
+      sendGameMessage('NOTIFICATIONS.GAME.PLAYER_TURN', roomId);
       gameUpdate(roomId);
     });
 
@@ -288,20 +314,79 @@ export default function init(server) {
       console.log('game start');
       io.to(room.id).emit('gameStart');
 
+      sendGameMessage('NOTIFICATIONS.GAME.PLAYER_TURN', roomId);
       gameUpdate(roomId);
-      // io.to(room.id).emit('playerMove', room.players[room.playerIndex].name);
-      //
-      // room.players.forEach((player) => {
-      //   console.log('send deck to player ', player.name);
-      //
-      //   player.deck = getPlayerStartCards(room.deck);
-      //   io.to(player.id).emit('deck', player.deck);
-      // });
     });
 
-    // socket.on('playerReconnect', (playerName) => {
-    //   console.log('Player reconnected: ', playerName);
-    // });
+    socket.on('playerMove', ({ roomId, name, cards }) => {
+      console.log('player move');
+      const room = getRoom(roomId);
+
+      if (!room) {
+        return;
+      }
+
+      const player = getPlayer(room, name);
+
+      if (!player) {
+        return;
+      }
+
+      if (cards.length === 1) {
+        const [ card ] = cards;
+
+        console.log(card);
+
+        if (card.props.type === 'shuffle') {
+          shuffle(room.deck);
+
+          playerUseCard(player, card.id);
+
+          sendGameMessage('NOTIFICATIONS.GAME.PLAYER_USE_SHUFFLE', roomId, name);
+          gameUpdate(roomId);
+        }
+
+        if (card.props.type === 'see-the-future') {
+          playerUseCard(player, card.id);
+
+          sendGameMessage('NOTIFICATIONS.GAME.PLAYER_USE_SEE_THE_FUTURE', roomId, name);
+          gameUpdate(roomId);
+
+          io.to(player.id).emit('seeTheFuture', room.deck.slice(-3));
+        }
+      }
+    });
+
+    socket.on('endSeeTheFuture', ({ roomId }) => {
+      const room = getRoom(roomId);
+
+      if (!room) {
+        return;
+      }
+
+      gameUpdate(roomId);
+    });
+
+    socket.on('_getCard', ({ roomId, name, options }) => {
+      const room = getRoom(roomId);
+
+      if (!room) {
+        return;
+      }
+
+      const player = getPlayer(room, name);
+
+      if (!player) {
+        return;
+      }
+
+      const [ cardType ] = options;
+      const cardConfig = config.cards.find(cardConfig => cardConfig.type === cardType);
+      addCards(player.deck, cardConfig, 1);
+      console.log(player.deck);
+
+      gameUpdate(roomId);
+    });
 
     socket.on('disconnect', () => {
       rooms.forEach((room) => {

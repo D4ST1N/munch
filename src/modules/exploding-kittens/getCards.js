@@ -2,7 +2,7 @@
  * get some {count} cards from {deck} excluding {disabledCards} or only {specificCard}
  * @param deck {Array} cards
  * @param count {Number} how much cards needed
- * @param [disabledCards] {Array} list of disabled cards ids
+ * @param [disabledCards] {Array} list of disabled cards types
  * @param [specificCard] {String} give exactly this type of cards
  * @returns {Array}
  */
@@ -20,7 +20,7 @@ export default function getCards(deck, count, disabledCards = [], specificCard) 
     const cardIndex = deck.length - disabledCount - 1;
     const lastCard = deck[cardIndex];
 
-    if (disabledCards.includes(lastCard.props.id)) {
+    if (disabledCards.includes(lastCard.props.type)) {
       disabledCount++;
 
       continue;

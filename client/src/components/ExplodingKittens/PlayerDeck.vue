@@ -3,28 +3,31 @@
     class="player-deck"
     :style="{ height: `${settings.card.height}px` }"
   >
-    <Card
+    <CardFlip
       v-for="(card, index) in deck"
       :card="card"
+      :selected="isCardSelected(card.id)"
       type="playerCard"
       :style="{
         position: 'absolute',
         left: '50%',
-        margin: 0,
         transform: `translate(${getCardOffset(index)}px, 0)`
       }"
-    ></Card>
+      @cardClick="toggleCard"
+    ></CardFlip>
   </div>
 </template>
 
 <script>
   import Card from './Card';
+  import CardFlip from './CardFlip';
   import settings from './settings';
 
   export default {
     name: 'PlayerDeck',
     components: {
       Card,
+      CardFlip,
     },
 
     data() {
@@ -55,7 +58,6 @@
         const totalWidth = cardsWidth + distancesWidth;
 
         if (totalWidth < maxWidth) {
-          console.log(1);
           return -totalWidth / 2 + index * (settings.card.width + this.settings.card.distance);
         }
 
@@ -63,6 +65,15 @@
 
         return -maxWidth / 2 + index * cardSpace;
       },
+
+      isCardSelected(id) {
+        return !!this.$store.getters.selectedCards.find(card => card.id === id);
+      },
+
+      toggleCard(card) {
+        this.$store.commit('toggleCard', card);
+        this.$root.$emit('playerSelectCard');
+      }
     },
   };
 </script>

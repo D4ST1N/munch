@@ -1,26 +1,46 @@
 <template>
-  <div class="game-deck">
-    <Card
-      v-for="(card, index) in deck"
-      :card="card"
-      :style="{ transform: `translate(${-1 * index}px, ${-2 * index}px)` }"
-      @cardClick="getCard"
-    ></Card>
+  <div class="game-deck" @mouseover="onMouseOver" @mouseout="onMouseOut">
+    <transition-group tag="div">
+      <CardFlip
+        v-for="(card, index) in deck"
+        :key="index"
+        :flipped="isCardFlipped(card)"
+        :card="card"
+        :style="{
+          transform: getOffset(card, index),
+          transition: 'all .75s ease',
+          'z-index': index + 1,
+        }"
+        :data-transform="getOffset(card, index)"
+        class="game-deck__card"
+        @cardClick="getCard"
+      ></CardFlip>
+    </transition-group>
+    <Button
+      v-if="showEnd"
+      type="blue"
+      size="big"
+      :text="$text('NOTIFICATIONS.GAME.END_SEE_THE_FUTURE')"
+      class="game-deck__button"
+      @buttonClick="endSeeTheFuture"
+    />
   </div>
 </template>
 
 <script>
-  import Card from './Card';
+  import CardFlip from './CardFlip';
 
   export default {
     name: 'GameDeck',
     components: {
-      Card,
+      CardFlip,
     },
 
     data() {
       return {
         deck: [],
+        showEnd: false,
+        showDeck: false,
       };
     },
 
@@ -29,6 +49,11 @@
         roomId: this.$route.params.id,
       }, this.updateDeck);
       this.$store.getters.socket.on('gameUpdate', this.updateStats);
+      this.$store.getters.socket.on('seeTheFuture', (cards) => {
+        console.log('seeTheFuture', cards);
+        this.deck.splice(-3, 3, ...cards);
+        this.showEnd = true;
+      });
     },
 
     methods: {
@@ -38,6 +63,41 @@
 
       updateStats(gameData) {
         this.updateDeck(gameData.gameDeck);
+      },
+
+      onMouseOver(event) {
+        if (event.shiftKey) {
+          this.showDeck = true;
+        }
+      },
+
+      onMouseOut() {
+        this.showDeck = false;
+      },
+
+      isCardFlipped(card) {
+        return !card.props;
+      },
+
+      getOffset(card, index) {
+        return `translate(${this.cardOffsetX(card, index)}px, ${this.cardOffsetY(card, index)}px)`;
+      },
+
+      cardOffsetX(card, index) {
+        return this.isCardFlipped(card)
+               ? (this.showDeck ? 10 : -1) * index
+               : 212 * (4 - (this.deck.length - index));
+      },
+
+      cardOffsetY(card, index) {
+        return -2 * index;
+      },
+
+      endSeeTheFuture() {
+        this.$store.getters.socket.emit('endSeeTheFuture', {
+          roomId: this.$route.params.id,
+        });
+        this.showEnd = false;
       },
 
       getCard() {
@@ -58,8 +118,14 @@
     left: 100px;
     top: calc(50% - 200px);
 
-    > * {
+    &__card {
       position: absolute;
+    }
+
+    &__button {
+      left: 320px;
+      bottom: calc(50vh - 140px);
+      position: fixed;
     }
   }
 </style>

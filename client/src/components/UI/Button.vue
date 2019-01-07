@@ -1,5 +1,5 @@
 <template>
-  <button :class="buttonClass" @click="buttonClick">
+  <button :class="buttonClass" @click="buttonClick" :disabled="disabled">
     <slot name="before"></slot>
     <span v-if="label" class="button__text">{{ label }}</span>
     <slot name="after"></slot>
@@ -20,6 +20,10 @@
         type: String,
         default: 'medium'
       },
+      disabled: {
+        type: Boolean,
+        default: false,
+      },
       button: {
         type: Object,
       },
@@ -34,7 +38,7 @@
       stop: {
         type: Boolean,
         default: false,
-      }
+      },
     },
 
     computed: {
@@ -177,6 +181,11 @@
 
     &--rectangle {
       border-radius: 4px;
+    }
+
+    &:disabled {
+      opacity: .6;
+      pointer-events: none;
     }
 
     &__text {
