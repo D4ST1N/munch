@@ -4,7 +4,7 @@
       <div
         v-for="(message, index) in messages"
         :key="index"
-        class="game-log__message"
+        :class="{ 'game-log__message': true, 'game-log__message--active': index === 0 }"
       >
         {{ message.text }}
       </div>
@@ -24,7 +24,7 @@
 
     created() {
       this.$root.$on('showMessage', (message) => {
-        this.messages.push(message);
+        this.messages.unshift(message);
       });
     },
   };
@@ -48,7 +48,11 @@
 
     &__message {
       margin-bottom: 8px;
-      color: #fff;
+      color: #fff8;
+
+      &--active {
+        color: #ffff;
+      }
     }
   }
 </style>

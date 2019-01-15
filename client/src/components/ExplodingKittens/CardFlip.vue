@@ -122,7 +122,7 @@
       }
 
       &--back {
-        background: url('../../assets/img/card-cover.jpg') no-repeat center;
+        background: url('../../assets/img/card-cover.png') no-repeat center;
         transform: rotateY(180deg);
       }
     }

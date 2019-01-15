@@ -43,8 +43,8 @@
         height: 200,
       });
 
-      this.start();
       this.startTime = performance.now();
+      this.start();
     },
 
     methods: {

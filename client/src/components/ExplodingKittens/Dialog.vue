@@ -12,6 +12,7 @@
             :text="action.text"
             :type="action.type"
             :size="action.size"
+            @buttonClick="onButtonClick(action, ...arguments)"
           />
         </div>
       </div>
@@ -40,7 +41,7 @@
     },
 
     created() {
-      this.$root.$on('showDialog', ({ title, text, actions, time, onEnd }) => {
+      this.$root.$on('showDialog', ({ title, text, actions, time, onEnd = () => {} }) => {
         this.title = title;
         this.text = text;
         this.actions = actions;
@@ -55,10 +56,15 @@
 
     methods: {
       onTimerEmd() {
+        console.log('timer end');
+        console.log(this.onEnd);
         if (typeof this.onEnd === 'function') {
           this.onEnd.call(this);
         }
       },
+      onButtonClick(action) {
+        action.action.call(this);
+      }
     },
   };
 </script>

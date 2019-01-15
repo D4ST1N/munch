@@ -10,7 +10,6 @@ const server = http.Server(app);
 circleCrush(server);
 explodingKittens(server);
 
-app.set('port', 5000);
 app.use('/static', express.static(__dirname + '/client/dist'));
 
 app.get('/circle-crush/config', (request, response) => {
@@ -26,3 +25,7 @@ server.listen(5000, function() {
   console.log('Server is starting on port 5000');
 });
 
+export {
+  app,
+  server,
+}

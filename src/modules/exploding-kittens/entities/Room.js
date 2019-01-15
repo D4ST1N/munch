@@ -1,9 +1,10 @@
 import uuid                from 'uuid/v1';
 import Deck                from './Deck';
-import config              from '../../../configs/exploding-kittens';
+import Player              from './Player';
+import History             from './History';
 import addCards            from './../addCards';
 import getPlayerStartCards from './../getPlayerStartCards';
-import Player              from './Player';
+import config              from '../../../configs/exploding-kittens';
 
 export default class Room {
   constructor() {
@@ -13,6 +14,9 @@ export default class Room {
     this.trash = [];
     this.currentPlayerIndex = 0;
     this.status = 'wait';
+    this.penaltyMoves = 0;
+    this.previousPlayer = null;
+    this.history = new History();
   }
 
   get currentPlayer() {
@@ -24,10 +28,8 @@ export default class Room {
   }
 
   get gameStarted() {
-    console.log('gameStarted by status', this.status === 'started');
     if (this.status === 'started') return true;
 
-    console.log('gameStarted by players', this.players.find(player => player.ready === false), this.players.length, config.game.minPlayerCount);
     return !this.players.find(player => player.ready === false)
       && this.players.length >= config.game.minPlayerCount;
   }
@@ -89,19 +91,34 @@ export default class Room {
     }));
   }
 
-  nextPlayer() {
-    this.currentPlayerIndex++;
+  nextPlayer(info) {
+    let index = this.currentPlayerIndex;
 
-    if (this.currentPlayerIndex === this.players.length) {
-      this.currentPlayerIndex = 0;
+    index++;
+
+    if (index === this.players.length) {
+      index = 0;
     }
 
-    if (this.players[this.currentPlayerIndex].exploded) {
-      return this.nextPlayer();
+    if (this.players[index].exploded) {
+      return this.nextPlayer(info);
     }
+
+    if (info) {
+      return this.players[index];
+    }
+
+    this.previousPlayer = this.currentPlayer;
+    this.currentPlayerIndex = index;
 
     return this.currentPlayer
   }
 
+  playerEndMove() {
+    if (this.penaltyMoves > 0) {
+      this.penaltyMoves--;
+    }
 
+    return this.penaltyMoves > 0;
+  }
 }

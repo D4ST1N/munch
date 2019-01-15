@@ -1,6 +1,6 @@
 <template>
   <div class="game-deck" @mouseover="onMouseOver" @mouseout="onMouseOut">
-    <transition-group tag="div">
+    <transition-group name="game-deck" tag="div">
       <CardFlip
         v-for="(card, index) in deck"
         :key="index"
@@ -10,8 +10,8 @@
           transform: getOffset(card, index),
           transition: 'all .75s ease',
           'z-index': index + 1,
+          'transition-delay': initialLoad ? `${index * 10 / 1000}s` : '0s'
         }"
-        :data-transform="getOffset(card, index)"
         class="game-deck__card"
         @cardClick="getCard"
       ></CardFlip>
@@ -41,6 +41,7 @@
         deck: [],
         showEnd: false,
         showDeck: false,
+        initialLoad: true,
       };
     },
 
@@ -63,6 +64,9 @@
 
       updateStats(gameData) {
         this.updateDeck(gameData.gameDeck);
+        setTimeout(() => {
+          this.initialLoad = false;
+        }, 2000);
       },
 
       onMouseOver(event) {
@@ -85,7 +89,7 @@
 
       cardOffsetX(card, index) {
         return this.isCardFlipped(card)
-               ? (this.showDeck ? 10 : -1) * index
+               ? (this.showDeck ? 15 : -1) * index
                : 212 * (4 - (this.deck.length - index));
       },
 
@@ -126,6 +130,15 @@
       left: 320px;
       bottom: calc(50vh - 140px);
       position: fixed;
+    }
+
+    &-enter,
+    &-leave-to {
+      visibility: hidden;
+
+      &-active {
+        transition-duration: 0s;
+      }
     }
   }
 </style>

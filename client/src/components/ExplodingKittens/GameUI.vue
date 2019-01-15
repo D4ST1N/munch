@@ -1,6 +1,7 @@
 <template>
   <div class="game-ui">
     <GameRoomPlayers />
+    <CardList />
     <GameDeck />
     <PlayerDeck />
     <PlayerMove />
@@ -16,6 +17,7 @@
   import Dialog from './Dialog';
   import GameLog from './GameLog';
   import PlayerMove from './PlayerMove';
+  import CardList from './CardsList';
 
   export default {
     name: 'GameUI',
@@ -26,6 +28,7 @@
       Dialog,
       GameLog,
       PlayerMove,
+      CardList,
     },
 
     data() {

@@ -1,37 +1,24 @@
 <template>
-  <div
-    class="player-deck"
-    :style="{ height: `${settings.card.height}px` }"
-  >
-    <CardFlip
-      v-for="(card, index) in deck"
-      :key="card.id"
-      :card="card"
-      :selected="isCardSelected(card.id)"
-      type="playerCard"
-      :style="{
-        position: 'absolute',
-        left: '50%',
-        transform: `translate(${getCardOffset(index)}px, 0)`
-      }"
+  <div class="player-deck">
+    <CardStack
+      :cards="deck"
+      :selectedCards="$store.getters.selectedCards"
       @cardClick="toggleCard"
-    ></CardFlip>
+    />
   </div>
 </template>
 
 <script>
-  import CardFlip from './CardFlip';
-  import settings from './settings';
+  import CardStack from './CardStack';
 
   export default {
     name: 'PlayerDeck',
     components: {
-      CardFlip,
+      CardStack,
     },
 
     data() {
       return {
-        settings,
         deck: [],
       };
     },
@@ -47,26 +34,6 @@
 
       updateStats(gameData) {
         this.updatePlayerDeck(gameData.playerDeck);
-      },
-
-      getCardOffset(index) {
-        const maxWidth = window.innerWidth - 40;
-        const cardCount = this.deck.length;
-        const cardsWidth = cardCount * this.settings.card.width;
-        const distancesWidth = (cardCount - 1) * this.settings.card.distance;
-        const totalWidth = cardsWidth + distancesWidth;
-
-        if (totalWidth < maxWidth) {
-          return -totalWidth / 2 + index * (settings.card.width + this.settings.card.distance);
-        }
-
-        const cardSpace = (maxWidth - this.settings.card.width) / (cardCount - 1);
-
-        return -maxWidth / 2 + index * cardSpace;
-      },
-
-      isCardSelected(id) {
-        return !!this.$store.getters.selectedCards.find(card => card.id === id);
       },
 
       toggleCard(card) {

@@ -14,8 +14,12 @@ export default class Deck {
     shuffle(this.cards);
   }
 
-  addCard(card) {
-    this.cards.splice(randomInt(0, this.cards.length - 1), 0, card);
+  addCard(card, random = true) {
+    if (random) {
+      this.cards.splice(randomInt(0, this.cards.length - 1), 0, card);
+    } else {
+      this.cards.push(card);
+    }
   }
 
   getCardIndex(cardType) {

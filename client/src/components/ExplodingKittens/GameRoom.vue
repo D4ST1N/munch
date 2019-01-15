@@ -67,6 +67,8 @@
       this.$store.getters.socket.on('gameStatus', this.onGameStatus);
       this.$store.getters.socket.on('gameStart', this.onGameStart);
       this.$store.getters.socket.on('gameMessage', this.onGameMessage);
+      this.$store.getters.socket.on('playerUseFavor', this.onFavor);
+      this.$store.getters.socket.on('startActionTimer', this.onStartActionTimer);
 
       document.body.addEventListener('keyup', this.onKeyUp);
     },
@@ -75,6 +77,8 @@
       this.$store.getters.socket.off('gameStatus', this.onGameStatus);
       this.$store.getters.socket.off('gameStart', this.onGameStart);
       this.$store.getters.socket.off('gameMessage', this.onGameMessage);
+      this.$store.getters.socket.off('playerUseFavor', this.onFavor);
+      this.$store.getters.socket.off('startActionTimer', this.onStartActionTimer);
 
       document.body.removeEventListener('keyup', this.onKeyUp);
     },
@@ -111,6 +115,44 @@
             message.options,
           ),
         });
+      },
+
+      onFavor() {
+        console.log('favooor');
+        this.$root.$emit('showMessage', {
+          text: 'Вибери карту та зроби ласку',
+        });
+      },
+
+      onStartActionTimer({ time, card }) {
+        console.log('start action timer');
+        console.log(time, card);
+        this.$root.$emit('showDialog', {
+          time,
+          title: `Гравець використав карту "${this.$text(card.props.name)}"!`,
+          text: 'У вас є трохи часу, щоб це зупинити!',
+          actions: [
+            {
+              text: 'Стоп!',
+              type: 'red',
+              size: 'medium',
+
+              action() {
+                console.log('stooop!!');
+                this.$store.getters.socket.emit('stopAction', {
+                  roomId: this.$route.params.id,
+                  name: this.$store.getters.player.name
+                });
+                this.$root.$emit('hideDialog');
+              }
+            }
+          ],
+
+          onEnd() {
+            console.log('end');
+            this.$root.$emit('hideDialog');
+          },
+        })
       },
 
       gameStart(start) {
