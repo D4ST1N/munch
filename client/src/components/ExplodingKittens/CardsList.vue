@@ -1,6 +1,6 @@
 <template>
   <div v-if="cards.length" class="cards-list">
-    <CardStack :cards="cards" />
+    <CardStack :cards="cards" type="card-list" />
   </div>
 </template>
 
