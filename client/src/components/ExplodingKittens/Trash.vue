@@ -27,8 +27,7 @@
 
     data() {
       return {
-        trash: [],
-        playingCards: false
+        trash: []
       };
     },
 
@@ -40,11 +39,6 @@
       });
       this.$store.getters.socket.on('gameUpdate', (data) => {
         this.trash = data.gameTrash;
-        console.log(this.trash);
-      });
-
-      this.$store.getters.socket.on('updateMove', (cards) => {
-        this.playingCards = cards.length > 0;
       });
     },
 

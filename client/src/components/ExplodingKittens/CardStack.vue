@@ -59,11 +59,6 @@
       };
     },
 
-    created() {
-      console.log(settings);
-      console.log(this.settingsData);
-    },
-
     methods: {
       getCardOffset(index) {
         const maxWidth = window.innerWidth - 40;

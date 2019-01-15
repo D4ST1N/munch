@@ -66,10 +66,6 @@
       };
     },
 
-    created() {
-      console.log(this);
-    },
-
     methods: {
       cardClick() {
         this.$emit('cardClick', this.card);
