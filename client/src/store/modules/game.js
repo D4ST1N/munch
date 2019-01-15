@@ -1,6 +1,5 @@
 const state = {
-  selectedCards: [],
-  playingCars: []
+  selectedCards: []
 };
 
 const mutations = {

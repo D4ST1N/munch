@@ -133,8 +133,6 @@ export default function init() {
         return;
       }
 
-      console.log(room);
-
       callback(room.trash);
     });
 
