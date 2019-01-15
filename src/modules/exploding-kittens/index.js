@@ -385,6 +385,60 @@ export default function init() {
       gameUpdate(roomId);
     });
 
+    socket.on('_getDefuse', ({ roomId, name }) => {
+      const room = getRoom(roomId);
+
+      if (!room) {
+        return;
+      }
+
+      const player = room.getPlayer(name);
+
+      if (!player) {
+        return;
+      }
+
+      player.deck.addCard(Card.newCard('defuse'));
+
+      gameUpdate(roomId);
+    });
+
+    socket.on('_shuffle', ({ roomId, name }) => {
+      const room = getRoom(roomId);
+
+      if (!room) {
+        return;
+      }
+
+      room.deck.shuffle();
+
+      sendGameMessage('NOTIFICATIONS.GAME.PLAYER_USE_SHUFFLE_CHEAT', roomId, name);
+
+      gameUpdate(roomId);
+    });
+
+    socket.on('_showGameDeck', ({ roomId, name }) => {
+      const room = getRoom(roomId);
+
+      if (!room) {
+        return;
+      }
+
+      const player = room.getPlayer(name);
+
+      if (!player) {
+        return;
+      }
+
+      io.to(socket.id).emit('_showCurrentGameDeck', { deck: room.deck.cards, timer: 10000 });
+
+      const hideDeckTimeout = setTimeout(() => {
+        const user = socket.id;
+        io.to(user).emit('_hideCurrentGameDeck');
+        clearTimeout(hideDeckTimeout);
+      }, 10000)
+    });
+
     socket.on('disconnect', () => {
       console.log('disconnect...');
       console.log(rooms);
