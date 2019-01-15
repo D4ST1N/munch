@@ -7,6 +7,7 @@
     <PlayerMove />
     <GameLog />
     <Dialog />
+    <Trash />
   </div>
 </template>
 
@@ -17,6 +18,7 @@
   import Dialog from './Dialog';
   import GameLog from './GameLog';
   import PlayerMove from './PlayerMove';
+  import Trash from './Trash';
   import CardList from './CardsList';
 
   export default {
@@ -28,6 +30,7 @@
       Dialog,
       GameLog,
       PlayerMove,
+      Trash,
       CardList,
     },
 

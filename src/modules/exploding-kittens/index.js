@@ -126,6 +126,18 @@ export default function init() {
       callback(room.invertedDeck);
     });
 
+    socket.on('getTrash', ({ roomId }, callback) => {
+      const room = getRoom(roomId);
+
+      if (!room) {
+        return;
+      }
+
+      console.log(room);
+
+      callback(room.trash);
+    });
+
     socket.on('playerGetCard', ({ roomId, name }) => {
       const room = getRoom(roomId);
 
@@ -143,7 +155,7 @@ export default function init() {
 
       if (oldMove) {
         oldMove.endMove();
-        room.trash.push(oldMove.cards.cards);
+        room.trash.push(...oldMove.deck.cards);
       }
 
       newMove(room, player, socket);

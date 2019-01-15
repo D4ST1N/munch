@@ -5,7 +5,7 @@
       'card-flip--playable': type === 'playerCard',
       'card-flip--selected': selected,
     }"
-    :style="{ width: `${settings.card.width}px`, height: `${settings.card.height}px` }"
+    :style="{ width: `${settings.width}px`, height: `${settings.height}px` }"
     @click="cardClick"
   >
     <div :class="{ 'card-flip__wrapper': true, 'card-flip__wrapper--flipped': flipped }">
@@ -47,6 +47,9 @@
         type: String,
         default: '',
       },
+      custom: {
+        type: Object,
+      },
       selected: {
         type: Boolean,
         default: false,
@@ -59,8 +62,12 @@
 
     data() {
       return {
-        settings,
+        settings: this.custom || settings.card,
       };
+    },
+
+    created() {
+      console.log(this);
     },
 
     methods: {
@@ -122,7 +129,7 @@
       }
 
       &--back {
-        background: url('../../assets/img/card-cover.png') no-repeat center;
+        background: url('../../assets/img/card-cover.png') no-repeat center/cover;
         transform: rotateY(180deg);
       }
     }
@@ -171,7 +178,7 @@
     }
 
     &__name {
-      font-size: 12px;
+      font-size: 10px;
       font-weight: bold;
     }
 

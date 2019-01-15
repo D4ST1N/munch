@@ -2,13 +2,14 @@
   <transition-group
     tag="div"
     class="card-stack"
-    :style="{ height: `${settings.card.height}px` }"
+    :style="{ height: `${settingsData.height}px` }"
     name="card-stack"
   >
     <CardFlip
       v-for="(card, index) in cards"
       :key="card.id"
       :card="card"
+      :custom="settingsData"
       :selected="isCardSelected(card.id)"
       :flipped="isCardFlipped(card)"
       :type="cardType"
@@ -35,6 +36,10 @@
       cards: {
         type: Array,
       },
+      type: {
+        type: String,
+        default: ''
+      },
       cardType: {
         type: String,
         default: 'playerCard'
@@ -50,23 +55,28 @@
 
     data() {
       return {
-        settings,
+        settingsData: this.type === 'card-list' ? settings.cardInStack : settings.card,
       };
+    },
+
+    created() {
+      console.log(settings);
+      console.log(this.settingsData);
     },
 
     methods: {
       getCardOffset(index) {
         const maxWidth = window.innerWidth - 40;
         const cardCount = this.cards.length;
-        const cardsWidth = cardCount * this.settings.card.width;
-        const distancesWidth = (cardCount - 1) * this.settings.card.distance;
+        const cardsWidth = cardCount * this.settingsData.width;
+        const distancesWidth = (cardCount - 1) * this.settingsData.distance;
         const totalWidth = cardsWidth + distancesWidth;
 
         if (totalWidth < maxWidth) {
-          return -totalWidth / 2 + index * (settings.card.width + this.settings.card.distance);
+          return -totalWidth / 2 + index * (this.settingsData.width + this.settingsData.distance);
         }
 
-        const cardSpace = (maxWidth - this.settings.card.width) / (cardCount - 1);
+        const cardSpace = (maxWidth - this.settingsData.width) / (cardCount - 1);
 
         return -maxWidth / 2 + index * cardSpace;
       },

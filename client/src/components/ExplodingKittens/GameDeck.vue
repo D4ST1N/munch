@@ -120,7 +120,7 @@
   .game-deck {
     position: fixed;
     left: 100px;
-    top: calc(50% - 200px);
+    top: calc(40% - 200px);
 
     &__card {
       position: absolute;
