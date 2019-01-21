@@ -48,6 +48,7 @@
     },
 
     created() {
+      // TODO remove cheats events here
       this.$store.getters.socket.on('_showCurrentGameDeck', ({deck, timer}) => {
         this.deck = deck.cards;
         this.showDeck = true;
