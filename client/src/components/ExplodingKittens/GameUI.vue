@@ -2,12 +2,12 @@
   <div class="game-ui">
     <GameRoomPlayers />
     <CardList />
+    <Trash />
     <GameDeck />
     <PlayerDeck />
     <PlayerMove />
     <GameLog />
     <Dialog />
-    <Trash />
   </div>
 </template>
 

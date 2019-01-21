@@ -320,7 +320,6 @@ export default {
     },
 
     touchShoot(event) {
-      console.log(event.targetTouches[0]);
       this.shoot(event.targetTouches[0]);
     },
 

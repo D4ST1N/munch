@@ -57,7 +57,6 @@
     methods: {
       onTimerEmd() {
         console.log('timer end');
-        console.log(this.onEnd);
         if (typeof this.onEnd === 'function') {
           this.onEnd.call(this);
         }

@@ -124,29 +124,34 @@
         });
       },
 
-      onStartActionTimer({ time, card }) {
+      onStartActionTimer({ time, card, actionEnabled }) {
         console.log('start action timer');
-        console.log(time, card);
+        const actions = [];
+
+        if (actionEnabled) {
+          actions.push({
+            text: this.$text('NOTIFICATIONS.GAME.NOPE'),
+            type: 'red',
+            size: 'medium',
+
+            action() {
+              console.log('stooop!!');
+              this.$store.getters.socket.emit('stopAction', {
+                roomId: this.$route.params.id,
+                name: this.$store.getters.player.name
+              });
+              this.$root.$emit('hideDialog');
+            }
+          });
+        }
+
         this.$root.$emit('showDialog', {
           time,
-          title: `Гравець використав карту "${this.$text(card.props.name)}"!`,
-          text: 'У вас є трохи часу, щоб це зупинити!',
-          actions: [
-            {
-              text: 'Стоп!',
-              type: 'red',
-              size: 'medium',
-
-              action() {
-                console.log('stooop!!');
-                this.$store.getters.socket.emit('stopAction', {
-                  roomId: this.$route.params.id,
-                  name: this.$store.getters.player.name
-                });
-                this.$root.$emit('hideDialog');
-              }
-            }
-          ],
+          actions,
+          title: this.$text('NOTIFICATIONS.GAME.PLAYER_USE_CARD', {
+            card: this.$text(card.props.name)
+          }),
+          text: this.$text('NOTIFICATIONS.GAME.TIME_TO_STOP'),
 
           onEnd() {
             console.log('end');
