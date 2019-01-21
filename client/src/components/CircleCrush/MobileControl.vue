@@ -74,10 +74,6 @@ export default {
         });
       };
     },
-
-    touchMove(event) {
-      console.log(event);
-    },
   }
 };
 </script>

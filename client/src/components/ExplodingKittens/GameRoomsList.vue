@@ -39,7 +39,6 @@
 
     methods: {
       updateRoomList(rooms) {
-        console.log('room list');
         this.rooms = rooms;
       },
 

@@ -15,7 +15,7 @@ export default class Room {
     this.currentPlayerIndex = 0;
     this.status = 'wait';
     this.penaltyMoves = 0;
-    this.previousPlayer = null;
+    this.previousPlayerIndex = null;
     this.history = new History();
   }
 
@@ -108,10 +108,20 @@ export default class Room {
       return this.players[index];
     }
 
-    this.previousPlayer = this.currentPlayer;
+    this.previousPlayerIndex = this.currentPlayerIndex;
     this.currentPlayerIndex = index;
 
     return this.currentPlayer
+  }
+
+  previousPlayer(info) {
+    if (info) {
+      return this.players[this.previousPlayerIndex];
+    }
+
+    this.currentPlayerIndex = this.previousPlayerIndex;
+
+    return this.currentPlayer;
   }
 
   playerEndMove() {

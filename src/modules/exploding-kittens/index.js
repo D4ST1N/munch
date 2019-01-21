@@ -25,19 +25,126 @@ export default function init() {
     });
   };
 
-  const newMove = (room, player, socket) => {
+  const newMove = (room, player) => {
     room.history.newMove(new Move({
       who: player,
       whom: room.nextPlayer(true),
 
       onTimer(card) {
         console.log('on timer');
-        socket.to(room.id).emit('startActionTimer', {
-          card,
-          time: 5000,
+        room.players.forEach((player) => {
+          if (player.name === this.who.name) {
+            return;
+          }
+
+          const playerHasStop = player.deck.hasCardOfType('nope');
+          console.log('send start timer to', player.name);
+          io.to(player.id).emit('startActionTimer', {
+            card,
+            time: 5000,
+            actionEnabled: playerHasStop,
+          })
         });
       }
     }));
+  };
+
+  const cardsApply = (cards, room, socket) => {
+    const player = room.currentPlayer;
+
+    if (cards.length === 1) {
+      const [ card ] = cards;
+
+      console.log(card);
+
+      switch (card.props.type) {
+        case 'shuffle':
+          room.deck.shuffle();
+
+          sendGameMessage('NOTIFICATIONS.GAME.PLAYER_USE_SHUFFLE', room.id);
+          gameUpdate(room.id);
+
+          break;
+
+        case 'see-the-future':
+          sendGameMessage('NOTIFICATIONS.GAME.PLAYER_USE_SEE_THE_FUTURE', room.id);
+          gameUpdate(room.id);
+
+          io.to(player.id).emit('seeTheFuture', room.deck.cards.slice(-3));
+
+          break;
+
+        case 'skip':
+          sendGameMessage('NOTIFICATIONS.GAME.PLAYER_USE_SKIP', room.id);
+
+          if (!room.playerEndMove()) {
+            room.nextPlayer();
+          }
+
+          sendGameMessage('NOTIFICATIONS.GAME.PLAYER_TURN', room.id);
+          gameUpdate(room.id);
+
+          break;
+
+        case 'nope':
+          const previousPart = room.history.current.parts[room.history.current.parts.length - 2];
+          cardsCancel(previousPart.cards, room, socket);
+
+          break;
+
+        case 'favor':
+          const favorPlayer = room.nextPlayer(true);
+
+          sendGameMessage('NOTIFICATIONS.GAME.PLAYER_USE_FAVOR', room.id, player.name, {
+            whom: favorPlayer.name,
+          });
+          gameUpdate(room.id);
+
+          console.log('send favor event to', favorPlayer.name);
+          io.to(favorPlayer.id).emit('playerUseFavor');
+
+          socket.on('playerSelectFavorCard', (cardId) => {
+            console.log('favor player choose card', cardId);
+            player.deck.addCard(...favorPlayer.deck.useCard(cardId));
+
+            gameUpdate(room.id);
+          });
+
+          break;
+
+        default:
+          break;
+      }
+    }
+  };
+
+  const cardsCancel = (cards, room, socket) => {
+    if (cards.length === 1) {
+      const [ card ] = cards;
+
+      console.log(card);
+
+      switch (card.props.type) {
+        case 'skip':
+          sendGameMessage('NOTIFICATIONS.GAME.PLAYER_BLOCK_SKIP', room.id);
+
+          room.previousPlayer();
+
+          sendGameMessage('NOTIFICATIONS.GAME.PLAYER_TURN', room.id);
+          gameUpdate(room.id);
+
+          break;
+
+        case 'nope':
+          const applyingPart = room.history.current.parts[room.history.current.parts.length - 3];
+          cardsApply(applyingPart.cards, room, socket);
+
+          break;
+
+        default:
+          break;
+      }
+    }
   };
 
   const playerConnect = (playerName, roomId, socket) => {
@@ -91,7 +198,6 @@ export default function init() {
     } else {
       room.players.forEach((player) => {
         console.log('send game update to ', player.name);
-        console.log(player);
         io.to(player.id).emit('gameUpdate', {
           players,
           currentPlayer,
@@ -153,11 +259,8 @@ export default function init() {
 
       if (oldMove) {
         oldMove.endMove();
-        room.trash.push(...oldMove.deck.cards);
+        room.trash.push(...oldMove.allCards);
       }
-
-      newMove(room, player, socket);
-      io.to(room.id).emit('updateMove', room.history.current.cards);
 
       const card = room.deck.useUpperCard();
 
@@ -195,6 +298,8 @@ export default function init() {
       }
 
       sendGameMessage('NOTIFICATIONS.GAME.PLAYER_TURN', roomId);
+      newMove(room, room.currentPlayer);
+      io.to(room.id).emit('updateMove', room.history.current.allCards);
       gameUpdate(roomId);
     });
 
@@ -252,8 +357,19 @@ export default function init() {
         return;
       }
 
+      const player = room.getPlayer(name);
+
+      if (!player) {
+        return;
+      }
+
+      const usedCard = player.deck.useCardByType('nope');
+      console.log(usedCard);
+
       const move = room.history.current;
+      move.addCards(usedCard).then(console.log).catch(console.error);
       move.timer.stopTimer();
+      io.to(room.id).emit('updateMove', move.allCards);
     });
 
     socket.on('playerMove', ({ roomId, name, cards }) => {
@@ -279,11 +395,10 @@ export default function init() {
       console.log('new move');
 
       if (!room.history.current) {
-        newMove(room, player, socket);
+        newMove(room, player);
       }
 
       const move = room.history.current;
-      console.log(move);
 
       // TODO check for cheats
       cards.forEach(card => player.deck.useCard(card.id));
@@ -292,67 +407,10 @@ export default function init() {
       room.history.newMove(move);
 
       move.addCards(cards).then(() => {
-        if (cards.length === 1) {
-          const [ card ] = cards;
-
-          console.log(card);
-
-          switch (card.props.type) {
-            case 'shuffle':
-              room.deck.shuffle();
-
-              sendGameMessage('NOTIFICATIONS.GAME.PLAYER_USE_SHUFFLE', roomId, name);
-              gameUpdate(roomId);
-
-              break;
-
-            case 'see-the-future':
-              sendGameMessage('NOTIFICATIONS.GAME.PLAYER_USE_SEE_THE_FUTURE', roomId, name);
-              gameUpdate(roomId);
-
-              io.to(player.id).emit('seeTheFuture', room.deck.cards.slice(-3));
-
-              break;
-
-            case 'skip':
-              sendGameMessage('NOTIFICATIONS.GAME.PLAYER_USE_SKIP', roomId, name);
-
-              if (!room.playerEndMove()) {
-                room.nextPlayer();
-              }
-
-              sendGameMessage('NOTIFICATIONS.GAME.PLAYER_TURN', roomId);
-              gameUpdate(roomId);
-
-              break;
-
-            case 'favor':
-              const favorPlayer = room.nextPlayer(true);
-
-              sendGameMessage('NOTIFICATIONS.GAME.PLAYER_USE_FAVOR', roomId, name, {
-                whom: favorPlayer.name,
-              });
-              gameUpdate(roomId);
-
-              console.log('send favor event to', favorPlayer.name);
-              io.to(favorPlayer.id).emit('playerUseFavor');
-
-              socket.on('playerSelectFavorCard', (cardId) => {
-                console.log('favor player choose card', cardId);
-                player.deck.addCard(...favorPlayer.deck.useCard(cardId));
-
-                gameUpdate(roomId);
-              });
-
-              break;
-
-            default:
-              break;
-          }
-        }
+        cardsApply(cards, room, socket);
       }).catch(console.error);
 
-      io.to(room.id).emit('updateMove', move.cards);
+      io.to(room.id).emit('updateMove', move.allCards);
     });
 
     socket.on('endSeeTheFuture', ({ roomId }) => {
@@ -441,7 +499,6 @@ export default function init() {
 
     socket.on('disconnect', () => {
       console.log('disconnect...');
-      console.log(rooms);
       rooms.forEach((room) => {
         const disconnectedPlayer = room.players.find(player => player.id === socket.id);
 

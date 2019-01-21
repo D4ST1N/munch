@@ -10,6 +10,10 @@ export default class Deck {
     return this.cards.map((card) => ({ id: card.id, inverted: true }));
   }
 
+  hasCardOfType(type) {
+    return !!this.cards.find(card => card.props.type === type);
+  }
+
   shuffle() {
     shuffle(this.cards);
   }

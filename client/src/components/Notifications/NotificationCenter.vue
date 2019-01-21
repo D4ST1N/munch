@@ -68,7 +68,6 @@
       },
 
       afterNotificationLeave() {
-        console.log('afterLeave');
         if (this.notificationsStack.length) {
           this.addNotification();
         }

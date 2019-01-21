@@ -105,7 +105,6 @@
       },
 
       getCard() {
-        console.log('click!');
         this.$store.getters.socket.emit('playerGetCard', {
           roomId: this.$route.params.id,
           name: this.$store.getters.player.name,

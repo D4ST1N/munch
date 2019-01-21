@@ -27,7 +27,7 @@
           'shuffle',
           'see-the-future',
           'skip',
-          'favor',
+          'nope',
         ],
       };
     },

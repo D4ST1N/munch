@@ -21,7 +21,6 @@ export default {
 
     let updatedCookie = `${name}=${value}`;
 
-    console.log(`${updatedCookie}${expiresDate ? `expires=${expiresDate}` : ''}${domain ? `;domain=${domain}` : ''}${secure ? 'secure=true' : ''}`);
     document.cookie = `${updatedCookie}${expiresDate ? `expires=${expiresDate}` : ''}${domain ? `;domain=${domain}` : ''}${secure ? 'secure=true' : ''}`;
   }
 }

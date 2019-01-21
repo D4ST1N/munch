@@ -7,7 +7,7 @@ export default class Move {
     this.whom = whom;
     this.onTimer = onTimer;
     this.status = 'started';
-    this.deck = new Deck();
+    this.parts = [];
     this.timer = null;
   }
 
@@ -17,7 +17,15 @@ export default class Move {
   ];
 
   get cards() {
-    return this.deck.cards;
+    return this.parts[this.parts.length - 1].cards;
+  }
+
+  get allCards() {
+    console.log(this.parts);
+    return this.parts.reduce((cards, part) => {
+      cards.push(...part.cards);
+      return cards;
+    }, []);
   }
 
   endMove() {
@@ -25,7 +33,7 @@ export default class Move {
   }
 
   addCards(cards) {
-    cards.forEach((card) => this.deck.addCard(card));
+    this.parts.push(new Deck(cards));
     console.log('add cards');
 
     return new Promise(
@@ -43,15 +51,15 @@ export default class Move {
 
                 action() {
                   console.log('success');
-                  resolve(card);
+                  resolve(cards);
                 },
 
                 cancel() {
-                  reject(card);
+                  reject(cards);
                 },
               });
             } else {
-              resolve(card);
+              resolve(cards);
             }
 
             break;
@@ -61,78 +69,5 @@ export default class Move {
         }
       }
     );
-  }
-
-  useCard(card) {
-    console.log(card);
-
-    switch (card.props.type) {
-      case 'shuffle':
-        // TODO check for cheats
-        room.trash.push(...player.deck.useCard(card.id));
-
-        room.deck.shuffle();
-
-        sendGameMessage('NOTIFICATIONS.GAME.PLAYER_USE_SHUFFLE', roomId, name);
-        gameUpdate(roomId);
-
-        break;
-
-      case 'see-the-future':
-        // TODO check for cheats
-        room.trash.push(...player.deck.useCard(card.id));
-
-        sendGameMessage('NOTIFICATIONS.GAME.PLAYER_USE_SEE_THE_FUTURE', roomId, name);
-        gameUpdate(roomId);
-
-        io.to(player.id).emit('seeTheFuture', room.deck.cards.slice(-3));
-
-        break;
-
-      case 'skip':
-        // TODO check for cheats
-        room.trash.push(...player.deck.useCard(card.id));
-
-        sendGameMessage('NOTIFICATIONS.GAME.PLAYER_USE_SKIP', roomId, name);
-
-        if (!room.playerEndMove()) {
-          room.nextPlayer();
-        }
-
-        sendGameMessage('NOTIFICATIONS.GAME.PLAYER_TURN', roomId);
-        gameUpdate(roomId);
-
-        break;
-
-      case 'favor':
-        // TODO check for cheats
-        room.trash.push(...player.deck.useCard(card.id));
-
-        const favorPlayer = room.nextPlayer(true);
-
-        sendGameMessage('NOTIFICATIONS.GAME.PLAYER_USE_FAVOR', roomId, name, {
-          whom: favorPlayer.name,
-        });
-        gameUpdate(roomId);
-
-        console.log('send favor event to', favorPlayer.name);
-        io.to(favorPlayer.id).emit('playerUseFavor');
-
-        socket.on('playerSelectFavorCard', (cardId) => {
-          console.log('favor player choose card', cardId);
-          player.deck.addCard(...favorPlayer.deck.useCard(cardId));
-
-          gameUpdate(roomId);
-        });
-
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  useCardCombination(cards) {
-
   }
 }

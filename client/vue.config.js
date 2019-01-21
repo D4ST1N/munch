@@ -1,4 +1,4 @@
 module.exports = {
-  publicPath: '/static/',
+  baseUrl: '/static/',
   outputDir: './dist/',
 };
