@@ -86,6 +86,17 @@ export default function init() {
 
           break;
 
+        case 'attack':
+          sendGameMessage('NOTIFICATIONS.GAME.PLAYER_USE_ATTACK', room.id);
+
+          room.nextPlayer();
+          room.penaltyMoves += 2;
+
+          sendGameMessage('NOTIFICATIONS.GAME.PLAYER_TURN', room.id);
+          gameUpdate(room.id);
+
+          break;
+
         case 'nope':
           const previousPart = room.history.current.parts[room.history.current.parts.length - 2];
           cardsCancel(previousPart.cards, room, socket);
@@ -129,6 +140,17 @@ export default function init() {
           sendGameMessage('NOTIFICATIONS.GAME.PLAYER_BLOCK_SKIP', room.id);
 
           room.previousPlayer();
+
+          sendGameMessage('NOTIFICATIONS.GAME.PLAYER_TURN', room.id);
+          gameUpdate(room.id);
+
+          break;
+
+        case 'attack':
+          sendGameMessage('NOTIFICATIONS.GAME.PLAYER_BLOCK_ATTACK', room.id);
+
+          room.previousPlayer();
+          room.penaltyMoves -= 2;
 
           sendGameMessage('NOTIFICATIONS.GAME.PLAYER_TURN', room.id);
           gameUpdate(room.id);
