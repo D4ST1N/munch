@@ -8,6 +8,10 @@
     <PlayerMove />
     <GameLog />
     <Dialog />
+    <ShowGameDeck
+      v-if="showDeck"
+      :current-deck="deck"
+    />
   </div>
 </template>
 
@@ -20,6 +24,7 @@
   import PlayerMove from './PlayerMove';
   import Trash from './Trash';
   import CardList from './CardsList';
+  import ShowGameDeck from './ShowGameDeck';
 
   export default {
     name: 'GameUI',
@@ -32,19 +37,36 @@
       PlayerMove,
       Trash,
       CardList,
+      ShowGameDeck,
     },
 
     data() {
       return {
+        showDeck: false,
+        deck: []
       };
     },
 
     created() {
+      // TODO remove cheats events here
+      this.$store.getters.socket.on('_showCurrentGameDeck', ({deck, timer}) => {
+        this.deck = deck.cards;
+        this.showDeck = true;
+        this.$root.$emit('showDialog', {
+          time: timer
+        });
+      });
+
+      this.$store.getters.socket.on('_hideCurrentGameDeck', () => {
+        this.deck = [];
+        this.showDeck = false;
+        this.$root.$emit('hideDialog');
+      });
     },
 
     mounted() {
       this.$root.$emit('startTimer', 60000);
-    }
+    },
   };
 </script>
 
