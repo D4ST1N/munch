@@ -28,6 +28,7 @@
           'see-the-future',
           'skip',
           'nope',
+          'attack',
         ],
       };
     },
