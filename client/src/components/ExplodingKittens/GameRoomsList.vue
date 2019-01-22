@@ -9,9 +9,12 @@
         <div class="game-rooms-list__room-players">
           {{ $text('GAME_ROOMS.NUMBER_OF_PLAYERS') }} {{ room.players.length }}
         </div>
-        <router-link :to="`/exploding-kittens/room/${room.id}`" class="game-rooms-list__room-join" type="button">
+        <router-link v-if="room.canJoin" :to="`/exploding-kittens/room/${room.id}`" class="game-rooms-list__room-join" type="button">
           {{ $text('GAME_ROOMS.JOIN') }}
         </router-link>
+        <div v-else class="game-rooms-list__room-started">
+          {{ $text('GAME_ROOMS.STARTED') }}
+        </div>
       </div>
       <div class="game-rooms-list__room">
         <button class="game-rooms-list__room-create" @click="createRoom">
@@ -29,12 +32,14 @@
     data() {
       return {
         rooms: [],
+        playerName: this.$store.getters.player.name
       };
     },
 
     created() {
-      this.$store.getters.socket.emit('getRoomList', this.updateRoomList);
+      this.emitRoomsDataUpdate();
       this.$store.getters.socket.on('roomList', this.updateRoomList);
+      this.$store.getters.socket.on('newGameStarted', this.emitRoomsDataUpdate);
     },
 
     methods: {
@@ -42,8 +47,12 @@
         this.rooms = rooms;
       },
 
+      emitRoomsDataUpdate() {
+        this.$store.getters.socket.emit('getRoomList', this.playerName, this.updateRoomList);
+      },
+
       createRoom() {
-        this.$store.getters.socket.emit('createRoom');
+        this.$store.getters.socket.emit('createRoom', this.playerName);
       },
     }
   };
@@ -83,6 +92,17 @@
         border: 0;
         display: inline-block;
         cursor: pointer;
+      }
+
+      &-started {
+        padding: 8px 16px;
+        text-decoration: none;
+        background: rgba(38,50,56 ,1);
+        opacity: 0.75;
+        color: #fff;
+        border: 0;
+        display: inline-block;
+        cursor: default;
       }
     }
   }
