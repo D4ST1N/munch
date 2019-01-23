@@ -199,9 +199,10 @@ export default function init() {
     const reconnected = room.playerConnect(playerName, socket.id);
 
     console.log('join room');
-    socket.join(room.id);
 
-    socket.broadcast.emit('roomList', rooms);
+    socket.broadcast.emit('newGameStarted');
+
+    socket.join(room.id);
 
     if (room.gameStarted) {
       console.log('game started!');
@@ -250,6 +251,16 @@ export default function init() {
     }
   };
 
+  const getRoomsList = (rooms, playerName) => {
+    return rooms.map(room => {
+      const reconnected = room.getPlayer(playerName);
+      const gameStarted = room.gameStarted;
+      const canJoin = (reconnected && gameStarted) || !gameStarted;
+
+      return Object.assign({}, room, { canJoin })
+    });
+  };
+
   io.on('connection', (socket) => {
     console.log('connected', socket.id);
     socket.emit('roomList', rooms);
@@ -259,8 +270,10 @@ export default function init() {
       callback(!!getRoom(roomId));
     });
 
-    socket.on('getRoomList', (callback) => {
-      callback(rooms);
+    socket.on('getRoomList', (playerName, callback) => {
+      const roomsArray = getRoomsList(rooms, playerName);
+
+      callback(roomsArray);
     });
 
     socket.on('getDeck', ({ roomId }, callback) => {
@@ -344,12 +357,14 @@ export default function init() {
       gameUpdate(roomId);
     });
 
-    socket.on('createRoom', () => {
+    socket.on('createRoom', (playerName) => {
       console.log('create room');
 
       rooms.push(new Room());
 
-      io.emit('roomList', rooms);
+      const roomsArray = getRoomsList(rooms, playerName);
+
+      io.emit('roomList', roomsArray);
     });
 
     socket.on('playerJoin', ({ name, roomId }) => {
@@ -376,12 +391,13 @@ export default function init() {
       console.log('emit status', player.name);
       io.to(room.id).emit('gameStatus', room.players);
 
-
       if (!room.gameStarted) {
         return;
       }
 
       room.gameStart();
+
+      io.emit('newGameStarted');
 
       console.log('game start');
       io.to(room.id).emit('gameStart');
