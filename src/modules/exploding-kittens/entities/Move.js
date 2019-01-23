@@ -38,34 +38,45 @@ export default class Move {
 
     return new Promise(
       (resolve, reject) => {
-        switch (cards.length) {
-          case 1:
-            const [card] = cards;
+        if (cards.length === 1) {
+          const [card] = cards;
 
-            if (this.actionCards.includes(card.props.type)) {
-              console.log('start');
+          if (this.actionCards.includes(card.props.type)) {
+            console.log('start');
+            const time = 5000;
 
-              this.onTimer(card);
-              this.timer = new MoveTimer({
-                time: 5000,
+            this.onTimer(cards, time);
+            this.timer = new MoveTimer({
+              time,
 
-                action() {
-                  console.log('success');
-                  resolve(cards);
-                },
+              action() {
+                console.log('success');
+                resolve(cards);
+              },
 
-                cancel() {
-                  reject(cards);
-                },
-              });
-            } else {
+              cancel() {
+                reject(cards);
+              },
+            });
+          } else {
+            resolve(cards);
+          }
+        } else if (cards.length === 2) {
+          const time = 10000;
+
+          this.onTimer(cards, time);
+          this.timer = new MoveTimer({
+            time,
+
+            action() {
+              console.log('success');
               resolve(cards);
-            }
+            },
 
-            break;
-
-          default:
-            break;
+            cancel() {
+              reject(cards);
+            },
+          });
         }
       }
     );

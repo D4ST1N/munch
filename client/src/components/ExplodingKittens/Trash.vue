@@ -4,12 +4,10 @@
       v-for="(card, index) in trash"
       :key="card.id"
       :card="card"
-      :type="cardType"
       :style="{
         transform: getOffset(card, index),
         transition: 'all .75s ease',
         'z-index': index + 1,
-        'transition-delay': initialLoad ? `${index * 10 / 1000}s` : '0s',
         position: 'absolute'
       }"
     />
@@ -27,7 +25,7 @@
 
     data() {
       return {
-        trash: []
+        trash: [],
       };
     },
 
@@ -54,8 +52,8 @@
       cardOffsetY(card, index) {
         return -2 * index;
       },
-    }
-  }
+    },
+  };
 
 </script>
 

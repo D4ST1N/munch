@@ -1,6 +1,10 @@
 <template>
-  <div v-if="cards.length" class="cards-list">
-    <CardStack :cards="cards" type="card-list" />
+  <div v-if="!!deck.length" class="cards-list">
+    <div class="cards-list__content">
+      <div class="cards-list__wrapper">
+        <CardStack :cards="deck" @cardClick="cardClick" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -8,36 +12,58 @@
   import CardStack from './CardStack';
 
   export default {
-    name: 'CardsList',
+    name: 'CardList',
     components: {
       CardStack,
     },
 
     data() {
       return {
-        cards: [],
+        deck: [],
+        event: '',
       };
     },
 
     created() {
-      this.$store.getters.socket.on('updateMove', (cards) => {
-        this.cards = cards;
-        console.log(cards);
-      });
-      this.$store.getters.socket.on('playerSelectCard', (cards) => {
-        this.cards = cards;
+      this.$store.getters.socket.on('showCardList', ({ deck, event }) => {
+        this.deck = deck;
+        this.event = event;
       });
     },
+
+    methods: {
+      cardClick(card) {
+        this.$store.getters.socket.emit(this.event, {
+          name: this.$store.getters.player.name,
+          roomId: this.$route.params.id,
+          card,
+        });
+
+        this.deck = [];
+        this.event = '';
+      }
+    }
   };
 </script>
 
 <style lang="scss">
   .cards-list {
     position: fixed;
-    top: calc(50% - 250px);
-    left: 0;
     width: 100%;
+    height: 100%;
     display: flex;
+    align-items: center;
     justify-content: center;
+    background: rgba(55,71,79 ,.8);
+
+    &__content {
+      background: rgba(144,164,174 ,1);
+      padding: 20px;
+      width: calc(100vw - 50px);
+    }
+
+    &__wrapper {
+      position: relative;
+    }
   }
 </style>

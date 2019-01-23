@@ -12,9 +12,9 @@
       :custom="settingsData"
       :selected="isCardSelected(card.id)"
       :flipped="isCardFlipped(card)"
-      :type="cardType"
+      :type="getCardType(card)"
       :style="{
-        position: 'absolute',
+        position: relative ? 'relative' : 'absolute',
         left: '50%',
         transform: `translate(${getCardOffset(index)}px, 0)`
       }"
@@ -43,6 +43,10 @@
       cardType: {
         type: String,
         default: 'playerCard'
+      },
+      relative: {
+        type: Boolean,
+        default: false,
       },
       selectedCards: {
         type: Array,
@@ -86,13 +90,18 @@
 
       cardClick(card) {
         this.$emit('cardClick', card);
-      }
-    }
+      },
+
+      getCardType(card) {
+        return card.props ? 'playerCard' : 'regular';
+      },
+    },
   };
 </script>
 
 <style lang="scss">
   .card-stack {
+    display: flex;
 
     &-enter,
     &-leave-to {

@@ -1,7 +1,7 @@
 <template>
   <div class="game-ui">
     <GameRoomPlayers />
-    <CardList />
+    <MoveCardsList />
     <Trash />
     <GameDeck />
     <PlayerDeck />
@@ -12,19 +12,21 @@
       v-if="showDeck"
       :current-deck="deck"
     />
+    <CardsList />
   </div>
 </template>
 
 <script>
-  import PlayerDeck from './PlayerDeck';
-  import GameDeck from './GameDeck';
+  import PlayerDeck      from './PlayerDeck';
+  import GameDeck        from './GameDeck';
   import GameRoomPlayers from './GameRoomPlayers';
-  import Dialog from './Dialog';
-  import GameLog from './GameLog';
-  import PlayerMove from './PlayerMove';
-  import Trash from './Trash';
-  import CardList from './CardsList';
-  import ShowGameDeck from './ShowGameDeck';
+  import Dialog          from './Dialog';
+  import GameLog         from './GameLog';
+  import PlayerMove      from './PlayerMove';
+  import Trash           from './Trash';
+  import MoveCardsList   from './MoveCardsList';
+  import ShowGameDeck    from './ShowGameDeck';
+  import CardsList       from './CardsList';
 
   export default {
     name: 'GameUI',
@@ -36,8 +38,9 @@
       GameLog,
       PlayerMove,
       Trash,
-      CardList,
+      MoveCardsList,
       ShowGameDeck,
+      CardsList,
     },
 
     data() {
@@ -50,7 +53,7 @@
     created() {
       // TODO remove cheats events here
       this.$store.getters.socket.on('_showCurrentGameDeck', ({deck, timer}) => {
-        this.deck = deck.cards;
+        this.deck = deck;
         this.showDeck = true;
         this.$root.$emit('showDialog', {
           time: timer

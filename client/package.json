@@ -1,10 +1,10 @@
 {
   "name": "munch",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --mode production --watch",
+    "build": "vue-cli-service build --watch",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

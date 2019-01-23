@@ -11,5 +11,5 @@ export default new Vuex.Store({
     player,
     game,
   },
-  strict: true,
+  strict: false,
 });

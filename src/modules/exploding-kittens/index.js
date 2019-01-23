@@ -2,6 +2,7 @@ import ioStarter from './socket';
 import Room      from './entities/Room';
 import Card      from './entities/Card';
 import Move      from './entities/Move';
+import shuffle   from '../../utils/shuffle';
 
 export default function init() {
   const io = ioStarter('/ws/exploding-kittens');
@@ -16,13 +17,15 @@ export default function init() {
 
     if (!room) return false;
 
-    io.to(room.id).emit('gameMessage', {
+    const message = {
       text: text,
       options: {
         player: name || room.currentPlayer.name,
         ...options,
       },
-    });
+    };
+
+    io.to(room.id).emit('gameMessage', message);
   };
 
   const newMove = (room, player) => {
@@ -30,8 +33,9 @@ export default function init() {
       who: player,
       whom: room.nextPlayer(true),
 
-      onTimer(card) {
+      onTimer(cards, time) {
         console.log('on timer');
+        io.to(room.id).emit('startTimer', time);
         room.players.forEach((player) => {
           if (player.name === this.who.name) {
             return;
@@ -40,17 +44,18 @@ export default function init() {
           const playerHasStop = player.deck.hasCardOfType('nope');
           console.log('send start timer to', player.name);
           io.to(player.id).emit('startActionTimer', {
-            card,
-            time: 5000,
+            cards,
+            time,
             actionEnabled: playerHasStop,
           })
         });
-      }
+      },
     }));
   };
 
-  const cardsApply = (cards, room, socket) => {
+  const cardsApply = (cards, room, socket, options) => {
     const player = room.currentPlayer;
+    console.log('Cards apply');
 
     if (cards.length === 1) {
       const [ card ] = cards;
@@ -99,7 +104,7 @@ export default function init() {
 
         case 'nope':
           const previousPart = room.history.current.parts[room.history.current.parts.length - 2];
-          cardsCancel(previousPart.cards, room, socket);
+          cardsCancel(previousPart.cards, room, socket, options);
 
           break;
 
@@ -126,10 +131,24 @@ export default function init() {
         default:
           break;
       }
+    } else if (cards.length === 2) {
+      console.log('choose player card');
+      const selectedPlayer = room.getPlayer(options.name);
+
+      io.to(player.id).emit('showCardList', {
+        deck: shuffle([...selectedPlayer.deck.inverted]),
+        event: 'selectPlayerCard',
+      });
+
+      socket.on('selectPlayerCard', ({ card }) => {
+        player.deck.addCard(...selectedPlayer.deck.useCard(card.id));
+        gameUpdate(room.id);
+        socket.removeAllListeners('selectPlayerCard');
+      });
     }
   };
 
-  const cardsCancel = (cards, room, socket) => {
+  const cardsCancel = (cards, room, socket, options) => {
     if (cards.length === 1) {
       const [ card ] = cards;
 
@@ -391,10 +410,12 @@ export default function init() {
       const move = room.history.current;
       move.addCards(usedCard).then(console.log).catch(console.error);
       move.timer.stopTimer();
+      io.to(room.id).emit('stopTimer');
       io.to(room.id).emit('updateMove', move.allCards);
+      gameUpdate(roomId);
     });
 
-    socket.on('playerMove', ({ roomId, name, cards }) => {
+    socket.on('playerMove', ({ roomId, name, cards, options }) => {
       console.log('player move');
       const room = getRoom(roomId);
 
@@ -429,7 +450,7 @@ export default function init() {
       room.history.newMove(move);
 
       move.addCards(cards).then(() => {
-        cardsApply(cards, room, socket);
+        cardsApply(cards, room, socket, options);
       }).catch(console.error);
 
       io.to(room.id).emit('updateMove', move.allCards);

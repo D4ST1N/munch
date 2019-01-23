@@ -64,7 +64,8 @@ export default class Room {
 
   initGameDeck() {
     config.cards.forEach((cardConfig) => {
-      addCards(this.deck.cards, cardConfig);
+      const cardsCount = config.game.deck[this.players.length][cardConfig.type];
+      addCards(this.deck.cards, cardConfig, cardsCount);
     });
 
     this.deck.shuffle();

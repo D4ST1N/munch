@@ -124,7 +124,7 @@
         });
       },
 
-      onStartActionTimer({ time, card, actionEnabled }) {
+      onStartActionTimer({ time, cards, actionEnabled }) {
         console.log('start action timer');
         const actions = [];
 
@@ -149,7 +149,7 @@
           time,
           actions,
           title: this.$text('NOTIFICATIONS.GAME.PLAYER_USE_CARD', {
-            card: this.$text(card.props.name)
+            card: this.$text(cards[0].props.name)
           }),
           text: this.$text('NOTIFICATIONS.GAME.TIME_TO_STOP'),
 

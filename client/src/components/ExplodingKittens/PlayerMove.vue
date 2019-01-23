@@ -36,8 +36,8 @@
     computed: {
       buttonText() {
         return this.favorActive
-               ? this.$text('NOTIFICATIONS.GAME.FAVOR')
-               : this.$text('NOTIFICATIONS.GAME.MOVE');
+          ? this.$text('NOTIFICATIONS.GAME.FAVOR')
+          : this.$text('NOTIFICATIONS.GAME.MOVE');
       }
     },
 
@@ -55,12 +55,6 @@
         const cards = this.$store.getters.selectedCards;
         const cardsCount = cards.length;
 
-        if (cardsCount === 1) {
-          const [ card ] = cards;
-
-          return  this.allowedSingleCards.includes(card.props.type);
-        }
-
         switch (cardsCount) {
           case 1:
             const [ card ] = cards;
@@ -68,7 +62,7 @@
             return this.allowedSingleCards.includes(card.props.type);
 
           case 2:
-            const isOnlyCatCards = cards.every(card => card.isCatCard);
+            const isOnlyCatCards = cards.every(card => card.props.isCatCard);
             const [ leftCard, rightCard ] = cards;
             const sameCards = leftCard.props.type === rightCard.props.type;
 
@@ -88,10 +82,24 @@
       },
 
       move() {
+        if (this.$store.getters.selectedCards.length > 1) {
+          this.$root.$emit('choosePlayer', {
+            event: 'selectPlayer',
+            context: this,
+            action(player) {
+              this.sendMove({ name: player })
+            }})
+        } else {
+          this.sendMove()
+        }
+      },
+
+      sendMove(options = {}) {
         this.$store.getters.socket.emit('playerMove', {
           name: this.$store.getters.player.name,
           roomId: this.$route.params.id,
           cards: this.$store.getters.selectedCards,
+          options,
         });
         this.$store.commit('playerMove');
         this.show = false;

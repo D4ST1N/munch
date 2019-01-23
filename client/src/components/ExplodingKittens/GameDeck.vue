@@ -90,7 +90,7 @@
       cardOffsetX(card, index) {
         return this.isCardFlipped(card)
                ? (this.showDeck ? 15 : -1) * index
-               : 212 * (4 - (this.deck.length - index));
+               : 168 * (4 - (this.deck.length - index));
       },
 
       cardOffsetY(card, index) {
