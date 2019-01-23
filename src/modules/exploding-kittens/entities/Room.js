@@ -11,7 +11,7 @@ export default class Room {
     this.id = uuid();
     this.players = [];
     this.deck = new Deck();
-    this.trash = [];
+    this.trash = new Deck();
     this.currentPlayerIndex = 0;
     this.status = 'wait';
     this.penaltyMoves = 0;

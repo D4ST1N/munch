@@ -145,6 +145,18 @@ export default function init() {
         gameUpdate(room.id);
         socket.removeAllListeners('selectPlayerCard');
       });
+    } else if (cards.length === 5) {
+      console.log('select from trash');
+      io.to(player.id).emit('showCardList', {
+        deck: room.trash.cards,
+        event: 'selectTrashCard',
+      });
+
+      socket.on('selectTrashCard', ({ card }) => {
+        player.deck.addCard(...room.trash.useCard(card.id));
+        gameUpdate(room.id);
+        socket.removeAllListeners('selectTrashCard');
+      });
     }
   };
 
@@ -234,7 +246,7 @@ export default function init() {
         players,
         currentPlayer,
         gameDeck: invertedDeck,
-        gameTrash: room.trash,
+        gameTrash: room.trash.cards,
         playerDeck: player.deck.cards,
       });
     } else {
@@ -244,7 +256,7 @@ export default function init() {
           players,
           currentPlayer,
           gameDeck: invertedDeck,
-          gameTrash: room.trash,
+          gameTrash: room.trash.cards,
           playerDeck: player.deck.cards,
         });
       });
@@ -293,7 +305,7 @@ export default function init() {
         return;
       }
 
-      callback(room.trash);
+      callback(room.trash.cards);
     });
 
     socket.on('playerGetCard', ({ roomId, name }) => {
@@ -313,7 +325,7 @@ export default function init() {
 
       if (oldMove) {
         oldMove.endMove();
-        room.trash.push(...oldMove.allCards);
+        oldMove.allCards.forEach(card => room.trash.addCard(card, false));
       }
 
       const card = room.deck.useUpperCard();
@@ -326,7 +338,7 @@ export default function init() {
         if (player.deck.isCardExist('defuse')) {
           console.log('player has defuse');
 
-          room.trash.push(...player.deck.useCardByType('defuse'));
+          room.trash.addCard(...player.deck.useCardByType('defuse'), false);
           room.deck.addCard(card);
 
           sendGameMessage('NOTIFICATIONS.GAME.PLAYER_DEFUSE_EXPLODING_KITTEN', roomId, name);

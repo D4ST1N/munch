@@ -1,5 +1,6 @@
 const state = {
-  selectedCards: []
+  selectedCards: [],
+  trash: [],
 };
 
 const mutations = {
@@ -15,6 +16,10 @@ const mutations = {
 
   playerMove(state) {
     state.selectedCards = [];
+  },
+
+  updateTrash(state, trash) {
+    state.trash = trash;
   },
 };
 

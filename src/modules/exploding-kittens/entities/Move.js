@@ -61,7 +61,7 @@ export default class Move {
           } else {
             resolve(cards);
           }
-        } else if (cards.length === 2) {
+        } else {
           const time = 10000;
 
           this.onTimer(cards, time);

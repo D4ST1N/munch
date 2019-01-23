@@ -73,8 +73,7 @@
             return false;
 
           case 5:
-
-            return false;
+            return new Set(cards.map(card => card.props.type)).size === 5;
 
           default:
             return false;
@@ -82,15 +81,21 @@
       },
 
       move() {
-        if (this.$store.getters.selectedCards.length > 1) {
-          this.$root.$emit('choosePlayer', {
-            event: 'selectPlayer',
-            context: this,
-            action(player) {
-              this.sendMove({ name: player })
-            }})
-        } else {
-          this.sendMove()
+        switch (this.$store.getters.selectedCards.length) {
+          case 1:
+          case 5:
+            this.sendMove();
+            break;
+          case 2:
+            this.$root.$emit('choosePlayer', {
+              context: this,
+              action(player) {
+                this.sendMove({ name: player })
+              }
+            });
+            break;
+          default:
+            break;
         }
       },
 

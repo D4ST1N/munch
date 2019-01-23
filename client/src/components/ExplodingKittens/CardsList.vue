@@ -25,13 +25,15 @@
     },
 
     created() {
-      this.$store.getters.socket.on('showCardList', ({ deck, event }) => {
-        this.deck = deck;
-        this.event = event;
-      });
+      this.$store.getters.socket.on('showCardList', this.updateDeck);
     },
 
     methods: {
+      updateDeck({ deck, event }) {
+        this.deck = deck;
+        this.event = event;
+      },
+
       cardClick(card) {
         this.$store.getters.socket.emit(this.event, {
           name: this.$store.getters.player.name,

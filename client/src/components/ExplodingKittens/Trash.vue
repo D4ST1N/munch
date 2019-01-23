@@ -37,6 +37,7 @@
       });
       this.$store.getters.socket.on('gameUpdate', (data) => {
         this.trash = data.gameTrash;
+        this.$store.commit('updateTrash', data.gameTrash);
       });
     },
 
