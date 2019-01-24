@@ -13,6 +13,7 @@
       :current-deck="deck"
     />
     <CardsList />
+    <EndGamePopup />
   </div>
 </template>
 
@@ -27,6 +28,7 @@
   import MoveCardsList   from './MoveCardsList';
   import ShowGameDeck    from './ShowGameDeck';
   import CardsList       from './CardsList';
+  import EndGamePopup    from './EndGamePopup';
 
   export default {
     name: 'GameUI',
@@ -41,6 +43,7 @@
       MoveCardsList,
       ShowGameDeck,
       CardsList,
+      EndGamePopup,
     },
 
     data() {

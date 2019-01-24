@@ -62,6 +62,10 @@ export default class Room {
     this.status = 'started';
   }
 
+  gameEnd() {
+    this.status = 'ended';
+  }
+
   initGameDeck() {
     config.cards.forEach((cardConfig) => {
       const cardsCount = config.game.deck[this.players.length][cardConfig.type];

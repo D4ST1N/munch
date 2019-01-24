@@ -9,7 +9,15 @@ export default function init() {
 
   const rooms = [];
 
-  const getRoom = (roomId) => rooms.find(room => room.id === roomId);
+  const getRoom = (roomId) => {
+    const room = rooms.find(room => room.id === roomId);
+
+    if (!room || room.status === 'ended') {
+      return false;
+    }
+
+    return room;
+  };
 
   const sendGameMessage = (text, roomId, name, options = {}) => {
     const room = getRoom(roomId);
@@ -267,7 +275,8 @@ export default function init() {
     return rooms.map(room => {
       const reconnected = room.getPlayer(playerName);
       const gameStarted = room.gameStarted;
-      const canJoin = (reconnected && gameStarted) || !gameStarted;
+      const gameEnded = room.status = 'ended';
+      const canJoin = !gameEnded && ((reconnected && gameStarted) || !gameStarted);
 
       return Object.assign({}, room, { canJoin })
     });
@@ -348,11 +357,16 @@ export default function init() {
           player.exploded = true;
 
           sendGameMessage('NOTIFICATIONS.GAME.PLAYER_EXPLODED', roomId, name);
+          io.to(player.id).emit('endGame', false);
 
           if (room.gameEnded) {
             const winner = room.players.find(player => !player.exploded);
 
             sendGameMessage('NOTIFICATIONS.GAME.PLAYER_WIN', roomId, winner.name);
+            io.to(winner.id).emit('endGame', true);
+
+            room.gameEnd();
+            return;
           }
         }
       } else {
