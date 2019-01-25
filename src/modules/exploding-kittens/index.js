@@ -153,6 +153,20 @@ export default function init() {
         gameUpdate(room.id);
         socket.removeAllListeners('selectPlayerCard');
       });
+    } else if (cards.length === 3) {
+      console.log('get player card');
+      const selectedPlayer = room.getPlayer(options.name);
+      const selectedCard = options.card;
+      const selectedPlayerHasCard = selectedPlayer.deck.hasCardOfType(selectedCard.props.type);
+
+      if (selectedPlayerHasCard) {
+        player.deck.addCard(...selectedPlayer.deck.useCardByType(selectedCard.props.type));
+        gameUpdate(room.id);
+      } else {
+        io.to(player.id).emit('gameMessage', {
+          text: 'NOTIFICATIONS.GAME.PLAYER_HAS_NOT_CARD',
+        });
+      }
     } else if (cards.length === 5) {
       console.log('select from trash');
       io.to(player.id).emit('showCardList', {
@@ -507,6 +521,10 @@ export default function init() {
       }
 
       gameUpdate(roomId);
+    });
+
+    socket.on('getAllCardsType', (callback) => {
+      callback(Room.getAllCardsTypes());
     });
 
     socket.on('_getCard', ({ roomId, name, options }) => {

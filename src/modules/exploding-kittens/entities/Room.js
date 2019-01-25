@@ -38,6 +38,16 @@ export default class Room {
     return this.players.filter(player => !player.exploded).length === 1;
   }
 
+  static getAllCardsTypes() {
+    const deck = new Deck();
+
+    config.cards.forEach((cardConfig) => {
+      addCards(deck.cards, cardConfig, 1);
+    });
+
+    return deck;
+  }
+
   playerConnect(playerName, id) {
     let reconnect = false;
 

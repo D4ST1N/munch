@@ -110,10 +110,10 @@
 
       onGameMessage(message) {
         this.$root.$emit('showMessage', {
-          text: this.$text(
+          text: message.options ? this.$text(
             personalizeText(message.text, message.options.player, this.$store.getters.player.name),
             message.options,
-          ),
+          ) : this.$text(message.text),
         });
       },
 

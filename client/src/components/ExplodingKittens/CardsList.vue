@@ -12,7 +12,7 @@
   import CardStack from './CardStack';
 
   export default {
-    name: 'CardList',
+    name: 'CardsList',
     components: {
       CardStack,
     },
@@ -21,11 +21,20 @@
       return {
         deck: [],
         event: '',
+        resolve: null,
+        reject: null,
       };
     },
 
     created() {
       this.$store.getters.socket.on('showCardList', this.updateDeck);
+      this.$root.$on('chooseCardType', (resolve, reject) => {
+        this.resolve = resolve;
+        this.reject = reject;
+        this.$store.getters.socket.emit('getAllCardsType', (deck) => {
+          this.updateDeck({ deck: deck.cards });
+        });
+      });
     },
 
     methods: {
@@ -35,14 +44,19 @@
       },
 
       cardClick(card) {
-        this.$store.getters.socket.emit(this.event, {
-          name: this.$store.getters.player.name,
-          roomId: this.$route.params.id,
-          card,
-        });
+        if (this.event) {
+          this.$store.getters.socket.emit(this.event, {
+            name: this.$store.getters.player.name,
+            roomId: this.$route.params.id,
+            card,
+          });
 
-        this.deck = [];
-        this.event = '';
+          this.deck = [];
+          this.event = '';
+        } else if (this.resolve) {
+          this.resolve({ card });
+          this.deck = [];
+        }
       }
     }
   };

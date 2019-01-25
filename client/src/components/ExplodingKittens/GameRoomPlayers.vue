@@ -3,7 +3,7 @@
     <div
       :class="{
         'game-room-players__container': true,
-        'game-room-players__container--active': !!action
+        'game-room-players__container--active': active
       }"
     >
       <PlayerCircle
@@ -15,7 +15,7 @@
         @playerClick="playerClick(player)"
       />
     </div>
-    <div v-if="!!action" class="game-room-players__label">
+    <div v-if="active" class="game-room-players__label">
       {{ $text('NOTIFICATIONS.GAME.CHOOSE_PLAYER') }}
     </div>
   </div>
@@ -35,8 +35,9 @@
         players: [],
         playerName: this.$store.getters.player.name,
         current: '',
-        context: null,
-        action: null,
+        resolve: null,
+        reject: null,
+        active: false,
       };
     },
 
@@ -61,18 +62,16 @@
         this.players = players.filter(player => player.name !== this.playerName);
       },
 
-      onChoosePlayer({ context, action }) {
-        this.event = event;
-        this.context = context;
-        this.action = action;
+      onChoosePlayer(resolve, reject) {
+        this.resolve = resolve;
+        this.reject = reject;
+        this.active = true;
       },
 
       playerClick(player) {
-        if (this.action) {
-          this.action.call(this.context, player.name);
-
-          this.action = null;
-          this.context = null;
+        if (this.resolve) {
+          this.resolve({ name: player.name });
+          this.active = false;
         }
       },
     },
