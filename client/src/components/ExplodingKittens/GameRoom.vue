@@ -124,9 +124,15 @@
         });
       },
 
-      onStartActionTimer({ time, cards, actionEnabled }) {
+      onStartActionTimer({ time, title, text, options, actionEnabled }) {
         console.log('start action timer');
         const actions = [];
+
+        Object.entries(options).forEach(([key, value]) => {
+          if (typeof value === 'string') {
+            options[key] = this.$text(value);
+          }
+        });
 
         if (actionEnabled) {
           actions.push({
@@ -148,10 +154,8 @@
         this.$root.$emit('showDialog', {
           time,
           actions,
-          title: this.$text('NOTIFICATIONS.GAME.PLAYER_USE_CARD', {
-            card: this.$text(cards[0].props.name)
-          }),
-          text: this.$text('NOTIFICATIONS.GAME.TIME_TO_STOP'),
+          title: this.$text(title, options),
+          text: this.$text(text),
 
           onEnd() {
             console.log('end');

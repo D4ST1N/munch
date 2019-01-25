@@ -13,6 +13,28 @@
     components: {
       NotificationCenter,
     },
+
+    data() {
+      return {
+        theme: 'base',
+        styles: null,
+      };
+    },
+
+    created() {
+      this.styles = document.createElement('link');
+      this.styles.rel = 'stylesheet';
+      this.styles.href = `/themes/${this.theme}.css`;
+
+      document.head.appendChild(this.styles);
+    },
+
+    methods: {
+      changeTheme() {
+        this.theme = this.theme === 'dark' ? 'base' : 'dark';
+        this.styles.href = `/themes/${this.theme}.css`;
+      }
+    }
   };
 </script>
 
@@ -27,7 +49,7 @@
   body {
     margin: 0;
     padding: 0;
-    background: rgba(96,125,139 ,1);
+    background: var(--ui-field-background-color);
     user-select: none;
   }
 

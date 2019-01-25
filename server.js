@@ -48,6 +48,8 @@ explodingKittens(server);
 
 app.use(morgan('combined', { stream: logger.stream }));
 
+app.use('/themes', express.static(__dirname + '/client/public/styles/themes'));
+
 app.use('/static', express.static(__dirname + '/client/dist'));
 
 app.get('/circle-crush/config', (request, response) => {

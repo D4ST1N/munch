@@ -96,9 +96,9 @@
   .player-circle {
     width: 128px;
     height: 128px;
-    background: rgba(255,183,77 ,1);
+    background: var(--ui-player-circle-background-color);
     border-radius: 50%;
-    border: 4px dotted #fff;
+    border: 6px dotted var(--ui-player-circle-border-color);
     position: relative;
     margin: 16px;
     cursor: pointer;
@@ -146,9 +146,9 @@
       left: 50%;
       transform: translate(-50%, 0);
       padding: 4px;
-      border: 2px solid rgba(244,81,30 ,1);
       box-shadow: 2px 2px 6px 0 rgba(0, 0, 0, .4);
-      background: #fff;
+      background: var(--ui-player-circle-label-background-color);
+      color: var(--ui-player-circle-label-color);
       border-radius: 4px;
     }
 

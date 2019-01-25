@@ -39,9 +39,8 @@ export default function init() {
   const newMove = (room, player) => {
     room.history.newMove(new Move({
       who: player,
-      whom: room.nextPlayer(true),
 
-      onTimer(cards, time) {
+      onTimer(cards, time, moveOptions) {
         console.log('on timer');
         io.to(room.id).emit('startTimer', time);
         room.players.forEach((player) => {
@@ -51,9 +50,39 @@ export default function init() {
 
           const playerHasStop = player.deck.hasCardOfType('nope');
           console.log('send start timer to', player.name);
+
+          let title;
+          let text = 'NOTIFICATIONS.GAME.TIME_TO_STOP';
+          let options = {
+            player: this.who.name,
+          };
+
+          switch (cards.length) {
+            case 1:
+              title = 'NOTIFICATIONS.GAME.PLAYER_USE_CARD';
+              options.card = cards[0].props.name;
+              break;
+            case 2:
+              title = 'NOTIFICATIONS.GAME.PLAYER_USE_TWO_CARDS_COMBO';
+              options.whom = moveOptions.name;
+              break;
+            case 3:
+              title = 'NOTIFICATIONS.GAME.PLAYER_USE_THREE_CARDS_COMBO';
+              options.whom = moveOptions.name;
+              options.card = moveOptions.card.props.name;
+              break;
+            case 5:
+              title = 'NOTIFICATIONS.GAME.PLAYER_USE_FIVE_CARDS_COMBO';
+              break;
+            default:
+              break;
+          }
           io.to(player.id).emit('startActionTimer', {
+            title,
+            text,
             cards,
             time,
+            options,
             actionEnabled: playerHasStop,
           })
         });
@@ -506,7 +535,7 @@ export default function init() {
 
       room.history.newMove(move);
 
-      move.addCards(cards).then(() => {
+      move.addCards(cards, options).then(() => {
         cardsApply(cards, room, socket, options);
       }).catch(console.error);
 
@@ -542,6 +571,7 @@ export default function init() {
 
       const [ cardType ] = options;
 
+      console.log('player get cheat card', cardType);
       player.deck.addCard(Card.newCard(cardType));
 
       gameUpdate(roomId);

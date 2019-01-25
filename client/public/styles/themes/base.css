@@ -1,0 +1,16 @@
+@import "colors.css";
+
+:root {
+    --ui-field-background-color: var(--weldon-blue);
+    --ui-game-log-background-color: var(--black-coral);
+    --ui-game-log-message-color: var(--pale-aqua);
+    --ui-game-log-active-message-color: var(--ghost-white);
+    --ui-game-log-scroll-color: var(--pastel-blue);
+    --ui-field-area-border-color: var(--soap);
+    --ui-field-area-label-background-color: var(--soap);
+    --ui-field-area-label-color: var(--charleston-green);
+    --ui-player-circle-background-color: var(--flavescent);
+    --ui-player-circle-border-color: var(--baby-powder);
+    --ui-player-circle-label-background-color: var(--black-coral);
+    --ui-player-circle-label-color: var(--baby-powder);
+}

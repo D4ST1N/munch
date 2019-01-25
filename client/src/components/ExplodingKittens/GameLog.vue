@@ -40,7 +40,7 @@
       width: 360px;
       height: 50vh;
       padding: 10px;
-      background: rgba(55,71,79, .6);
+      background: var(--ui-game-log-background-color);
       border-radius: 8px;
       overflow: auto;
       max-height: 50vh;
@@ -48,11 +48,22 @@
 
     &__message {
       margin-bottom: 8px;
-      color: #fff8;
+      color: var(--ui-game-log-message-color);
 
       &--active {
-        color: #ffff;
+        color: var(--ui-game-log-active-message-color);
       }
     }
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    margin-left: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+    background: var(--ui-game-log-scroll-color);
   }
 </style>

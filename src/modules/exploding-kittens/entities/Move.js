@@ -32,7 +32,7 @@ export default class Move {
     this.status = 'ended';
   }
 
-  addCards(cards) {
+  addCards(cards, options) {
     this.parts.push(new Deck(cards));
     console.log('add cards');
 
@@ -45,7 +45,7 @@ export default class Move {
             console.log('start');
             const time = 5000;
 
-            this.onTimer(cards, time);
+            this.onTimer(cards, time, options);
             this.timer = new MoveTimer({
               time,
 
@@ -64,7 +64,7 @@ export default class Move {
         } else {
           const time = 10000;
 
-          this.onTimer(cards, time);
+          this.onTimer(cards, time, options);
           this.timer = new MoveTimer({
             time,
 

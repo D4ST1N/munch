@@ -9,8 +9,6 @@ export default class Card {
 
   static newCard(type) {
     const cardConfig = cards.find(card => card.type === type);
-    const { count, ...props } = cardConfig;
-
-    return new Card(props);
+    return new Card(cardConfig);
   }
 }

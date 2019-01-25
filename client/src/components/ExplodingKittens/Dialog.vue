@@ -49,9 +49,8 @@
         this.onEnd = onEnd;
         this.show = true;
       });
-      this.$root.$on('hideDialog', () => {
-        this.show = false;
-      });
+      this.$root.$on('hideDialog', this.hideDialog);
+      this.$store.getters.socket.on('stopTimer', this.hideDialog);
     },
 
     methods: {
@@ -63,6 +62,10 @@
       },
       onButtonClick(action) {
         action.action.call(this);
+      },
+
+      hideDialog() {
+        this.show = false;
       }
     },
   };
@@ -84,11 +87,13 @@
       padding: 10px 20px;
       display: flex;
       border-radius: 16px;
+      max-width: 1000px;
     }
 
     &__content {
       margin-left: 20px;
       margin-bottom: 10px;
+      max-width: 800px;
     }
   }
 </style>
