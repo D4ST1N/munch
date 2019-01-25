@@ -272,13 +272,14 @@ export default function init() {
   };
 
   const getRoomsList = (rooms, playerName) => {
-    return rooms.map(room => {
-      const reconnected = room.getPlayer(playerName);
-      const gameStarted = room.gameStarted;
-      const gameEnded = room.status = 'ended';
-      const canJoin = !gameEnded && ((reconnected && gameStarted) || !gameStarted);
+    return rooms
+      .filter(room => room.status !== 'ended')
+      .map(room => {
+        const reconnected = room.getPlayer(playerName);
+        const gameStarted = room.gameStarted;
+        const canJoin = (reconnected && gameStarted) || !gameStarted;
 
-      return Object.assign({}, room, { canJoin })
+        return Object.assign({}, room, { canJoin })
     });
   };
 

@@ -84,7 +84,8 @@
       }
 
       &-join,
-      &-create {
+      &-create,
+      &-started {
         padding: 8px 16px;
         text-decoration: none;
         background: rgba(38,50,56 ,1);
@@ -92,16 +93,11 @@
         border: 0;
         display: inline-block;
         cursor: pointer;
+        font-size: 16px;
       }
 
       &-started {
-        padding: 8px 16px;
-        text-decoration: none;
-        background: rgba(38,50,56 ,1);
         opacity: 0.75;
-        color: #fff;
-        border: 0;
-        display: inline-block;
         cursor: default;
       }
     }
