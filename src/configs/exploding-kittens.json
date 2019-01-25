@@ -93,68 +93,6 @@
     }
   ],
   "game": {
-    "minPlayerCount": 2,
-    "deck": {
-      "2": {
-        "exploding-kitten": 1,
-        "defuse": 4,
-        "skip": 4,
-        "attack": 2,
-        "see-the-future": 4,
-        "nope": 4,
-        "favor": 0,
-        "shuffle": 4,
-        "beard-cat": 4,
-        "burrito-cat": 4,
-        "rainbow-cat": 4,
-        "potato-cat": 4,
-        "watermelon-cat": 4
-      },
-      "3": {
-        "exploding-kitten": 2,
-        "defuse": 6,
-        "skip": 5,
-        "attack": 4,
-        "see-the-future": 5,
-        "nope": 5,
-        "favor": 0,
-        "shuffle": 5,
-        "beard-cat": 4,
-        "burrito-cat": 4,
-        "rainbow-cat": 4,
-        "potato-cat": 4,
-        "watermelon-cat": 4
-      },
-      "4": {
-        "exploding-kitten": 3,
-        "defuse": 6,
-        "skip": 5,
-        "attack": 5,
-        "see-the-future": 5,
-        "nope": 5,
-        "favor": 0,
-        "shuffle": 5,
-        "beard-cat": 6,
-        "burrito-cat": 6,
-        "rainbow-cat": 6,
-        "potato-cat": 6,
-        "watermelon-cat": 6
-      },
-      "5": {
-        "exploding-kitten": 4,
-        "defuse": 8,
-        "skip": 6,
-        "attack": 6,
-        "see-the-future": 6,
-        "nope": 6,
-        "favor": 0,
-        "shuffle": 6,
-        "beard-cat": 6,
-        "burrito-cat": 6,
-        "rainbow-cat": 6,
-        "potato-cat": 6,
-        "watermelon-cat": 6
-      }
-    }
+    "minPlayerCount": 2
   }
 }

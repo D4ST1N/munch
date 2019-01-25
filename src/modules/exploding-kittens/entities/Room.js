@@ -78,7 +78,29 @@ export default class Room {
 
   initGameDeck() {
     config.cards.forEach((cardConfig) => {
-      const cardsCount = config.game.deck[this.players.length][cardConfig.type];
+      const playersCount = this.players.length;
+      let cardsCount;
+
+      switch (cardConfig.type) {
+        case 'defuse':
+          cardsCount = playersCount + (Math.ceil(playersCount / 2));
+          break;
+        case 'exploding-kitten':
+          cardsCount = playersCount - 1;
+          break;
+        case 'skip':
+        case 'attack':
+        case 'see-the-future':
+        case 'nope':
+        case 'favor':
+        case 'shuffle':
+          cardsCount = playersCount + 2;
+          break;
+        default:
+          cardsCount = Math.ceil((playersCount + 1) / 2) * 2;
+          break;
+      }
+
       addCards(this.deck.cards, cardConfig, cardsCount);
     });
 
