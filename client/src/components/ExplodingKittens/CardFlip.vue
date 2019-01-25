@@ -13,7 +13,7 @@
         <div class="card-flip__border" :style="{ 'border-color': card.props.color }"></div>
         <div class="card-flip__card-content">
           <div class="card-flip__header">
-            <div class="card-flip__icon"></div>
+            <div class="card-flip__icon" :style="{ background: card.props.color }"></div>
             <div class="card-flip__info">
               <div class="card-flip__name">{{ $text(card.props.name) }}</div>
               <div class="card-flip__legend"></div>
@@ -24,7 +24,7 @@
             <div class="card-flip__description">{{ $text(card.props.description) }}</div>
           </div>
           <div class="card-flip__header card-flip__header--inverse">
-            <div class="card-flip__icon"></div>
+            <div class="card-flip__icon" :style="{ background: card.props.color }"></div>
             <div class="card-flip__info">
               <div class="card-flip__name">{{ $text(card.props.name) }}</div>
             </div>
@@ -116,7 +116,7 @@
       height: 100%;
       width: 100%;
       backface-visibility: hidden;
-      padding: 18px;
+      padding: 14px;
       border-radius: 8px;
       box-shadow: 0 0 0 1px rgba(38,50,56 ,.4);
 
@@ -132,20 +132,20 @@
 
     &__border {
       position: absolute;
-      width: calc(100% - 16px);
-      height: calc(100% - 16px);
-      top: 8px;
-      left: 8px;
-      border: 3px solid #ccc;
-      border-radius: 5px;
+      width: calc(100% - 12px);
+      height: calc(100% - 12px);
+      top: 6px;
+      left: 6px;
+      border: 4px solid #ccc;
+      border-radius: 4px;
     }
 
     &__card-content {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-start;
       position: absolute;
-      padding: 8px;
+      padding: 4px;
       width: calc(100% - 16px);
       height: calc(100% - 16px);
       top: 8px;
@@ -162,15 +162,16 @@
     }
 
     &__icon {
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       border-radius: 8px;
       background: rgba(176,190,197 ,1);
-      margin-right: 8px;
+      margin-right: 4px;
     }
 
     &__info {
-      max-width: calc(100% - 40px);
+      max-width: calc(100% - 34px);
+      padding: 4px 0;
     }
 
     &__name {
@@ -180,6 +181,10 @@
 
     &__background-wrapper {
       text-align: center;
+      display: flex;
+      align-items: center;
+      flex-grow: 1;
+      padding: 0 4px;
     }
 
     &__description {
