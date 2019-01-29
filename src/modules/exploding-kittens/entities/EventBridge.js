@@ -15,7 +15,7 @@ export default class EventBridge {
         let room;
         console.log('new event emit', event);
 
-        if (payload.roomId) {
+        if (payload && payload.roomId) {
           room = getRoom(Rooms, payload.roomId);
 
           if (!room) {

@@ -9,7 +9,8 @@
 </template>
 
 <script>
-  import CardStack from './CardStack';
+  import CardStack      from './CardStack';
+  import sortPlayerDeck from './helpers/sortPlayerDeck';
 
   export default {
     name: 'PlayerDeck',
@@ -29,7 +30,7 @@
 
     methods: {
       updatePlayerDeck(deck) {
-        this.deck = deck;
+        this.deck = sortPlayerDeck(deck);
       },
 
       updateStats(gameData) {

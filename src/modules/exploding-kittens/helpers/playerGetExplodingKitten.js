@@ -1,6 +1,6 @@
 import sendGameMessage from './sendGameMessage';
 
-export default function playerGetExplodingKitten(bridge, room, player) {
+export default function playerGetExplodingKitten(bridge, room, player, card) {
   sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_GET_EXPLODING_KITTEN', room.id, player.name);
 
   if (player.deck.isCardExist('defuse')) {

@@ -11,6 +11,7 @@ import gameUpdate               from './helpers/gameUpdate';
 import playerConnect            from './helpers/playerConnect';
 import newMove                  from './helpers/newMove';
 import cardsApply               from './helpers/cardsApply';
+import isNopeCard               from './helpers/hasNopeCard';
 
 export default function init() {
   const io = ioStarter('/ws/exploding-kittens');
@@ -44,7 +45,7 @@ export default function init() {
     console.log('player get', card.props.type, 'card');
 
     if (card.props.type === 'exploding-kitten') {
-      playerGetExplodingKitten(bridge);
+      playerGetExplodingKitten(bridge, room, player, card);
     } else {
       player.deck.addCard(card);
     }
@@ -54,7 +55,7 @@ export default function init() {
     }
 
     sendGameMessage(bridge,'NOTIFICATIONS.GAME.PLAYER_TURN', room);
-    newMove(room, room.currentPlayer);
+    newMove(bridge, room, room.currentPlayer);
     bridge.emit(room.id, 'updateMove', { cards: room.history.current.allCards });
     gameUpdate(bridge, room);
   });
@@ -136,7 +137,7 @@ export default function init() {
 
     const currentPlayer = room.currentPlayer;
 
-    if (player.name !== currentPlayer.name) {
+    if (player.name !== currentPlayer.name && !isNopeCard(cards)) {
       return;
     }
 
@@ -163,7 +164,7 @@ export default function init() {
 
   bridge.on('getAllCardsType', (socket) => {
     bridge.emit(socket.id, 'showCardList', {
-      deck: Room.getAllCardsTypes(),
+      deck: Room.getAllCardsTypes().cards,
     });
   });
 

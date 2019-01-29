@@ -14,6 +14,7 @@ export default function playerConnect(bridge, name, room, socket) {
 
   if (room.gameStarted) {
     console.log('game started!');
+    console.log(room);
     const move = room.history.current;
 
     bridge.emit(socket.id, 'gameStart');

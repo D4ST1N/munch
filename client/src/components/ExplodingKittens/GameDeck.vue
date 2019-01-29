@@ -1,6 +1,6 @@
 <template>
   <div class="game-deck" @mouseover="onMouseOver" @mouseout="onMouseOut">
-    <transition-group name="game-deck" tag="div">
+    <transition-group name="game-deck" tag="div" :duration="{ enter: 500, leave: 0 }">
       <CardFlip
         v-for="(card, index) in deck"
         :key="index"
