@@ -46,9 +46,7 @@
     },
 
     created() {
-      this.$store.getters.socket.emit('getDeck', {
-        roomId: this.$route.params.id,
-      }, this.updateDeck);
+      this.$store.getters.socket.emit('getGameUpdates', { roomId: this.$route.params.id });
       this.$store.getters.socket.on('gameUpdate', this.updateStats);
       this.$store.getters.socket.on('seeTheFuture', (cards) => {
         console.log('seeTheFuture', cards);

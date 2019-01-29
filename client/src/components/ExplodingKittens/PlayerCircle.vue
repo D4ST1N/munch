@@ -40,6 +40,7 @@
     mounted() {
       this.$store.getters.socket.on('startTimer', this.onStartTimer);
       this.$store.getters.socket.on('stopTimer', this.onStopTimer);
+      this.onStartTimer(5000);
     },
 
     methods: {
@@ -51,12 +52,12 @@
         this.time = time;
         this.progress = new CircleProgress({
           pos: {
-            x: 64,
-            y: 64,
+            x: 62,
+            y: 62,
           },
-          radius: 62,
+          radius: 60,
           color: "white",
-          width: 4,
+          width: 6,
         });
 
         this.init([this.progress], {

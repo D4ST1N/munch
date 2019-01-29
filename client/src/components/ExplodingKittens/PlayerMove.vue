@@ -29,6 +29,7 @@
           'skip',
           'nope',
           'attack',
+          'favor',
         ],
       };
     },
@@ -59,7 +60,9 @@
           case 1:
             const [ card ] = cards;
 
-            return this.allowedSingleCards.includes(card.props.type);
+            return this.favorActive
+                   ? true
+                   : this.allowedSingleCards.includes(card.props.type);
 
           case 2: {
             const isOnlyCatCards = cards.every(card => card.props.isCatCard);
@@ -86,8 +89,11 @@
 
       move() {
         this.initMove().then((options) => {
-          console.log(options);
-          this.sendMove(options);
+          if (this.favorActive) {
+            this.sendFavorCard();
+          } else {
+            this.sendMove(options);
+          }
         }).catch(console.error);
       },
 
@@ -108,7 +114,11 @@
               }, reject);
               break;
             default:
-              resolve();
+              if (this.$store.getters.selectedCards[0].props.type === 'favor') {
+                this.$root.$emit('choosePlayer', resolve, reject);
+              } else {
+                resolve();
+              }
               break;
           }
         })
@@ -123,6 +133,18 @@
         });
         this.$store.commit('playerMove');
         this.show = false;
+      },
+
+      sendFavorCard() {
+        console.log('send card');
+        this.$store.getters.socket.emit('playerSelectFavorCard', {
+          name: this.$store.getters.player.name,
+          roomId: this.$route.params.id,
+          cards: this.$store.getters.selectedCards,
+        });
+        this.$store.commit('playerMove');
+        this.show = false;
+        this.favorActive = false;
       },
 
       onFavor() {

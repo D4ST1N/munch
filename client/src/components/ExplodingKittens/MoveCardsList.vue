@@ -20,10 +20,7 @@
     },
 
     created() {
-      this.$store.getters.socket.on('updateMove', (cards) => {
-        this.cards = cards;
-      });
-      this.$store.getters.socket.on('playerSelectCard', (cards) => {
+      this.$store.getters.socket.on('updateMove', ({ cards }) => {
         this.cards = cards;
       });
     },

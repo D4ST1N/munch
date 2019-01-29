@@ -31,9 +31,7 @@
       this.$root.$on('chooseCardType', (resolve, reject) => {
         this.resolve = resolve;
         this.reject = reject;
-        this.$store.getters.socket.emit('getAllCardsType', (deck) => {
-          this.updateDeck({ deck: deck.cards });
-        });
+        this.$store.getters.socket.emit('getAllCardsType');
       });
     },
 

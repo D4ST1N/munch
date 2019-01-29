@@ -2,8 +2,8 @@ import uuid                from 'uuid/v1';
 import Deck                from './Deck';
 import Player              from './Player';
 import History             from './History';
-import addCards            from './../addCards';
-import getPlayerStartCards from './../getPlayerStartCards';
+import addCards            from './../helpers/addCards';
+import getPlayerStartCards from './../helpers/getPlayerStartCards';
 import config              from '../../../configs/exploding-kittens';
 
 export default class Room {

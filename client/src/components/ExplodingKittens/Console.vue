@@ -163,12 +163,12 @@
     &__command {
       display: block;
       padding: 5px 12px;
-      background: rgba(84,110,122 ,.35);
+      background: rgba(110, 138, 160, 1);
       color: #fff8;
       transition: all .375s ease;
 
       &--selected {
-        background: rgba(84,110,122 ,.85);
+        background: rgba(89, 117, 131, 1);
         color: #fffa;
       }
     }

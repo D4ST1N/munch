@@ -1,4 +1,4 @@
-import Card from './entities/Card';
+import Card from '../entities/Card';
 
 export default function addCards(deck, config, numberOfCards) {
   for (let cardsCount = 0; cardsCount < numberOfCards; cardsCount++) {

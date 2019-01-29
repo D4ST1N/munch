@@ -30,11 +30,6 @@
     },
 
     created() {
-      this.$store.getters.socket.on('getTrash', {
-        roomId: this.$route.params.id,
-      }, (trash) => {
-        this.trash = trash;
-      });
       this.$store.getters.socket.on('gameUpdate', (data) => {
         this.trash = data.gameTrash;
         this.$store.commit('updateTrash', data.gameTrash);

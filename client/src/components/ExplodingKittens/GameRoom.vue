@@ -52,18 +52,12 @@
     },
 
     created() {
-      this.$store.getters.socket.emit(
-        'knockKnock',
-        {
-          roomId: this.$route.params.id
-        },
-        (exist) => {
-          if (exist) {
-            this.joinRoom();
-          }
-        }
-      );
+      this.$store.getters.socket.emit('knockKnock', {
+        roomId: this.$route.params.id,
+        event: 'roomStatus'
+      });
 
+      this.$store.getters.socket.on('roomStatus', this.onRoomStatus);
       this.$store.getters.socket.on('gameStatus', this.onGameStatus);
       this.$store.getters.socket.on('gameStart', this.onGameStart);
       this.$store.getters.socket.on('gameMessage', this.onGameMessage);
@@ -74,6 +68,7 @@
     },
 
     beforeDestroy() {
+      this.$store.getters.socket.off('roomStatus', this.onRoomStatus);
       this.$store.getters.socket.off('gameStatus', this.onGameStatus);
       this.$store.getters.socket.off('gameStart', this.onGameStart);
       this.$store.getters.socket.off('gameMessage', this.onGameMessage);
@@ -84,6 +79,12 @@
     },
 
     methods: {
+      onRoomStatus({ exist }) {
+        if (exist) {
+          this.joinRoom();
+        }
+      },
+
       joinRoom() {
         this.roomExist = true;
         this.$store.getters.socket.emit('playerJoin', {
@@ -110,18 +111,52 @@
 
       onGameMessage(message) {
         this.$root.$emit('showMessage', {
-          text: message.options ? this.$text(
-            personalizeText(message.text, message.options.player, this.$store.getters.player.name),
-            message.options,
-          ) : this.$text(message.text),
+          text: message.options
+            ? this.$text(
+              personalizeText(
+                message.text,
+                message.options.player,
+                this.$store.getters.player.name
+              ),
+              message.options)
+            : this.$text(message.text),
         });
       },
 
-      onFavor() {
+      onFavor({ name, actionEnabled }) {
         console.log('favooor');
-        this.$root.$emit('showMessage', {
-          text: 'Вибери карту та зроби ласку',
+        const title = this.$text('NOTIFICATIONS.GAME.CHOOSE_CARD_FOR_FAVOR', {
+          player: name,
         });
+        this.$root.$emit('showMessage', {
+          text: title,
+        });
+
+        const actions = [];
+
+        if (actionEnabled) {
+          actions.push({
+            text: this.$text('NOTIFICATIONS.GAME.NOPE'),
+            type: 'red',
+            size: 'medium',
+
+            action() {
+              console.log('stooop!!');
+              this.$store.getters.socket.emit('stopAction', {
+                roomId: this.$route.params.id,
+                name: this.$store.getters.player.name
+              });
+              this.$root.$emit('hideDialog');
+            }
+          });
+        }
+
+        this.$root.$emit('showDialog', {
+          actions,
+          title,
+          time: 0,
+          text: this.$text('NOTIFICATIONS.GAME.YOU_CAN_STOP'),
+        })
       },
 
       onStartActionTimer({ time, title, text, options, actionEnabled }) {

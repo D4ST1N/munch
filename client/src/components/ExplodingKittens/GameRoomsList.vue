@@ -48,11 +48,11 @@
       },
 
       emitRoomsDataUpdate() {
-        this.$store.getters.socket.emit('getRoomList', this.playerName, this.updateRoomList);
+        this.$store.getters.socket.emit('getRoomList', { name: this.playerName });
       },
 
       createRoom() {
-        this.$store.getters.socket.emit('createRoom', this.playerName);
+        this.$store.getters.socket.emit('createRoom', { name: this.playerName });
       },
     }
   };
