@@ -18,6 +18,9 @@
     <div v-if="active" class="game-room-players__label">
       {{ $text('NOTIFICATIONS.GAME.CHOOSE_PLAYER') }}
     </div>
+    <div v-if="playerMove" class="game-room-players__label">
+      {{ $text('NOTIFICATIONS.GAME.PLAYER_TURN.YOU') }}
+    </div>
   </div>
 </template>
 
@@ -39,6 +42,12 @@
         reject: null,
         active: false,
       };
+    },
+
+    computed: {
+      playerMove() {
+        return this.current === this.playerName;
+      },
     },
 
     created() {
@@ -98,11 +107,12 @@
     }
 
     &__label {
-      position: absolute;
+      position: fixed;
       z-index: 2;
-      background: rgba(33,150,243 ,1);
-      color: #fff;
-      top: 110%;
+      background: var(--ui-player-current-label-background);
+      color: var(--ui-player-current-label-color);
+      top: 20px;
+      left: 20px;
       padding: 8px 16px;
     }
   }

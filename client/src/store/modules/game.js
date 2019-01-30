@@ -4,14 +4,14 @@ const state = {
 };
 
 const mutations = {
-  toggleCard(state, card) {
-    const cardIndex = state.selectedCards.indexOf(card);
+  toggleCard(state, toggledCard) {
+    const cardIndex = state.selectedCards.findIndex(card => card.id === toggledCard.id);
 
     if (cardIndex !== -1) {
       return state.selectedCards.splice(cardIndex, 1);
     }
 
-    return state.selectedCards.push(card);
+    return state.selectedCards.push(toggledCard);
   },
 
   playerMove(state) {

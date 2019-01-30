@@ -13,4 +13,6 @@
     --ui-player-circle-border-color: var(--baby-powder);
     --ui-player-circle-label-background-color: var(--black-coral);
     --ui-player-circle-label-color: var(--baby-powder);
+    --ui-player-current-label-background: var(--white-smoke);
+    --ui-player-current-label-color: var(--charleston-green);
 }

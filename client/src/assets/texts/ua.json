@@ -76,7 +76,7 @@
     },
     "GAME": {
       "PLAYER_TURN": {
-        "YOU": "Твій хід!",
+        "YOU": "Твій хід",
         "OTHER": "Хід гравця {player}"
       },
       "PLAYER_EXPLODED": {

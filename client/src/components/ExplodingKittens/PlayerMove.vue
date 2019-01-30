@@ -52,7 +52,6 @@
 
     methods: {
       isMoveAvailable() {
-        console.log(this.$store.getters.selectedCards);
         const cards = this.$store.getters.selectedCards;
         const cardsCount = cards.length;
 

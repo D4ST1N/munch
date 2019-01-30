@@ -40,7 +40,6 @@
     mounted() {
       this.$store.getters.socket.on('startTimer', this.onStartTimer);
       this.$store.getters.socket.on('stopTimer', this.onStopTimer);
-      this.onStartTimer(5000);
     },
 
     methods: {

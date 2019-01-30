@@ -1,4 +1,4 @@
-export default function sendGameMessage(bridge, text, room, name, options = {}) {
+export default function sendGameMessage(bridge, text, room, name, options = {}, playerId = false) {
   console.log('send message to', room.id);
 
   const message = {
@@ -9,5 +9,5 @@ export default function sendGameMessage(bridge, text, room, name, options = {}) 
     },
   };
 
-  bridge.emit(room.id, 'gameMessage', message);
+  bridge.emit(playerId ? playerId : room.id, 'gameMessage', message);
 }
