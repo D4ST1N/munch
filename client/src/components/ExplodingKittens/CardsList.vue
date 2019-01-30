@@ -44,7 +44,7 @@
       cardClick(card) {
         if (this.event) {
           this.$store.getters.socket.emit(this.event, {
-            name: this.$store.getters.player.name,
+            name: this.$store.getters.player.username,
             roomId: this.$route.params.id,
             card,
           });

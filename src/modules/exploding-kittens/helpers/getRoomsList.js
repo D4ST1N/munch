@@ -6,6 +6,6 @@ export default function getRoomsList(rooms, name) {
       const gameStarted = room.gameStarted;
       const canJoin = (reconnected && gameStarted) || !gameStarted;
 
-      return Object.assign({}, room, { canJoin })
+      return Object.assign({}, room, { canJoin, reconnected })
     });
 }
