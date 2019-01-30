@@ -17,6 +17,10 @@ export default function cardsApply(bridge, cards, room, socket, options) {
         room.deck.shuffle();
 
         sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_SHUFFLE', room);
+
+        setTimeout(() => {
+          gameUpdate(bridge, room);
+        }, 500);
         gameUpdate(bridge, room);
 
         break;

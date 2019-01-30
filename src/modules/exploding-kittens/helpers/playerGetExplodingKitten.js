@@ -25,9 +25,10 @@ export default function playerGetExplodingKitten(bridge, room, player, card) {
     room.trash.addCard(...player.deck.cards, false);
     room.trash.addCard(card, false);
     player.deck.clear();
+    room.killCurrent();
 
     if (room.gameEnded) {
-      const winner = room.players.find(player => !player.exploded);
+      const winner = room.players[0];
 
       sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_WIN', room, winner.name);
       bridge.emit(winner.id, 'endGame', { win: true });

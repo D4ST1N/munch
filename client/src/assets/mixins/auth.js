@@ -4,14 +4,14 @@ export default {
   data() {
     return {
       loggedIn: this.$store.getters.isLoggedIn,
-      allDataExists: false
-    }
+      allDataExists: false,
+    };
   },
 
   computed: {
     isSocketConnected() {
-      return this.$store.getters.socket
-    }
+      return this.$store.getters.socket;
+    },
   },
 
   watch: {
@@ -19,10 +19,11 @@ export default {
       if (newValue !== oldValue && newValue) {
         this.allDataExists = true
       }
-    }
+    },
   },
 
   created() {
+    this.checkPage();
     const playerCookie = cookie.get('playerName');
 
     if (playerCookie) {
@@ -43,5 +44,17 @@ export default {
     } else {
       this.$router.push('/auth');
     }
+  },
+
+  methods: {
+    checkPage() {
+      if (this.$router.currentRoute.name === 'auth') {
+        this.allDataExists = true;
+      }
+    }
+  },
+
+  updated() {
+    this.checkPage();
   }
 }

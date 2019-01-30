@@ -96,9 +96,11 @@
     display: flex;
     justify-content: center;
     z-index: 1;
+    pointer-events: none;
 
     &__container {
       display: flex;
+      pointer-events: all;
 
       &--active {
         background: rgba(207,216,220 ,1);

@@ -156,6 +156,11 @@ export default function init() {
     room.history.newMove(move);
 
     move.addCards(cards, options).then(() => {
+      if (isNopeCard(cards)) {
+        move.timer.stopTimer();
+        bridge.emit(room.id, 'stopTimer');
+      }
+
       cardsApply(bridge, cards, room, socket, options);
     }).catch(console.error);
 

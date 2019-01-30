@@ -35,7 +35,7 @@ export default class Room {
   }
 
   get gameEnded() {
-    return this.players.filter(player => !player.exploded).length === 1;
+    return this.players.length === 1;
   }
 
   static getAllCardsTypes() {
@@ -137,10 +137,6 @@ export default class Room {
       index = 0;
     }
 
-    if (this.players[index].exploded) {
-      return this.nextPlayer(info);
-    }
-
     if (info) {
       return this.players[index];
     }
@@ -167,5 +163,9 @@ export default class Room {
     }
 
     return this.penaltyMoves > 0;
+  }
+
+  killCurrent() {
+    this.players.splice(this.currentPlayerIndex, 1);
   }
 }

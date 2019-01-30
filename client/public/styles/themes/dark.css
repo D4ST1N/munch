@@ -12,5 +12,8 @@
     --ui-player-circle-background-color: var(--wild-blue-yonder);
     --ui-player-circle-border-color: var(--white-smoke);
     --ui-player-circle-label-background-color: var(--medium-purple);
+    --ui-player-circle-label-current-background-color: var(--magnolia);
     --ui-player-circle-label-color: var(--onyx);
+    --ui-player-current-label-background: var(--white-smoke);
+    --ui-player-current-label-color: var(--charleston-green);
 }

@@ -15,13 +15,20 @@
             ></div>
           </div>
         </div>
-        <div v-if="state === 'joined'" class="game-room__action" @click="ready">{{ $text('GAME_ROOMS.READY') }}</div>
+        <Button
+          v-if="state === 'joined'"
+          class="game-room__action"
+          size="small"
+          type="green"
+          :text="$text('GAME_ROOMS.READY')"
+          @buttonClick="ready"
+        />
         <p v-else >{{ $text('GAME_ROOMS.WAIT') }}</p>
       </div>
       <div v-else class="game-room__content">
         <h2 class="game-room__players">{{ $text('GAME_ROOMS.NOT_EXIST') }}</h2>
         <router-link to="/exploding-kittens" class="game-room__action">
-          {{ $text('GAME_ROOMS.GO_HOME') }}
+          <Button size="small" type="green" :text="$text('GAME_ROOMS.GO_HOME')" />
         </router-link>
       </div>
     </div>
@@ -266,15 +273,8 @@
     }
 
     &__action {
-      display: inline-block;
       text-decoration: none;
-      padding: 8px 24px;
-      color: #fff;
-      background: rgba(33,150,243 ,1);
-      border: 0;
-      font-size: 20px;
       margin: 16px;
-      cursor: pointer;
     }
 
     &__players-list {

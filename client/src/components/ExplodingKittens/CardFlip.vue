@@ -9,7 +9,7 @@
     @click="cardClick"
   >
     <div :class="{ 'card-flip__wrapper': true, 'card-flip__wrapper--flipped': flipped }">
-      <div v-if="card.props" class="card-flip__content card-flip__content--front">
+      <div v-if="card.props" :class="cardContentClass">
         <div class="card-flip__border" :style="{ 'border-color': card.props.color }"></div>
         <div class="card-flip__card-content">
           <div class="card-flip__header">
@@ -21,7 +21,7 @@
           </div>
           <div class="card-flip__background-wrapper">
             <div class="card-flip__picture"></div>
-            <div class="card-flip__description">{{ $text(card.props.description) }}</div>
+            <div class="card-flip__description"></div>
           </div>
           <div class="card-flip__header card-flip__header--inverse">
             <div class="card-flip__icon" :style="{ background: card.props.color }"></div>
@@ -64,6 +64,15 @@
       return {
         settings: this.custom || settings.card,
       };
+    },
+
+    computed: {
+      cardContentClass() {
+        return {
+          'card-flip__content': true,
+          [`card-flip__content--${this.card.props.type}`]: true,
+        }
+      }
     },
 
     methods: {
@@ -119,9 +128,58 @@
       padding: 14px;
       border-radius: 8px;
       box-shadow: 0 0 0 1px rgba(38,50,56 ,.4);
+      background: #fff;
 
-      &--front {
-        background: #fff;
+      &--skip {
+        background: url(../../assets/img/cards/small/skip.jpg) no-repeat center/cover;
+      }
+
+      &--nope {
+        background: url(../../assets/img/cards/small/nope.jpg) no-repeat center/cover;
+      }
+
+      &--see-the-future {
+        background: url(../../assets/img/cards/small/see-the-future.jpg) no-repeat center/cover;
+      }
+
+      &--attack {
+        background: url(../../assets/img/cards/small/attack.jpg) no-repeat center/cover;
+      }
+
+      &--defuse {
+        background: url(../../assets/img/cards/small/defuse.jpg) no-repeat center/cover;
+      }
+
+      &--exploding-kitten {
+        background: url(../../assets/img/cards/small/exploding-kitten.jpg) no-repeat center/cover;
+      }
+
+      &--shuffle {
+        background: url(../../assets/img/cards/small/shuffle.jpg) no-repeat center/cover;
+      }
+
+      &--favor {
+        background: url(../../assets/img/cards/small/favor.jpg) no-repeat center/cover;
+      }
+
+      &--beard-cat {
+        background: url(../../assets/img/cards/small/beard-cat.jpg) no-repeat center/cover;
+      }
+
+      &--burrito-cat {
+        background: url(../../assets/img/cards/small/burrito-cat.jpg) no-repeat center/cover;
+      }
+
+      &--rainbow-cat {
+        background: url(../../assets/img/cards/small/rainbow-cat.jpg) no-repeat center/cover;
+      }
+
+      &--potato-cat {
+        background: url(../../assets/img/cards/small/potato-cat.jpg) no-repeat center/cover;
+      }
+
+      &--watermelon-cat {
+        background: url(../../assets/img/cards/small/watermelon-cat.jpg) no-repeat center/cover;
       }
 
       &--back {
@@ -164,7 +222,7 @@
     &__icon {
       width: 30px;
       height: 30px;
-      border-radius: 8px;
+      border-radius: 50%;
       background: rgba(176,190,197 ,1);
       margin-right: 4px;
     }

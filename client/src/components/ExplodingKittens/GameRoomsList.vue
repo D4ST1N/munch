@@ -10,16 +10,16 @@
           {{ $text('GAME_ROOMS.NUMBER_OF_PLAYERS') }} {{ room.players.length }}
         </div>
         <router-link v-if="room.canJoin" :to="`/exploding-kittens/room/${room.id}`" class="game-rooms-list__room-join" type="button">
-          {{ $text(room.reconnected ? 'GAME_ROOMS.RETURN' : 'GAME_ROOMS.JOIN') }}
+          <Button
+            size="small"
+            :type="room.reconnected ? 'green' : 'black'"
+            :text="$text(room.reconnected ? 'GAME_ROOMS.RETURN' : 'GAME_ROOMS.JOIN')"
+          />
         </router-link>
-        <div v-else class="game-rooms-list__room-started">
-          {{ $text('GAME_ROOMS.STARTED') }}
-        </div>
+        <Button v-else size="small" :text="$text('GAME_ROOMS.CREATE')" :disabled="true" @buttonClick="createRoom" />
       </div>
       <div class="game-rooms-list__room">
-        <button class="game-rooms-list__room-create" @click="createRoom">
-          {{ $text('GAME_ROOMS.CREATE') }}
-        </button>
+        <Button size="small" :text="$text('GAME_ROOMS.CREATE')" @buttonClick="createRoom" />
       </div>
     </div>
   </div>
@@ -71,6 +71,7 @@
     &__content {
       display: flex;
       align-items: flex-start;
+      flex-wrap: wrap;
     }
 
     &__room {
@@ -91,14 +92,7 @@
       &-join,
       &-create,
       &-started {
-        padding: 8px 16px;
         text-decoration: none;
-        background: rgba(38,50,56 ,1);
-        color: #fff;
-        border: 0;
-        display: inline-block;
-        cursor: pointer;
-        font-size: 16px;
       }
 
       &-started {

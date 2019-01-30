@@ -23,7 +23,6 @@
 
     data() {
       return {
-        allDataExists: false,
         theme: 'base',
         styles: null,
       };

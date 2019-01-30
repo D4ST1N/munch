@@ -81,6 +81,7 @@
                     this.$store.commit('authorization', body.data);
                     this.$store.commit('connect');
                     this.$emit('auth', body.data.username);
+                    this.$router.push('/');
                   });
               })
           });

@@ -3,7 +3,7 @@
     <transition-group name="game-deck" tag="div" :duration="{ enter: 500, leave: 0 }">
       <CardFlip
         v-for="(card, index) in deck"
-        :key="card.id"
+        :key="index"
         :flipped="isCardFlipped(card)"
         :card="card"
         :style="{
@@ -107,7 +107,12 @@
           roomId: this.$route.params.id,
           name: this.$store.getters.player.username,
         });
+
         this.$root.$emit('moveEnd');
+
+        if (this.showEnd) {
+          this.endSeeTheFuture();
+        }
       },
     },
   };
