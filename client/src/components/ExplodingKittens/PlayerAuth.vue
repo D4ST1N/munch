@@ -2,10 +2,23 @@
   <div class="player-auth">
     <div class="player-auth__content">
       <h1 class="player-auth__title">{{ $text('PLAYER_AUTH.TITLE') }}</h1>
-      <p class="player-auth__text">{{ $text('PLAYER_AUTH.ADD_NAME') }}</p>
-      <input v-model="name" type="text" class="player-auth__player-name">
-      <button class="player-auth__submit" @click="save" :disabled="!name">
+      <div>
+        <p class="player-auth__text">{{ $text('PLAYER_AUTH.ADD_NAME') }}</p>
+        <input v-model="name" type="text" class="player-auth__player-name">
+      </div>
+      <div v-if="!formLogin">
+        <p class="player-auth__text">{{ $text('PLAYER_AUTH.ADD_EMAIL') }}</p>
+        <input v-model="email" type="email" class="player-auth__player-name">
+      </div>
+      <div>
+        <p class="player-auth__text">{{ $text('PLAYER_AUTH.ADD_PASSWORD') }}</p>
+        <input v-model="password" type="password" class="player-auth__player-name">
+      </div>
+      <button class="player-auth__submit" @click="save" :disabled="!name && !password">
         {{ $text('PLAYER_AUTH.SUBMIT') }}
+      </button>
+      <button class="player-auth__submit" @click="changeForm">
+        {{ $text(formChangeText) }}
       </button>
     </div>
   </div>
@@ -20,6 +33,14 @@
     data() {
       return {
         name: '',
+        password: '',
+        email: '',
+        formChangeText: 'PLAYER_AUTH.REGISTER_FORM',
+        changeTexts: [
+          'PLAYER_AUTH.REGISTER_FORM',
+          'PLAYER_AUTH.LOGIN_FORM',
+        ],
+        formLogin: true
       };
     },
 
@@ -28,19 +49,46 @@
 
       if (playerName) {
         this.name = playerName;
-        this.save();
       }
     },
 
     methods: {
       save() {
-        cookie.set('playerName', this.name);
-        this.$emit('auth', this.name);
-        this.$store.commit('authorization', this.name);
-        this.$store.commit('connect');
+        const method = this.formLogin ? 'login' : 'register';
+        let userData = {
+          username: this.name,
+          password: this.password
+        };
 
-        this.$router.go(-1);
+        if (!this.formLogin) {
+          userData = {...userData, email: this.email}
+        }
+        cookie.set('playerName', this.name);
+        this.$store.dispatch(method, userData)
+          .then((data) => {
+            if (data.status >= 400) {
+              this.$store.commit('authError');
+              return;
+            }
+            this.$store.dispatch('getProfile')
+              .then(data => {
+                if (data.status >= 400) {
+                  this.$store.commit('authError');
+                  return;
+                }
+                data.json()
+                  .then(body => {
+                    this.$store.commit('authorization', body.data);
+                    this.$store.commit('connect');
+                    this.$emit('auth', body.data.username);
+                  });
+              })
+          });
       },
+      changeForm() {
+        this.formLogin = !this.formLogin;
+        this.formChangeText = this.changeTexts.filter(item => item !== this.formChangeText)[0];
+      }
     },
   };
 </script>

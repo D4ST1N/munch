@@ -36,7 +36,7 @@ const router = new Router({
       },
     },
     {
-      path: '/exploding-kittens/auth',
+      path: '/auth',
       name: 'auth',
       component: PlayerAuth,
       meta: {
@@ -53,14 +53,6 @@ const router = new Router({
     },
   ],
   mode: 'history',
-});
-
-router.beforeEach((to, from, next) => {
-  if (!store.getters.player && to.name !== 'auth') {
-    next('/exploding-kittens/auth');
-  } else {
-    next();
-  }
 });
 
 export default router;

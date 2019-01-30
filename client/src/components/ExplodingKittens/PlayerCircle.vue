@@ -29,7 +29,7 @@
         time: 0,
         startTime: 0,
         progress: null,
-        playerName: this.$store.getters.player.name
+        playerName: this.$store.getters.player.username
       }
     },
 

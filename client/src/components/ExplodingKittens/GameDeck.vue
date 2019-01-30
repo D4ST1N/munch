@@ -3,7 +3,7 @@
     <transition-group name="game-deck" tag="div" :duration="{ enter: 500, leave: 0 }">
       <CardFlip
         v-for="(card, index) in deck"
-        :key="index"
+        :key="card.id"
         :flipped="isCardFlipped(card)"
         :card="card"
         :style="{
@@ -105,7 +105,7 @@
       getCard() {
         this.$store.getters.socket.emit('playerGetCard', {
           roomId: this.$route.params.id,
-          name: this.$store.getters.player.name,
+          name: this.$store.getters.player.username,
         });
         this.$root.$emit('moveEnd');
       },

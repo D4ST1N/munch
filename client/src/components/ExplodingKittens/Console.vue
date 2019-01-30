@@ -91,7 +91,7 @@
         const [ command, ...options ] = this.search.match(/[\w-]+/g);
         console.log(command, options);
         this.$store.getters.socket.emit(command, {
-          name: this.$store.getters.player.name,
+          name: this.$store.getters.player.username,
           roomId: this.$route.params.id,
           options,
         });

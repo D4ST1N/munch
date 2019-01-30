@@ -126,7 +126,7 @@
 
       sendMove(options = {}) {
         this.$store.getters.socket.emit('playerMove', {
-          name: this.$store.getters.player.name,
+          name: this.$store.getters.player.username,
           roomId: this.$route.params.id,
           cards: this.$store.getters.selectedCards,
           options,
@@ -138,7 +138,7 @@
       sendFavorCard() {
         console.log('send card');
         this.$store.getters.socket.emit('playerSelectFavorCard', {
-          name: this.$store.getters.player.name,
+          name: this.$store.getters.player.username,
           roomId: this.$route.params.id,
           cards: this.$store.getters.selectedCards,
         });

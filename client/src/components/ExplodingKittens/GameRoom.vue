@@ -88,7 +88,7 @@
       joinRoom() {
         this.roomExist = true;
         this.$store.getters.socket.emit('playerJoin', {
-          name: this.$store.getters.player.name,
+          name: this.$store.getters.player.username,
           roomId: this.$route.params.id
         });
       },
@@ -116,7 +116,7 @@
               personalizeText(
                 message.text,
                 message.options.player,
-                this.$store.getters.player.name
+                this.$store.getters.player.username
               ),
               message.options)
             : this.$text(message.text),
@@ -144,7 +144,7 @@
               console.log('stooop!!');
               this.$store.getters.socket.emit('stopAction', {
                 roomId: this.$route.params.id,
-                name: this.$store.getters.player.name
+                name: this.$store.getters.player.username
               });
               this.$root.$emit('hideDialog');
             }
@@ -182,7 +182,7 @@
               console.log('stooop!!');
               this.$store.getters.socket.emit('stopAction', {
                 roomId: this.$route.params.id,
-                name: this.$store.getters.player.name
+                name: this.$store.getters.player.username
               });
               this.$root.$emit('hideDialog');
             }
@@ -216,13 +216,13 @@
       ready() {
         console.log('player ready');
         this.$store.getters.socket.emit('playerReady', {
-          name: this.$store.getters.player.name,
+          name: this.$store.getters.player.username,
           roomId: this.$route.params.id,
         });
       },
 
       updateState() {
-        const name = this.$store.getters.player.name;
+        const name = this.$store.getters.player.username;
         const player = this.players.find(player => player.name === name);
 
         if (player && player.ready) {

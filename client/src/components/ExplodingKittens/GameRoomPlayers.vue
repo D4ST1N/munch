@@ -36,7 +36,7 @@
     data() {
       return {
         players: [],
-        playerName: this.$store.getters.player.name,
+        playerName: this.$store.getters.player.username,
         current: '',
         resolve: null,
         reject: null,

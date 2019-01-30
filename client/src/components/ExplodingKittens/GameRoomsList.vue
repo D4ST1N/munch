@@ -10,7 +10,7 @@
           {{ $text('GAME_ROOMS.NUMBER_OF_PLAYERS') }} {{ room.players.length }}
         </div>
         <router-link v-if="room.canJoin" :to="`/exploding-kittens/room/${room.id}`" class="game-rooms-list__room-join" type="button">
-          {{ $text('GAME_ROOMS.JOIN') }}
+          {{ $text(room.reconnected ? 'GAME_ROOMS.RETURN' : 'GAME_ROOMS.JOIN') }}
         </router-link>
         <div v-else class="game-rooms-list__room-started">
           {{ $text('GAME_ROOMS.STARTED') }}
@@ -32,14 +32,19 @@
     data() {
       return {
         rooms: [],
-        playerName: this.$store.getters.player.name
-      };
+      }
     },
 
     created() {
       this.emitRoomsDataUpdate();
       this.$store.getters.socket.on('roomList', this.updateRoomList);
       this.$store.getters.socket.on('newGameStarted', this.emitRoomsDataUpdate);
+    },
+
+    computed: {
+      playerName() {
+        return this.$store.getters.player.username || ''
+      }
     },
 
     methods: {
