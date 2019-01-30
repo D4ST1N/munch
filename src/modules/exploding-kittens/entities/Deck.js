@@ -51,4 +51,8 @@ export default class Deck {
   useUpperCard() {
     return this.cards.pop();
   }
+
+  clear() {
+    this.cards = [];
+  }
 }

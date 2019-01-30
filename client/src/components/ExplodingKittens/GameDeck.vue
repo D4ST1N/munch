@@ -87,12 +87,12 @@
 
       cardOffsetX(card, index) {
         return this.isCardFlipped(card)
-               ? (this.showDeck ? 15 : -1) * index
+               ? (this.showDeck ? 15 : -0.25) * index
                : 168 * (4 - (this.deck.length - index));
       },
 
       cardOffsetY(card, index) {
-        return -2 * index;
+        return -0.5 * index;
       },
 
       endSeeTheFuture() {

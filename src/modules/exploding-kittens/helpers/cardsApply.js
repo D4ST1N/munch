@@ -59,7 +59,9 @@ export default function cardsApply(bridge, cards, room, socket, options) {
       case 'nope':
         const previousPart = room.history.current.parts[room.history.current.parts.length - 2];
 
-        cardsCancel(bridge, previousPart.cards, room, socket, options);
+        if (previousPart) {
+          cardsCancel(bridge, previousPart.cards, room, socket, options);
+        }
 
         break;
 

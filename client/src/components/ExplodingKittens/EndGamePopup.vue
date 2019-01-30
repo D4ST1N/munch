@@ -38,7 +38,7 @@
     },
 
     created() {
-      this.$store.getters.socket.on('endGame', (win) => {
+      this.$store.getters.socket.on('endGame', ({ win }) => {
         this.win = win;
         this.show = true;
       });

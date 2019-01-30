@@ -1,6 +1,6 @@
 <template>
   <div v-if="cards.length" class="move-cards-list">
-    <CardStack :cards="cards" type="card-list" />
+    <CardStack :cards="cards" />
   </div>
 </template>
 
@@ -30,7 +30,7 @@
 <style lang="scss">
   .move-cards-list {
     position: fixed;
-    top: calc(50% - 220px);
+    top: calc(50% - 120px);
     left: 0;
     width: 100%;
     display: flex;

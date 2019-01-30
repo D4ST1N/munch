@@ -31,7 +31,7 @@
 
     created() {
       this.$store.getters.socket.on('gameUpdate', (data) => {
-        this.trash = data.gameTrash;
+        this.trash = data.gameTrash.slice(-5);
         this.$store.commit('updateTrash', data.gameTrash);
       });
     },

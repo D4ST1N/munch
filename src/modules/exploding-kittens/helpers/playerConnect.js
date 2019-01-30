@@ -17,10 +17,18 @@ export default function playerConnect(bridge, name, room, socket) {
     console.log(room);
     const move = room.history.current;
     const player = room.getPlayer(name);
+    const currentPlayer = room.currentPlayer;
 
     bridge.emit(socket.id, 'gameStart');
 
-    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_TURN', room, name, {}, player.id);
+    sendGameMessage(
+      bridge,
+      'NOTIFICATIONS.GAME.PLAYER_TURN',
+      room,
+      currentPlayer.name,
+      {},
+      player.id,
+    );
     gameUpdate(bridge, room, reconnected ? name : false);
     bridge.emit(room.id, 'updateMove', { cards: move.allCards });
   } else {

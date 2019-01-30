@@ -5,5 +5,5 @@ export default function isNopeCard(cards) {
 
   const [card] = cards;
 
-  return card.props.type = 'nope';
+  return card.props.type === 'nope';
 }
