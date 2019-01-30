@@ -57,7 +57,7 @@
   .trash-ui {
     position: fixed;
     transition: all 0.15s ease;
-    left: 100px;
-    top: calc(70% - 200px);
+    left: 20px;
+    top: 120px;
   }
 </style>

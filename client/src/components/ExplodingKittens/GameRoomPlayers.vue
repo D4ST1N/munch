@@ -68,7 +68,7 @@
       },
 
       updatePlayersList(players) {
-        this.players = players.filter(player => player.name !== this.playerName);
+        this.players = players;
       },
 
       onChoosePlayer(resolve, reject) {

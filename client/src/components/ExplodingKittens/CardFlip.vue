@@ -89,13 +89,13 @@
         z-index: 100;
 
         .card-flip__wrapper {
-          transform: scale(1.1);
+          transform: scale(1.075);
         }
       }
     }
 
     &--selected {
-      top: -48px;
+      top: -20px;
     }
 
     &__wrapper {

@@ -2,7 +2,7 @@
   <div v-if="!!deck.length" class="cards-list">
     <div class="cards-list__content">
       <div class="cards-list__wrapper">
-        <CardStack :cards="deck" @cardClick="cardClick" />
+        <CardStack :cards="deck" :areaWidth="1840" @cardClick="cardClick" />
       </div>
     </div>
   </div>
@@ -73,7 +73,7 @@
     &__content {
       background: rgba(144,164,174 ,1);
       padding: 20px;
-      width: calc(100vw - 50px);
+      width: calc(100vw - 40px);
     }
 
     &__wrapper {

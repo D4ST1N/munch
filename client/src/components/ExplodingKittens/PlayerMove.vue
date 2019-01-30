@@ -93,6 +93,7 @@
           } else {
             this.sendMove(options);
           }
+          this.$root.$emit('playerMove');
         }).catch(console.error);
       },
 

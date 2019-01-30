@@ -19,7 +19,7 @@
     <Button
       v-if="showEnd"
       type="blue"
-      size="big"
+      size="small"
       :text="$text('NOTIFICATIONS.GAME.END_SEE_THE_FUTURE')"
       class="game-deck__button"
       @buttonClick="endSeeTheFuture"
@@ -82,17 +82,17 @@
       },
 
       getOffset(card, index) {
-        return `translate(${this.cardOffsetX(card, index)}px, ${this.cardOffsetY(card, index)}px)`;
+        return `translate(${this.cardOffsetX(card, index)}px, ${this.cardOffsetY(card, index)}px) scale(${this.isCardFlipped(card) ? 1 : 0.85})`;
       },
 
       cardOffsetX(card, index) {
         return this.isCardFlipped(card)
                ? (this.showDeck ? 15 : -0.25) * index
-               : 168 * (4 - (this.deck.length - index));
+               : -110 * (3 - (this.deck.length - index)) + 10;
       },
 
       cardOffsetY(card, index) {
-        return -0.5 * index;
+        return this.isCardFlipped(card) ? -0.5 * index : 220;
       },
 
       endSeeTheFuture() {
@@ -116,16 +116,16 @@
 <style lang="scss">
   .game-deck {
     position: fixed;
-    left: 100px;
-    top: calc(40% - 200px);
+    left: 220px;
+    top: 120px;
 
     &__card {
       position: absolute;
     }
 
     &__button {
-      left: 320px;
-      bottom: calc(50vh - 140px);
+      left: 20px;
+      top: 560px;
       position: fixed;
     }
 

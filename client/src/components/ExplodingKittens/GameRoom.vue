@@ -156,7 +156,10 @@
           title,
           time: 0,
           text: this.$text('NOTIFICATIONS.GAME.YOU_CAN_STOP'),
-        })
+        });
+        this.$root.$on('playerMove', () => {
+          this.$root.$emit('hideDialog');
+        });
       },
 
       onStartActionTimer({ time, title, text, options, actionEnabled }) {

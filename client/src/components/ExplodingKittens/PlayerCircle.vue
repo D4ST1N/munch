@@ -1,7 +1,12 @@
 <template>
   <div :class="playerClass" @click="onClick">
     <canvas ref="canvas" class="player-circle__canvas"></canvas>
-    <div class="player-circle__name">{{ name }}</div>
+    <div
+      :class="{
+        'player-circle__name': true,
+        'player-circle__name--current': playerName === name
+      }"
+    >{{ name }}</div>
   </div>
 </template>
 
@@ -24,6 +29,7 @@
         time: 0,
         startTime: 0,
         progress: null,
+        playerName: this.$store.getters.player.name
       }
     },
 
@@ -102,23 +108,11 @@
     position: relative;
     margin: 16px;
     cursor: pointer;
+    transition: all .375s;
 
     &--current {
-      &::before,
-      &::after {
-        content: '';
-        width: 22px;
-        height: 44px;
-        position: absolute;
-        top: calc(100% + 16px);
-        left: calc(50% - 22px);
-        background: url("../../assets/img/arrow-up-1.png") no-repeat left;
-      }
-
-      &::after {
-        left: 50%;
-        background: url("../../assets/img/arrow-up-2.png") no-repeat right;
-      }
+      transform-origin: 50% 0;
+      transform: scale(1.2);
     }
 
     &--exploded {
@@ -150,6 +144,10 @@
       background: var(--ui-player-circle-label-background-color);
       color: var(--ui-player-circle-label-color);
       border-radius: 4px;
+
+      &--current {
+        background: var(--ui-player-circle-label-current-background-color);
+      }
     }
 
     &__canvas {

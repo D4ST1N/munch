@@ -48,6 +48,10 @@
         type: Boolean,
         default: false,
       },
+      areaWidth: {
+        type: Number,
+        default: window.innerWidth - 40,
+      },
       selectedCards: {
         type: Array,
 
@@ -65,7 +69,7 @@
 
     methods: {
       getCardOffset(index) {
-        const maxWidth = window.innerWidth - 40;
+        const maxWidth = this.areaWidth;
         const cardCount = this.cards.length;
         const cardsWidth = cardCount * this.settingsData.width;
         const distancesWidth = (cardCount - 1) * this.settingsData.distance;
