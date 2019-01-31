@@ -23,7 +23,6 @@ export default {
   },
 
   created() {
-    this.checkPage();
     const playerCookie = cookie.get('playerName');
 
     if (playerCookie) {
@@ -32,6 +31,7 @@ export default {
           if (data.status >= 400) {
             this.$store.commit('authError');
             this.$router.push('/auth');
+            this.checkPage();
             return;
           }
           data.json()
@@ -43,6 +43,7 @@ export default {
         });
     } else {
       this.$router.push('/auth');
+      this.checkPage();
     }
   },
 

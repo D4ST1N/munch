@@ -92,7 +92,7 @@ export default function init() {
     player.ready = true;
 
     console.log('emit status', player.name);
-    bridge.emit(room.id, 'gameStatus', room.players);
+    bridge.emit(room.id, 'gameStatus', { players: room.players, watchers: room.watchers });
 
     if (!room.gameStarted) {
       return;

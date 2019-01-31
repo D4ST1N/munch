@@ -1,6 +1,7 @@
 import uuid                from 'uuid/v1';
 import Deck                from './Deck';
 import Player              from './Player';
+import Watcher             from './Watcher';
 import History             from './History';
 import addCards            from './../helpers/addCards';
 import getPlayerStartCards from './../helpers/getPlayerStartCards';
@@ -10,6 +11,7 @@ export default class Room {
   constructor() {
     this.id = uuid();
     this.players = [];
+    this.watchers = [];
     this.deck = new Deck();
     this.trash = new Deck();
     this.currentPlayerIndex = 0;
@@ -49,17 +51,26 @@ export default class Room {
   }
 
   playerConnect(playerName, id) {
+    const isPlayer = this.isPlayerExist(playerName);
+    const isWatcher = this.isWatcherExist(playerName);
     let reconnect = false;
 
-    if (this.isPlayerExist(playerName)) {
+    if (isPlayer) {
       reconnect = true;
 
       this.getPlayer(playerName).reconnect(id);
-    } else {
+    } else if (!this.gameStarted) {
       this.players.push(new Player({
         id,
         name: playerName,
       }));
+    } else if (!isWatcher) {
+      this.watchers.push(new Watcher({
+        id,
+        name: playerName,
+      }));
+    } else {
+      this.getWatcher(playerName).reconnect(id);
     }
 
     return reconnect;
@@ -117,8 +128,16 @@ export default class Room {
     return this.players.find(player => player.name === playerName);
   }
 
+  getWatcher(watcherName) {
+    return this.watchers.find(watcher => watcher.name === watcherName);
+  }
+
   isPlayerExist(playerName) {
     return !!this.getPlayer(playerName);
+  }
+
+  isWatcherExist(playerName) {
+    return !!this.getWatcher(playerName);
   }
 
   playersList() {

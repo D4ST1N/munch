@@ -17,7 +17,10 @@ export default function playerConnect(bridge, name, room, socket) {
     console.log(room);
     const move = room.history.current;
     const player = room.getPlayer(name);
+    const watcher = room.getWatcher(name);
     const currentPlayer = room.currentPlayer;
+    const userName = reconnected ? name : false;
+    const watcherName = player ? false : watcher.name;
 
     bridge.emit(socket.id, 'gameStart');
 
@@ -27,11 +30,12 @@ export default function playerConnect(bridge, name, room, socket) {
       room,
       currentPlayer.name,
       {},
-      player.id,
+      player ? player.id : watcher.id,
     );
-    gameUpdate(bridge, room, reconnected ? name : false);
-    bridge.emit(room.id, 'updateMove', { cards: move.allCards });
+
+    gameUpdate(bridge, room, userName, watcherName);
+    bridge.emit(room.id, 'updateMove', { cards: move ? move.allCards : [] });
   } else {
-    bridge.emit(room.id, 'gameStatus', room.players);
+    bridge.emit(room.id, 'gameStatus', { players: room.players, watchers: room.watchers });
   }
 }
