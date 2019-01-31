@@ -16,7 +16,7 @@
             :text="$text(room.reconnected ? 'GAME_ROOMS.RETURN' : 'GAME_ROOMS.JOIN')"
           />
         </router-link>
-        <Button v-else size="small" :text="$text('GAME_ROOMS.CREATE')" :disabled="true" @buttonClick="createRoom" />
+        <Button v-else size="small" :text="$text('GAME_ROOMS.STARTED')" :disabled="true" @buttonClick="createRoom" />
       </div>
       <div class="game-rooms-list__room">
         <Button size="small" :text="$text('GAME_ROOMS.CREATE')" @buttonClick="createRoom" />

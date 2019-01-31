@@ -43,14 +43,15 @@ export default function init() {
     const card = room.deck.useUpperCard();
 
     console.log('player get', card.props.type, 'card');
+    let next = true;
 
     if (card.props.type === 'exploding-kitten') {
-      playerGetExplodingKitten(bridge, room, player, card);
+      next = playerGetExplodingKitten(bridge, room, player, card);
     } else {
       player.deck.addCard(card);
     }
 
-    if (!room.playerEndMove()) {
+    if (next && room.status !== 'ended' && !room.playerEndMove()) {
       room.nextPlayer();
     }
 

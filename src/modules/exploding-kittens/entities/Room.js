@@ -133,7 +133,7 @@ export default class Room {
 
     index++;
 
-    if (index === this.players.length) {
+    if (index >= this.players.length) {
       index = 0;
     }
 
@@ -167,5 +167,7 @@ export default class Room {
 
   killCurrent() {
     this.players.splice(this.currentPlayerIndex, 1);
+    this.previousPlayer();
+    this.nextPlayer();
   }
 }

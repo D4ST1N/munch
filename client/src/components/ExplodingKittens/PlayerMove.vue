@@ -63,20 +63,9 @@
                    ? true
                    : this.allowedSingleCards.includes(card.props.type);
 
-          case 2: {
-            const isOnlyCatCards = cards.every(card => card.props.isCatCard);
-            const [leftCard, rightCard] = cards;
-            const sameCards = leftCard.props.type === rightCard.props.type;
-
-            return isOnlyCatCards && sameCards;
-          }
-
-          case 3: {
-            const isOnlyCatCards = cards.every(card => card.props.isCatCard);
-            const sameCards = new Set(cards.map(card => card.props.type)).size === 1;
-
-            return isOnlyCatCards && sameCards;
-          }
+          case 2:
+          case 3:
+            return new Set(cards.map(card => card.props.type)).size === 1;
 
           case 5:
             return new Set(cards.map(card => card.props.type)).size === 5;
