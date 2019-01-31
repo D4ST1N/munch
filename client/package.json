@@ -1,6 +1,6 @@
 {
   "name": "munch",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -12,8 +12,9 @@
     "socket.io": "^2.2.0",
     "uuid": "^3.3.2",
     "uws": "^10.148.1",
-    "vue": "^2.5.17",
+    "vue": "^2.5.22",
     "vue-router": "^3.0.2",
+    "vue-template-compiler": "^2.5.22",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
@@ -25,8 +26,7 @@
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0-0",
     "node-sass": "^4.11.0",
-    "sass-loader": "^7.0.1",
-    "vue-template-compiler": "^2.5.17"
+    "sass-loader": "^7.0.1"
   },
   "eslintConfig": {
     "root": true,

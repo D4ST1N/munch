@@ -13,7 +13,7 @@
         <div class="card-flip__border" :style="{ 'border-color': card.props.color }"></div>
         <div class="card-flip__card-content">
           <div class="card-flip__header">
-            <div class="card-flip__icon" :style="{ background: card.props.color }"></div>
+            <div :class="cardIconClass"></div>
             <div class="card-flip__info">
               <div class="card-flip__name">{{ $text(card.props.name) }}</div>
               <div class="card-flip__legend"></div>
@@ -24,7 +24,7 @@
             <div class="card-flip__description"></div>
           </div>
           <div class="card-flip__header card-flip__header--inverse">
-            <div class="card-flip__icon" :style="{ background: card.props.color }"></div>
+            <div :class="cardIconClass"></div>
             <div class="card-flip__info">
               <div class="card-flip__name">{{ $text(card.props.name) }}</div>
             </div>
@@ -71,7 +71,14 @@
         return {
           'card-flip__content': true,
           [`card-flip__content--${this.card.props.type}`]: true,
-        }
+        };
+      },
+
+      cardIconClass() {
+        return {
+          'card-flip__icon': true,
+          [`card-flip__icon--${this.card.props.type}`]: true,
+        };
       }
     },
 
@@ -225,6 +232,58 @@
       border-radius: 50%;
       background: rgba(176,190,197 ,1);
       margin-right: 4px;
+
+      &--skip {
+        background: url(../../assets/img/icons/small/skip.png) no-repeat center/cover;
+      }
+
+      &--nope {
+        background: url(../../assets/img/icons/small/nope.png) no-repeat center/cover;
+      }
+
+      &--see-the-future {
+        background: url(../../assets/img/icons/small/see-the-future.png) no-repeat center/cover;
+      }
+
+      &--attack {
+        background: url(../../assets/img/icons/small/attack.png) no-repeat center/cover;
+      }
+
+      &--defuse {
+        background: url(../../assets/img/icons/small/defuse.png) no-repeat center/cover;
+      }
+
+      &--favor {
+        background: url(../../assets/img/icons/small/favor.png) no-repeat center/cover;
+      }
+
+      &--rainbow-cat {
+        background: url(../../assets/img/icons/small/rainbow-cat.png) no-repeat center/cover;
+      }
+
+      &--shuffle {
+        background: url(../../assets/img/icons/small/shuffle.png) no-repeat center/cover;
+      }
+
+      &--burrito-cat {
+        background: url(../../assets/img/icons/small/burrito-cat.png) no-repeat center/cover;
+      }
+
+      &--beard-cat {
+        background: url(../../assets/img/icons/small/beard-cat.png) no-repeat center/cover;
+      }
+
+      &--watermelon-cat {
+        background: url(../../assets/img/icons/small/watermelon-cat.png) no-repeat center/cover;
+      }
+
+      &--potato-cat {
+        background: url(../../assets/img/icons/small/potato-cat.png) no-repeat center/cover;
+      }
+
+      &--exploding-kitten {
+        background: transparent;
+      }
     }
 
     &__info {
