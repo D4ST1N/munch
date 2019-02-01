@@ -100,9 +100,11 @@
         });
       },
 
-      onGameStatus(playersList) {
+      onGameStatus({players, watchers}) {
         console.log('player list update');
-        this.players = playersList;
+        console.log(players);
+        this.players = players;
+        this.watchers = watchers;
         this.updateState();
       },
 

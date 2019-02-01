@@ -9,14 +9,13 @@
         <div class="game-rooms-list__room-players">
           {{ $text('GAME_ROOMS.NUMBER_OF_PLAYERS') }} {{ room.players.length }}
         </div>
-        <router-link v-if="room.canJoin" :to="`/exploding-kittens/room/${room.id}`" class="game-rooms-list__room-join" type="button">
+        <router-link :to="`/exploding-kittens/room/${room.id}`" class="game-rooms-list__room-join" type="button">
           <Button
             size="small"
             :type="room.reconnected ? 'green' : 'black'"
             :text="$text(room.reconnected ? 'GAME_ROOMS.RETURN' : 'GAME_ROOMS.JOIN')"
           />
         </router-link>
-        <Button v-else size="small" :text="$text('GAME_ROOMS.STARTED')" :disabled="true" @buttonClick="createRoom" />
       </div>
       <div class="game-rooms-list__room">
         <Button size="small" :text="$text('GAME_ROOMS.CREATE')" @buttonClick="createRoom" />
