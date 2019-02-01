@@ -154,11 +154,36 @@
       },
       "BACK_TO_ROOMS": "Повернутись до списку кімнат",
       "CONTINUE_WATCHING": "Продовжити дивитись за грою",
+      "SEE_LOGS": "Переглянути логи гри",
       "END_GAME": {
         "WIN": "Ти переміг!",
         "LOOSE": "Ти підірвався"
       },
       "PLAYER_HAS_NOT_CARD": "У гравця немає такої карти"
     }
+  },
+  "LOGS": {
+    "GAME_NOT_ENDED": "Цієї гри не існує, або вона ще не закінчилась, логи недоступні",
+    "PLAYER_USE_SHUFFLE": "Гравець {player} перетасовує карти",
+    "PLAYER_SEE_THE_FUTURE": "Гравець {player} подивився майбутнє і побачив",
+    "PLAYER_SKIP_MOVE": "Гравець {player} пропускає хід",
+    "PLAYER_MOVE": "Хід граця {player}",
+    "PLAYER_USE_FAVOR": "Гравець {player} використовує зроби ласку на гравцеві {whom}",
+    "PLAYER_GIVE_CARD": "Гравець {player} віддає карту",
+    "PLAYER_USE_TWO_CARDS_COMBO": "Гравець {player} використовує комбінацію з двох карт на гравцеві {who}",
+    "PLAYER_GET_CARD": "Гравець {player} витягує карту",
+    "PLAYER_USE_THREE_CARDS_COMBO": "Гравець {player} використовує комбінацію з трьох карт на гравцеві {whom} і хоче поцупити в нього карту \"{card}\"",
+    "PLAYER_USE_FIVE_CARDS_COMBO": "Гравець {player} використовує комбінацію з п'яти карт",
+    "PLAYER_DEFUSE_EXPLODING_KITTEN": "Гравець {player} знешкодив вибухове кошеня кошеня",
+    "PLAYER_EXPLODED": "Гравець {player} вибухнув",
+    "PLAYER_WIN": "Гравець {player} переміг",
+    "PLAYER_RECONNECT": "Гравець {player} повернувся до кімнати",
+    "PLAYER_CONNECT": "Гравець {player} приєднався до кімнати",
+    "PLAYER_READY": "Гравець {player} готовий до гри",
+    "GAME_STARTED": "Гра почалась",
+    "START_DECK": "Стартова колода",
+    "PLAYER_DECK": "Колода гравця {player}",
+    "PLAYER_BLOCK_ACTION": "Гравець {player} блокує дію",
+    "PLAYER_MAKE_MOVE": "Гравець {player} зробив хід"
   }
 }

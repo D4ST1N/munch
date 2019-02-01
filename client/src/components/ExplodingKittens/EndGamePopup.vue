@@ -16,13 +16,9 @@
       <router-link to="/exploding-kittens" class="end-game-popup__link">
         <Button type="white" size="big" :text="$text('NOTIFICATIONS.GAME.BACK_TO_ROOMS')" />
       </router-link>
-      <Button
-        v-if="!win"
-        type="blue"
-        size="big"
-        :text="$text('NOTIFICATIONS.GAME.CONTINUE_WATCHING')"
-        @buttonClick="close"
-      />
+      <router-link :to="`/exploding-kittens/room/${$route.params.id}/logs`" class="end-game-popup__link">
+        <Button type="blue" size="big" :text="$text('NOTIFICATIONS.GAME.SEE_LOGS')" />
+      </router-link>
     </div>
   </div>
 </template>

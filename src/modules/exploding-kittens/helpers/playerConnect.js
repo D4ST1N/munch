@@ -31,7 +31,19 @@ export default function playerConnect(bridge, name, room, socket) {
     );
     gameUpdate(bridge, room, reconnected ? name : false);
     bridge.emit(room.id, 'updateMove', { cards: move.allCards });
+    room.logs.push({
+      text: 'LOGS.PLAYER_RECONNECT',
+      options: {
+        player: name,
+      },
+    });
   } else {
     bridge.emit(room.id, 'gameStatus', room.players);
+    room.logs.push({
+      text: 'LOGS.PLAYER_CONNECT',
+      options: {
+        player: name,
+      },
+    });
   }
 }

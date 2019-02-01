@@ -15,6 +15,9 @@ export default function cardsCancel(bridge, cards, room, socket, options) {
         room.previousPlayer();
 
         sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_TURN', room);
+        room.logs.push({
+          text: `Хід граця ${room.currentPlayer.name}`,
+        });
         gameUpdate(bridge, room);
 
         break;
@@ -26,6 +29,9 @@ export default function cardsCancel(bridge, cards, room, socket, options) {
         room.penaltyMoves -= 2;
 
         sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_TURN', room);
+        room.logs.push({
+          text: `Хід граця ${room.currentPlayer.name}`,
+        });
         gameUpdate(bridge, room);
 
         break;

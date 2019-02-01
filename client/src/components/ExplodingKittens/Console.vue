@@ -38,7 +38,10 @@
           },
           {
             name: '_showGameDeck'
-          }
+          },
+          {
+            name: '_saveLogs'
+          },
         ],
         search: '',
         commandIndex: null,

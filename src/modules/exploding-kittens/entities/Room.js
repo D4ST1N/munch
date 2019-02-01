@@ -17,6 +17,7 @@ export default class Room {
     this.penaltyMoves = 0;
     this.previousPlayerIndex = null;
     this.history = new History();
+    this.logs = [];
   }
 
   get currentPlayer() {

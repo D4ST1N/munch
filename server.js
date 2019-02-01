@@ -1,6 +1,7 @@
 import express          from 'express';
 import http             from 'http';
 import path             from 'path';
+import fs               from 'fs';
 import {
   createLogger,
   format,
@@ -84,6 +85,18 @@ app.use('/static', express.static(__dirname + '/client/dist'));
 
 app.get('/circle-crush/config', (request, response) => {
   response.sendFile(path.join(__dirname, '/src/configs/circle-crush.json'));
+});
+
+app.get('/exploding-kittens/logs/:id', (request, response, next) => {
+  const filePath = path.join(__dirname, `/logs/games/${request.params.id}.js`);
+
+  fs.readFile(filePath, (err) => {
+    if (err) {
+      next(err);
+    }
+
+    response.sendFile(filePath);
+  });
 });
 
 app.use((request, response) => {

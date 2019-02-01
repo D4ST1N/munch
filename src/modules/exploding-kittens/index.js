@@ -12,6 +12,7 @@ import playerConnect            from './helpers/playerConnect';
 import newMove                  from './helpers/newMove';
 import cardsApply               from './helpers/cardsApply';
 import isNopeCard               from './helpers/hasNopeCard';
+import writeLog                 from './helpers/writeLog';
 
 export default function init() {
   const io = ioStarter('/ws/exploding-kittens');
@@ -44,6 +45,13 @@ export default function init() {
 
     console.log('player get', card.props.type, 'card');
     let next = true;
+    room.logs.push({
+      text: 'LOGS.PLAYER_GET_CARD',
+      options: {
+        player: name,
+      },
+      deck: [{...card}],
+    });
 
     if (card.props.type === 'exploding-kitten') {
       next = playerGetExplodingKitten(bridge, room, player, card);
@@ -51,11 +59,21 @@ export default function init() {
       player.deck.addCard(card);
     }
 
+    if (room.status === 'ended') {
+      writeLog(room.id, room.logs);
+    }
+
     if (next && room.status !== 'ended' && !room.playerEndMove()) {
       room.nextPlayer();
     }
 
     sendGameMessage(bridge,'NOTIFICATIONS.GAME.PLAYER_TURN', room);
+    room.logs.push({
+      text: 'LOGS.PLAYER_MOVE',
+      options: {
+        player: room.currentPlayer.name,
+      },
+    });
     newMove(bridge, room, room.currentPlayer);
     bridge.emit(room.id, 'updateMove', { cards: room.history.current.allCards });
     gameUpdate(bridge, room);
@@ -93,6 +111,12 @@ export default function init() {
 
     console.log('emit status', player.name);
     bridge.emit(room.id, 'gameStatus', room.players);
+    room.logs.push({
+      text: 'LOGS.PLAYER_READY',
+      options: {
+        player: name,
+      },
+    });
 
     if (!room.gameStarted) {
       return;
@@ -106,6 +130,28 @@ export default function init() {
     bridge.emit(room.id, 'gameStart');
     sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_TURN', room);
     gameUpdate(bridge, room);
+    room.logs.push({
+      text: 'LOGS.GAME_STARTED',
+    });
+    room.logs.push({
+      text: 'LOGS.START_DECK',
+      deck: [...room.deck.cards],
+    });
+    room.players.forEach((player) => {
+      room.logs.push({
+        text: 'LOGS.PLAYER_DECK',
+        options: {
+          player: player.name,
+        },
+        deck: [...player.deck.cards],
+      });
+    });
+    room.logs.push({
+      text: 'LOGS.PLAYER_MOVE',
+      options: {
+        player: room.currentPlayer.name,
+      },
+    });
   });
 
   bridge.on('stopAction', (socket, { room, name }) => {
@@ -126,6 +172,12 @@ export default function init() {
     bridge.emit(room.id, 'stopTimer');
     bridge.emit(room.id, 'updateMove', { cards: move.allCards });
     gameUpdate(bridge, room);
+    room.logs.push({
+      text: 'LOGS.PLAYER_BLOCK_ACTION',
+      options: {
+        player: name,
+      },
+    });
   });
 
   bridge.on('playerMove', (socket, { room, name, cards, options }) => {
@@ -153,6 +205,13 @@ export default function init() {
     // TODO check for cheats
     cards.forEach(card => player.deck.useCard(card.id));
     gameUpdate(bridge, room, player.name);
+    room.logs.push({
+      text: 'LOGS.PLAYER_MAKE_MOVE',
+      options: {
+        player: name,
+      },
+      deck: [...cards],
+    });
 
     room.history.newMove(move);
 
@@ -172,6 +231,15 @@ export default function init() {
     bridge.emit(socket.id, 'showCardList', {
       deck: Room.getAllCardsTypes().cards,
     });
+  });
+
+  bridge.on('getRoomLogs', (socket, { room, event }) => {
+    console.log('getRoomLogs');
+    const data = {
+      status: room.status,
+      logs: room.status === 'ended' ? room.logs : [],
+    };
+    bridge.emit(socket.id, event, data);
   });
 
   bridge.on('disconnect', (socket) => {
@@ -234,5 +302,9 @@ export default function init() {
       bridge.emit(socket.id, '_hideCurrentGameDeck');
       clearTimeout(hideDeckTimeout);
     }, showTime);
+  });
+
+  bridge.on('_saveLogs', (socket, { room }) => {
+    writeLog(room.id, room.logs);
   });
 }

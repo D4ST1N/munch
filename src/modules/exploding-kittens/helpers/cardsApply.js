@@ -22,6 +22,12 @@ export default function cardsApply(bridge, cards, room, socket, options) {
           gameUpdate(bridge, room);
         }, 500);
         gameUpdate(bridge, room);
+        room.logs.push({
+          text: 'LOGS.PLAYER_USE_SHUFFLE',
+          options: {
+            player: room.currentPlayer.name,
+          },
+        });
 
         break;
 
@@ -34,6 +40,13 @@ export default function cardsApply(bridge, cards, room, socket, options) {
           gameUpdate(bridge, room);
           bridge.off('endSeeTheFuture');
         });
+        room.logs.push({
+          text: 'LOGS.PLAYER_SEE_THE_FUTURE',
+          options: {
+            player: room.currentPlayer.name,
+          },
+          deck: [...room.deck.cards.slice(-3)],
+        });
 
         break;
 
@@ -44,7 +57,20 @@ export default function cardsApply(bridge, cards, room, socket, options) {
           room.nextPlayer();
         }
 
+        room.logs.push({
+          text: 'LOGS.PLAYER_SKIP_MOVE',
+          options: {
+            player: room.currentPlayer.name,
+          },
+        });
+
         sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_TURN', room);
+        room.logs.push({
+          text: 'LOGS.PLAYER_MOVE',
+          options: {
+            player: room.currentPlayer.name,
+          },
+        });
         gameUpdate(bridge, room);
 
         break;
@@ -56,6 +82,12 @@ export default function cardsApply(bridge, cards, room, socket, options) {
         room.penaltyMoves += 2;
 
         sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_TURN', room);
+        room.logs.push({
+          text: 'LOGS.PLAYER_MOVE',
+          options: {
+            player: room.currentPlayer.name,
+          },
+        });
         gameUpdate(bridge, room);
 
         break;
@@ -78,6 +110,13 @@ export default function cardsApply(bridge, cards, room, socket, options) {
           whom: favorPlayer.name,
         });
         gameUpdate(bridge, room);
+        room.logs.push({
+          text: 'LOGS.PLAYER_USE_FAVOR',
+          options: {
+            player: room.currentPlayer.name,
+            whom: favorPlayer.name,
+          },
+        });
 
         console.log('send favor event to', favorPlayer.name);
         bridge.emit(favorPlayer.id, 'playerUseFavor', {
@@ -91,6 +130,13 @@ export default function cardsApply(bridge, cards, room, socket, options) {
           player.deck.addCard(...favorPlayer.deck.useCard(card.id));
           gameUpdate(bridge, room);
           bridge.off('playerSelectFavorCard', onPlayerSelectFavorCard);
+          room.logs.push({
+            text: 'LOGS.PLAYER_GIVE_CARD',
+            options: {
+              player: favorPlayer.name,
+            },
+            deck: [...cards],
+          });
         };
 
         bridge.on('playerSelectFavorCard', onPlayerSelectFavorCard);
@@ -108,8 +154,23 @@ export default function cardsApply(bridge, cards, room, socket, options) {
       deck: shuffle([...selectedPlayer.deck.inverted]),
       event: 'selectPlayerCard',
     });
+    room.logs.push({
+      text: 'LOGS.PLAYER_USE_TWO_CARDS_COMBO',
+      options: {
+        player: player.name,
+        whom: selectedPlayer.name,
+      },
+      deck: [...cards],
+    });
 
     const onPlayerSelectCard = (socket, { card }) => {
+      room.logs.push({
+        text: 'LOGS.PLAYER_GET_CARD',
+        options: {
+          player: player.name,
+        },
+        deck: [{ ...card }],
+      });
       player.deck.addCard(...selectedPlayer.deck.useCard(card.id));
       gameUpdate(bridge, room);
 
@@ -122,8 +183,24 @@ export default function cardsApply(bridge, cards, room, socket, options) {
     const selectedPlayer = room.getPlayer(options.name);
     const selectedCard = options.card;
     const selectedPlayerHasCard = selectedPlayer.deck.hasCardOfType(selectedCard.props.type);
+    room.logs.push({
+      text: 'LOGS.PLAYER_USE_THREE_CARDS_COMBO',
+      options: {
+        player: player.name,
+        whom: selectedPlayer.name,
+        card: selectedCard.props.type
+      },
+      deck: [...cards],
+    });
 
     if (selectedPlayerHasCard) {
+      room.logs.push({
+        text: 'LOGS.PLAYER_GET_CARD',
+        options: {
+          player: player.name,
+        },
+        deck: [{ ...card }],
+      });
       player.deck.addCard(...selectedPlayer.deck.useCardByType(selectedCard.props.type));
       gameUpdate(bridge, room);
     } else {
@@ -137,8 +214,22 @@ export default function cardsApply(bridge, cards, room, socket, options) {
       deck: room.trash.cards,
       event: 'selectTrashCard',
     });
+    room.logs.push({
+      text: 'LOGS.PLAYER_USE_FIVE_CARDS_COMBO',
+      options: {
+        player: player.name,
+      },
+      deck: [...cards],
+    });
 
     const onSelectTrashCard = (socket, { card }) => {
+      room.logs.push({
+        text: 'LOGS.PLAYER_GET_CARD',
+        options: {
+          player: player.name,
+        },
+        deck: [{ ...card }],
+      });
       player.deck.addCard(...room.trash.useCard(card.id));
       gameUpdate(bridge, room);
       bridge.off('selectTrashCard', onSelectTrashCard);

@@ -6,6 +6,7 @@ import CircleCrush      from './components/CircleCrush/CircleCrush';
 import GameRoomList     from './components/ExplodingKittens/GameRoomsList';
 import PlayerAuth       from './components/ExplodingKittens/PlayerAuth';
 import GameRoom         from './components/ExplodingKittens/GameRoom';
+import RoomLogs         from './components/ExplodingKittens/RoomLogs';
 
 Vue.use(Router);
 
@@ -47,6 +48,14 @@ const router = new Router({
       path: '/exploding-kittens/room/:id',
       name: 'exploding-kittens/room',
       component: GameRoom,
+      meta: {
+        title: 'Exploding kittens',
+      },
+    },
+    {
+      path: '/exploding-kittens/room/:id/logs',
+      name: 'exploding-kittens/room/logs',
+      component: RoomLogs,
       meta: {
         title: 'Exploding kittens',
       },

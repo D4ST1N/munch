@@ -15,6 +15,12 @@ export default function playerGetExplodingKitten(bridge, room, player, card) {
       room,
       player.name,
     );
+    room.logs.push({
+      text: 'LOGS.PLAYER_DEFUSE_EXPLODING_KITTEN',
+      options: {
+        player: player.name,
+      }
+    });
 
     return true;
   }
@@ -27,6 +33,12 @@ export default function playerGetExplodingKitten(bridge, room, player, card) {
   room.trash.addCard(card, false);
   player.deck.clear();
   room.killCurrent();
+  room.logs.push({
+    text: 'LOGS.PLAYER_EXPLODED',
+    options: {
+      player: player.name,
+    },
+  });
 
   if (room.gameEnded) {
     const winner = room.players[0];
@@ -35,6 +47,12 @@ export default function playerGetExplodingKitten(bridge, room, player, card) {
     bridge.emit(winner.id, 'endGame', { win: true });
 
     room.gameEnd();
+    room.logs.push({
+      text: 'LOGS.PLAYER_WIN',
+      options: {
+        player: player.name,
+      },
+    });
   }
 
   return false;
