@@ -16,6 +16,9 @@
         @cardClick="getCard"
       ></CardFlip>
     </transition-group>
+    <div v-if="showEnd" class="game-deck__cards-indexes">
+      <div v-for="index in 3" class="game-deck__index">{{ index }}</div>
+    </div>
     <Button
       v-if="showEnd"
       type="blue"
@@ -128,9 +131,23 @@
       position: absolute;
     }
 
-    &__button {
+    &__cards-indexes {
       left: 20px;
       top: 560px;
+      position: fixed;
+      display: flex;
+      width: 360px;
+    }
+
+    &__index {
+      width: 33%;
+      text-align: center;
+      color: #fff;
+    }
+
+    &__button {
+      left: 20px;
+      top: 590px;
       position: fixed;
     }
 

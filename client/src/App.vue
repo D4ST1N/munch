@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <div class="app-version">{{ version }}</div>
     <div v-if="player" class="app__wrapper">
       <router-view></router-view>
     </div>
@@ -12,6 +13,7 @@
   import auth from './assets/mixins/auth';
   import PlayerAuth from './components/ExplodingKittens/PlayerAuth';
   import NotificationCenter from './components/Notifications/NotificationCenter';
+  import gameData from '../package';
 
   export default {
     name: 'app',
@@ -25,6 +27,7 @@
       return {
         theme: 'base',
         styles: null,
+        version: gameData.version,
       };
     },
 
@@ -65,32 +68,19 @@
   }
 
   .app {
-
-    &__content {
-      display: flex;
+    &-version {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      align-items: center;
-      justify-content: center;
-    }
+      display: inline-flex;
+      font-family: monospace;
+      font-size: 12px;
+      background: #fff;
+      color: rgba(255,87,34 ,1);
+      line-height: 1;
+      padding: 2px 6px;
+      border-radius: 0 0 5px 0;
 
-    &__notification {
-      background: rgba(55,71,79 ,1);
-      color: #fff;
-      padding: 20px 40px;
-      text-align: center;
-    }
-
-    &__message {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 4px 8px;
-      margin-bottom: 4px;
-      background: rgba(255, 255, 255, .1);
     }
   }
 </style>

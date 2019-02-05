@@ -113,6 +113,11 @@
     &--current {
       transform-origin: 50% 0;
       transform: scale(1.2);
+      pointer-events: none;
+
+      .game-room-players__container--active & {
+        opacity: 0.25;
+      }
     }
 
     &--exploded {

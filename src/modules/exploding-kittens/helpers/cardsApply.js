@@ -20,7 +20,7 @@ export default function cardsApply(bridge, cards, room, socket, options) {
 
         setTimeout(() => {
           gameUpdate(bridge, room);
-        }, 500);
+        }, 150);
         gameUpdate(bridge, room);
         room.logs.push({
           text: 'LOGS.PLAYER_USE_SHUFFLE',
@@ -171,6 +171,7 @@ export default function cardsApply(bridge, cards, room, socket, options) {
         },
         deck: [{ ...card }],
       });
+      console.log(selectedPlayer.deck, card.id);
       player.deck.addCard(...selectedPlayer.deck.useCard(card.id));
       gameUpdate(bridge, room);
 

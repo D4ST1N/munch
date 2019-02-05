@@ -171,6 +171,9 @@ export default function init() {
 
     bridge.emit(room.id, 'stopTimer');
     bridge.emit(room.id, 'updateMove', { cards: move.allCards });
+    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_BLOCK_ACTION', room, player.name, {
+      personalized: false,
+    });
     gameUpdate(bridge, room);
     room.logs.push({
       text: 'LOGS.PLAYER_BLOCK_ACTION',

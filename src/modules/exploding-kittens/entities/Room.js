@@ -116,7 +116,7 @@ export default class Room {
       addCards(this.deck.cards, cardConfig, cardsCount);
     });
 
-    this.deck.shuffle();
+    console.log(this.deck.cards.map(card => card.props.type));
   }
 
   giveCardsToPlayers() {

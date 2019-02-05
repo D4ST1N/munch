@@ -119,7 +119,7 @@
 
       onGameMessage(message) {
         this.$root.$emit('showMessage', {
-          text: message.options
+          text: message.options && message.options.personalized !== false
             ? this.$text(
               personalizeText(
                 message.text,
@@ -127,7 +127,7 @@
                 this.$store.getters.player.username
               ),
               message.options)
-            : this.$text(message.text),
+            : this.$text(message.text, message.options),
         });
       },
 
@@ -249,6 +249,10 @@
           } else {
             this.lastShiftTime = now;
           }
+        }
+
+        if (event.code === 'Escape') {
+          this.$root.$emit('hideConsole');
         }
       },
     },

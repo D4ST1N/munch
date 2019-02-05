@@ -67,6 +67,9 @@
           }
         });
       });
+      this.$root.$on('hideConsole', () => {
+        this.show = false;
+      });
     },
 
     methods: {

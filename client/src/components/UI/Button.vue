@@ -132,12 +132,11 @@
 
     &--white {
       background: #fff;
-      box-shadow: 2px 2px 8px 0 rgba(100,100,100 ,.8);
       color: rgba(84,110,122 ,1);
 
       &:hover,
       &:focus {
-        background: linear-gradient(to bottom, #fff, #eee);
+        background: #eee;
       }
     }
 

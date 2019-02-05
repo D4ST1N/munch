@@ -6,7 +6,7 @@ export default function addCards(deck, config, numberOfCards, random = true) {
     const card = new Card(config);
 
     if (random) {
-      deck.splice(randomInt(0, deck.length - 1), 0, card);
+      deck.splice(randomInt(0, deck.length), 0, card);
     } else {
       deck.push(card);
     }
