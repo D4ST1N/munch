@@ -26,7 +26,13 @@ export const user = new Schema({
     password: {
         type: String,
         select: false,
-        required: true
+        required: true,
+        validate: {
+            validator: (password) => {
+                return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(password.trim());
+            },
+            message: 'Password is invalid'
+        }
     },
     avatar: {
         type: String

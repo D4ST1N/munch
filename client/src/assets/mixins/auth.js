@@ -1,25 +1,10 @@
 import cookie from '../utils/cookie';
 
 export default {
-  data() {
-    return {
-      loggedIn: this.$store.getters.isLoggedIn,
-      allDataExists: false,
-    };
-  },
-
   computed: {
-    isSocketConnected() {
-      return this.$store.getters.socket;
-    },
-  },
-
-  watch: {
-    isSocketConnected(newValue, oldValue) {
-      if (newValue !== oldValue && newValue) {
-        this.allDataExists = true
-      }
-    },
+    player() {
+      return this.$store.getters.player;
+    }
   },
 
   created() {
@@ -27,15 +12,14 @@ export default {
 
     if (playerCookie) {
       this.$store.dispatch('getProfile')
-        .then(data => {
+        .then((data) => {
           if (data.status >= 400) {
             this.$store.commit('authError');
             this.$router.push('/auth');
-            this.checkPage();
             return;
           }
           data.json()
-            .then(body => {
+            .then((body) => {
               this.$store.commit('authorization', body.data);
               this.$store.commit('connect');
               this.$emit('auth', body.data.username);
@@ -43,19 +27,6 @@ export default {
         });
     } else {
       this.$router.push('/auth');
-      this.checkPage();
     }
   },
-
-  methods: {
-    checkPage() {
-      if (this.$router.currentRoute.name === 'auth') {
-        this.allDataExists = true;
-      }
-    }
-  },
-
-  updated() {
-    this.checkPage();
-  }
 }

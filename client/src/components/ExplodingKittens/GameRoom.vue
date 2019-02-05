@@ -18,7 +18,6 @@
         <Button
           v-if="state === 'joined'"
           class="game-room__action"
-          size="small"
           type="green"
           :text="$text('GAME_ROOMS.READY')"
           @buttonClick="ready"
@@ -276,7 +275,7 @@
 
     &__action {
       text-decoration: none;
-      margin: 16px;
+      margin: 16px 0;
     }
 
     &__players-list {

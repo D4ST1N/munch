@@ -1,34 +1,41 @@
 <template>
   <div class="player-auth">
     <div class="player-auth__content">
-      <h1 class="player-auth__title">{{ $text('PLAYER_AUTH.TITLE') }}</h1>
-      <div>
-        <p class="player-auth__text">{{ $text('PLAYER_AUTH.ADD_NAME') }}</p>
-        <input v-model="name" type="text" class="player-auth__player-name">
-      </div>
-      <div v-if="!formLogin">
-        <p class="player-auth__text">{{ $text('PLAYER_AUTH.ADD_EMAIL') }}</p>
-        <input v-model="email" type="email" class="player-auth__player-name">
-      </div>
-      <div>
-        <p class="player-auth__text">{{ $text('PLAYER_AUTH.ADD_PASSWORD') }}</p>
-        <input v-model="password" type="password" class="player-auth__player-name">
-      </div>
-      <button class="player-auth__submit" @click="save" :disabled="!name && !password">
-        {{ $text('PLAYER_AUTH.SUBMIT') }}
-      </button>
-      <button class="player-auth__submit" @click="changeForm">
-        {{ $text(formChangeText) }}
-      </button>
+      <h1 class="player-auth__title">{{ formTitle }}</h1>
+      <FormField
+        :label="$text('PLAYER_AUTH.ADD_NAME')"
+        :required="true"
+        @onInput="nameInput"
+      />
+      <FormField
+        v-if="!formLogin"
+        type="email"
+        :label="$text('PLAYER_AUTH.ADD_EMAIL')"
+        :required="true"
+        @onInput="emailInput"
+      />
+      <FormField
+        type="password"
+        :label="$text('PLAYER_AUTH.ADD_PASSWORD')"
+        :required="true"
+        :helper="passwordHelper"
+        @onInput="passwordInput"
+      />
+      <Button type="green" :text="actionButtonText" @buttonClick="save" :disabled="disabled" />
+      <Button type="blue" :text="$text(formChangeText)" @buttonClick="changeForm" />
     </div>
   </div>
 </template>
 
 <script>
-  import cookie from '../../assets/utils/cookie';
+  import cookie    from '../../assets/utils/cookie';
+  import FormField from '../UI/Forms/FormField';
 
   export default {
     name: 'PlayerAuth',
+    components: {
+      FormField,
+    },
 
     data() {
       return {
@@ -44,6 +51,24 @@
       };
     },
 
+    computed: {
+      formTitle() {
+        return this.formLogin ? this.$text('PLAYER_AUTH.TITLE') : this.$text('PLAYER_AUTH.REGISTER_FORM');
+      },
+
+      passwordHelper() {
+        return this.formLogin ? '' : this.$text('PLAYER_AUTH.PASSWORD_HELPER');
+      },
+
+      actionButtonText() {
+        return this.formLogin ? this.$text('PLAYER_AUTH.SUBMIT') : this.$text('PLAYER_AUTH.REGISTER');
+      },
+
+      disabled() {
+        return !this.name || !this.password || (this.formLogin ? false : !this.email);
+      },
+    },
+
     created() {
       const playerName = cookie.get('playerName');
 
@@ -53,6 +78,15 @@
     },
 
     methods: {
+      nameInput(value) {
+        this.name = value;
+      },
+      emailInput(value) {
+        this.email = value;
+      },
+      passwordInput(value) {
+        this.password = value;
+      },
       save() {
         const method = this.formLogin ? 'login' : 'register';
         let userData = {
@@ -104,12 +138,13 @@
     height: 100%;
     align-items: center;
     justify-content: center;
+    background: rgba(55,71,79 ,.8);
 
     &__content {
-      background: rgba(55,71,79 ,1);
-      color: #fff;
+      background: #fff;
       padding: 20px 40px;
       text-align: center;
+      width: 500px;
     }
 
     &__player-name {

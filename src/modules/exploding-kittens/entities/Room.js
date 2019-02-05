@@ -122,6 +122,7 @@ export default class Room {
   giveCardsToPlayers() {
     this.players.forEach((player) => {
       player.deck = new Deck(getPlayerStartCards(this.deck.cards));
+      player.deck.shuffle();
     });
   }
 

@@ -1,17 +1,16 @@
 <template>
-  <div id="app" :class="{
-    'app__content': !allDataExists
-  }">
-    <router-view v-if="allDataExists"></router-view>
-    <div v-else class="app__notification">
-      <h2 class="app__message">{{ $text('NOTIFICATIONS.CONNECTING_DATA') }}</h2>
+  <div id="app">
+    <div v-if="player" class="app__wrapper">
+      <router-view></router-view>
     </div>
+    <PlayerAuth v-else />
     <NotificationCenter />
   </div>
 </template>
 
 <script>
   import auth from './assets/mixins/auth';
+  import PlayerAuth from './components/ExplodingKittens/PlayerAuth';
   import NotificationCenter from './components/Notifications/NotificationCenter';
 
   export default {
@@ -19,6 +18,7 @@
     mixins: [auth],
     components: {
       NotificationCenter,
+      PlayerAuth,
     },
 
     data() {

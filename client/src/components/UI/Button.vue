@@ -81,20 +81,22 @@
   .button {
     display: inline-flex;
     align-items: center;
-    padding: 8px 16px;
+    padding: 12px 16px;
     border: 0;
     line-height: 1;
-    border-radius: 4px;
+    border-radius: 3px;
+    text-transform: uppercase;
     color: #fff;
     cursor: pointer;
     margin-right: 8px;
-    background: linear-gradient(to bottom, rgba(55,71,79 ,1), rgba(38,50,56 ,1));
+    background: rgba(55,71,79 ,1);
+    box-shadow: 0 1px 4px 0 rgba(55,71,79 ,.75);
     transition: all .375s;
 
     &:hover,
     &:focus {
       outline: none;
-      background: linear-gradient(to bottom, rgba(69,90,100 ,1), rgba(55,71,79 ,1));
+      background: rgba(69,90,100 ,1);
     }
 
     &:last-child {
@@ -102,29 +104,29 @@
     }
 
     &--red {
-      background: linear-gradient(to bottom, rgba(244,81,30 ,1), rgba(230,74,25 ,1));
+      background: rgba(230,74,25 ,1);
 
       &:hover,
       &:focus {
-        background: linear-gradient(to bottom, rgba(230,74,25 ,1), rgba(216,67,21 ,1));
+        background: rgba(244,81,30 ,1);
       }
     }
 
     &--green {
-      background: linear-gradient(to bottom, rgba(76,175,80 ,1), rgba(67,160,71 ,1));
+      background: rgba(67,160,71 ,1);
 
       &:hover,
       &:focus {
-        background: linear-gradient(to bottom, rgba(67,160,71 ,1), rgba(56,142,60 ,1));
+        background: rgba(76,175,80 ,1);
       }
     }
 
     &--blue {
-      background: linear-gradient(to bottom, rgba(79,195,247 ,1), rgba(41,182,246 ,1));
+      background: rgba(25,118,210 ,1);
 
       &:hover,
       &:focus {
-        background: linear-gradient(to bottom, rgba(41,182,246 ,1), rgba(3,169,244 ,1));
+        background: rgba(30,136,229 ,1);
       }
     }
 
@@ -151,23 +153,23 @@
     }
 
     &--medium {
-      font-size: 20px;
+      font-size: 14px;
     }
 
     &--big {
-      font-size: 24px;
-    }
-
-    &--huge {
-      font-size: 28px;
-    }
-
-    &--small {
       font-size: 16px;
     }
 
+    &--huge {
+      font-size: 20px;
+    }
+
+    &--small {
+      font-size: 12px;
+    }
+
     &--tiny {
-      font-size: 14px;
+      font-size: 10px;
     }
 
     &--squash {

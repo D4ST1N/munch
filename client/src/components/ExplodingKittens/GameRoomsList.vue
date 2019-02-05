@@ -11,15 +11,19 @@
         </div>
         <router-link :to="`/exploding-kittens/room/${room.id}`" class="game-rooms-list__room-join" type="button">
           <Button
-            size="small"
             :type="room.reconnected ? 'green' : 'black'"
             :text="$text(room.reconnected ? 'GAME_ROOMS.RETURN' : 'GAME_ROOMS.JOIN')"
           />
         </router-link>
       </div>
-      <div class="game-rooms-list__room">
-        <Button size="small" :text="$text('GAME_ROOMS.CREATE')" @buttonClick="createRoom" />
-      </div>
+      <Button
+        class="game-rooms-list__btn"
+        type="green"
+        :text="$text('GAME_ROOMS.CREATE')"
+        @buttonClick="createRoom"
+      >
+        <Icon slot="before" size="x-small" type="add_mono"></Icon>
+      </Button>
     </div>
   </div>
 </template>
@@ -71,6 +75,10 @@
       display: flex;
       align-items: flex-start;
       flex-wrap: wrap;
+    }
+
+    &__btn {
+      margin: 8px;
     }
 
     &__room {
