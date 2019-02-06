@@ -23,6 +23,19 @@ const registerUser = (req, res, next) => {
                 return next(err);
             }
 
+            const isPasswordValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(newUser.password);
+
+            if (!isPasswordValid) {
+              return res.status(403).send({
+                fields: [
+                  {
+                    name: 'password',
+                    message: 'NOTIFICATIONS.GAME.PASSWORD_NOT_VALID',
+                  },
+                ],
+              });
+            }
+
             newUser.password = bcrypt.hashSync(newUser.password, 10, null);
 
             UserModel.create(newUser, (err, createdUser) => {

@@ -17,13 +17,12 @@ export default class Move {
   ];
 
   get cards() {
-    return this.parts[this.parts.length - 1].cards;
+    return this.parts[this.parts.length - 1].deck.cards;
   }
 
   get allCards() {
-    console.log(this.parts);
     return this.parts.reduce((cards, part) => {
-      cards.push(...part.cards);
+      cards.push(...part.deck.cards);
       return cards;
     }, []);
   }
@@ -33,9 +32,17 @@ export default class Move {
   }
 
   addCards(cards, options) {
-    this.parts.push(new Deck(cards));
+    this.parts.push({
+      options,
+      deck: new Deck(cards)
+    });
     console.log('add cards');
 
+    return this.applyCards(cards, options);
+  }
+
+  applyCards(cards, options) {
+    console.log(options);
     return new Promise(
       (resolve, reject) => {
         if (cards.length === 1) {

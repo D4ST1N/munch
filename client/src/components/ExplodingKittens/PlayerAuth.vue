@@ -3,26 +3,18 @@
     <div class="player-auth__content">
       <h1 class="player-auth__title">{{ formTitle }}</h1>
       <FormField
-        :label="$text('PLAYER_AUTH.ADD_NAME')"
-        :required="true"
-        @onInput="nameInput"
+        v-for="(field, fieldName) in forms[currentForm]"
+        :key="`${currentForm}/${fieldName}`"
+        :field="field"
+        @onInput="fieldInput(field, ...arguments)"
       />
-      <FormField
-        v-if="!formLogin"
-        type="email"
-        :label="$text('PLAYER_AUTH.ADD_EMAIL')"
-        :required="true"
-        @onInput="emailInput"
-      />
-      <FormField
-        type="password"
-        :label="$text('PLAYER_AUTH.ADD_PASSWORD')"
-        :required="true"
-        :helper="passwordHelper"
-        @onInput="passwordInput"
-      />
-      <Button type="green" :text="actionButtonText" @buttonClick="save" :disabled="disabled" />
-      <Button type="blue" :text="$text(formChangeText)" @buttonClick="changeForm" />
+      <div class="player-auth__actions">
+        <Button type="green" :text="actionButtonText" @buttonClick="save" :disabled="disabled" />
+        <Button type="blue" :text="$text(formChangeText)" @buttonClick="changeForm" />
+      </div>
+      <transition name="form-field-info">
+        <div v-if="!!formError" class="form-field__error">{{ formError }}</div>
+      </transition>
     </div>
   </div>
 </template>
@@ -39,33 +31,75 @@
 
     data() {
       return {
-        name: '',
-        password: '',
-        email: '',
+        forms: {
+          login: {
+            username: {
+              value: '',
+              required: true,
+              type: 'text',
+              label: this.$text('PLAYER_AUTH.ADD_NAME'),
+              error: '',
+            },
+            password: {
+              value: '',
+              required: true,
+              type: 'password',
+              label: this.$text('PLAYER_AUTH.ADD_PASSWORD'),
+              error: '',
+            },
+          },
+          register: {
+            username: {
+              value: '',
+              required: true,
+              type: 'text',
+              label: this.$text('PLAYER_AUTH.ADD_NAME'),
+              error: '',
+            },
+            email: {
+              value: '',
+              required: true,
+              type: 'email',
+              label: this.$text('PLAYER_AUTH.ADD_EMAIL'),
+              error: '',
+            },
+            password: {
+              value: '',
+              required: true,
+              type: 'password',
+              label: this.$text('PLAYER_AUTH.ADD_PASSWORD'),
+              helper: this.$text('PLAYER_AUTH.PASSWORD_HELPER'),
+              error: '',
+            },
+          }
+        },
+        currentForm: 'login',
+        formError: '',
         formChangeText: 'PLAYER_AUTH.REGISTER_FORM',
+        submitText: {
+          register: 'PLAYER_AUTH.REGISTER',
+          login: 'PLAYER_AUTH.SUBMIT',
+        },
         changeTexts: [
           'PLAYER_AUTH.REGISTER_FORM',
           'PLAYER_AUTH.LOGIN_FORM',
         ],
-        formLogin: true
       };
     },
 
     computed: {
       formTitle() {
-        return this.formLogin ? this.$text('PLAYER_AUTH.TITLE') : this.$text('PLAYER_AUTH.REGISTER_FORM');
-      },
-
-      passwordHelper() {
-        return this.formLogin ? '' : this.$text('PLAYER_AUTH.PASSWORD_HELPER');
+        return this.currentForm === 'login'
+               ? this.$text('PLAYER_AUTH.TITLE')
+               : this.$text('PLAYER_AUTH.REGISTER_FORM');
       },
 
       actionButtonText() {
-        return this.formLogin ? this.$text('PLAYER_AUTH.SUBMIT') : this.$text('PLAYER_AUTH.REGISTER');
+        return this.$text(this.submitText[this.currentForm]);
       },
 
       disabled() {
-        return !this.name || !this.password || (this.formLogin ? false : !this.email);
+        return false;
       },
     },
 
@@ -78,40 +112,46 @@
     },
 
     methods: {
-      nameInput(value) {
-        this.name = value;
-      },
-      emailInput(value) {
-        this.email = value;
-      },
-      passwordInput(value) {
-        this.password = value;
+      fieldInput(field, value) {
+        this.$set(field, 'value', value);
       },
       save() {
-        const method = this.formLogin ? 'login' : 'register';
-        let userData = {
-          username: this.name,
-          password: this.password
-        };
+        const method = this.currentForm;
+        let userData = {};
 
-        if (!this.formLogin) {
-          userData = {...userData, email: this.email}
-        }
+        Object.entries(this.forms[this.currentForm]).forEach(([key, field]) => {
+          userData[key] = field.value;
+        });
+
         cookie.set('playerName', this.name);
         this.$store.dispatch(method, userData)
           .then((data) => {
             if (data.status >= 400) {
               this.$store.commit('authError');
+
+              data.json().then((response) => {
+                if (response.fields) {
+                  response.fields.forEach((field) => {
+                    this.forms[this.currentForm][field.name].error = this.$text(field.message);
+                  });
+                }
+
+                if (response.error) {
+                  this.formError = this.$text(response.error);
+                }
+              });
+
               return;
             }
+
             this.$store.dispatch('getProfile')
-              .then(data => {
+              .then((data) => {
                 if (data.status >= 400) {
                   this.$store.commit('authError');
                   return;
                 }
                 data.json()
-                  .then(body => {
+                  .then((body) => {
                     this.$store.commit('authorization', body.data);
                     this.$store.commit('connect');
                     this.$emit('auth', body.data.username);
@@ -121,8 +161,9 @@
           });
       },
       changeForm() {
-        this.formLogin = !this.formLogin;
+        this.currentForm = this.currentForm === 'login' ? 'register' : 'login';
         this.formChangeText = this.changeTexts.filter(item => item !== this.formChangeText)[0];
+        this.formError = '';
       }
     },
   };
@@ -145,6 +186,9 @@
       padding: 20px 40px;
       text-align: center;
       width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     &__player-name {

@@ -16,7 +16,6 @@ const sendUpdateToUser = (bridge, room, userName, isWatcher = false) => {
     playerDeck: !isWatcher ? user.deck.cards : [],
   };
 
-  console.log('send game update to ', user.name);
   bridge.emit(user.id, 'gameUpdate', gameData);
 };
 
@@ -29,7 +28,6 @@ const sendUpdateToAllTypes = (bridge, room, isWatcher = false) => {
 
   if (userExists) {
     room[correctArray].forEach((user) => {
-      console.log('send game update to ', user.name);
       sendUpdateToUser(bridge, room, user.name, isWatcher)
     });
   }
@@ -40,7 +38,6 @@ export default function gameUpdate(bridge, room, playerName, watcherName) {
     return;
   }
 
-  console.log('gameUpdate');
   if (playerName) {
     sendUpdateToUser(bridge, room, playerName)
   } else if (watcherName) {

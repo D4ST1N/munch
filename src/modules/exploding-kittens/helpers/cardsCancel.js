@@ -1,8 +1,10 @@
 import sendGameMessage from './sendGameMessage';
 import gameUpdate      from './gameUpdate';
 import cardsApply      from './cardsApply';
+import isNopeCard      from './hasNopeCard';
 
 export default function cardsCancel(bridge, cards, room, socket, options) {
+  console.log(arguments);
   if (cards.length === 1) {
     const [ card ] = cards;
 
@@ -37,8 +39,21 @@ export default function cardsCancel(bridge, cards, room, socket, options) {
         break;
 
       case 'nope':
-        const applyingPart = room.history.current.parts[room.history.current.parts.length - 3];
-        cardsApply(bridge, applyingPart.cards, room, socket, options);
+        const move = room.history.current;
+
+        move.parts.splice(-2).forEach(part => room.trash.addCard(...part.deck.cards));
+
+        gameUpdate(bridge, room);
+        bridge.emit(room.id, 'updateMove', { cards: move.allCards });
+
+        const applyingPart = room.history.current.parts[room.history.current.parts.length - 1];
+        const mergedOptions = Object.assign({}, options, applyingPart.options);
+        const applyingCards = applyingPart.deck.cards;
+
+        move.applyCards(applyingCards, mergedOptions)
+            .then(() => {
+              cardsApply(bridge, applyingCards, room, socket, mergedOptions);
+            }).catch(console.error);
 
         break;
 

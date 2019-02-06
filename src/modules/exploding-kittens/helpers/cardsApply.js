@@ -96,7 +96,7 @@ export default function cardsApply(bridge, cards, room, socket, options) {
         const previousPart = room.history.current.parts[room.history.current.parts.length - 2];
 
         if (previousPart) {
-          cardsCancel(bridge, previousPart.cards, room, socket, options);
+          cardsCancel(bridge, previousPart.deck.cards, room, socket, options);
         }
 
         break;
@@ -171,7 +171,6 @@ export default function cardsApply(bridge, cards, room, socket, options) {
         },
         deck: [{ ...card }],
       });
-      console.log(selectedPlayer.deck, card.id);
       player.deck.addCard(...selectedPlayer.deck.useCard(card.id));
       gameUpdate(bridge, room);
 

@@ -6,9 +6,9 @@ const userLogin = (req, res, next) => {
         .findOne({ username: req.body.username }, '+password')
         .then(user => {
             if (!user) {
-                const err = new Error('User not found');
-                err.status = 400;
-                return next(err);
+                return res.status(400).send({
+                    error: 'NOTIFICATIONS.GAME.LOGIN_FAILED',
+                });
             }
 
             const passwordValid = user.validPassword(req.body.password);

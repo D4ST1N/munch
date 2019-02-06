@@ -1,7 +1,9 @@
 <template>
   <div class="player-move" :style="{ bottom: `${settings.card.height + 100}px` }">
+    <div v-if="favorActive" class="player-move__cat-paw"></div>
     <Button
       v-if="show"
+      class="player-move__btn"
       type="blue"
       size="huge"
       :text="buttonText"
@@ -150,5 +152,30 @@
     left: calc(50% - 200px);
     display: flex;
     justify-content: center;
+
+    &__btn {
+      position: relative;
+      z-index: 1;
+    }
+
+    &__cat-paw {
+      width: 336px;
+      height: 752px;
+      position: fixed;
+      background: url("../../assets/img/paw.png") no-repeat center;
+      top: -20px;
+      left: calc(50% - 168px);
+      animation: paw-in 1.5s ease;
+    }
+  }
+
+  @keyframes paw-in {
+    0% {
+      transform: translate(0, -100%) rotate(80deg);
+    }
+
+    100% {
+      transform: translate(0, 0) rotate(0);
+    }
   }
 </style>

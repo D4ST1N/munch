@@ -1,13 +1,6 @@
 {
   "cards": [
     {
-      "type": "exploding-kitten",
-      "name": "CARDS.EXPLODING_KITTEN.NAME",
-      "description": "CARDS.EXPLODING_KITTEN.DESCRIPTION",
-      "color": "rgba(38,50,56 ,1)",
-      "isCatCard": false
-    },
-    {
       "type": "defuse",
       "name": "CARDS.DEFUSE.NAME",
       "description": "CARDS.DEFUSE.DESCRIPTION",
@@ -90,6 +83,13 @@
       "description": "",
       "color": "rgba(224,224,224 ,1)",
       "isCatCard": true
+    },
+    {
+      "type": "exploding-kitten",
+      "name": "CARDS.EXPLODING_KITTEN.NAME",
+      "description": "CARDS.EXPLODING_KITTEN.DESCRIPTION",
+      "color": "rgba(38,50,56 ,1)",
+      "isCatCard": false
     }
   ],
   "game": {

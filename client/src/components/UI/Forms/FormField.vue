@@ -1,14 +1,25 @@
 <template>
   <div class="form-field">
-    <label :class="{ 'form-field__wrapper': true, 'form-field__wrapper--focused': !!value }">
-      <input :value="value" :type="type" class="form-field__input" @input="onInput" @blur="onBlur">
-      <span class="form-field__label">{{ label }}</span>
+    <label
+      :class="{
+        'form-field__wrapper': true,
+        'form-field__wrapper--focused': !!formField.value
+      }"
+    >
+      <input
+        :value="formField.value"
+        :type="formField.type"
+        class="form-field__input"
+        @input="onInput"
+        @blur="onBlur"
+      />
+      <span class="form-field__label">{{ formField.label }}</span>
     </label>
     <transition name="form-field-info">
-      <span v-if="!!helper" class="form-field__helper-text">{{ helper }}</span>
+      <span v-if="!!formField.helper" class="form-field__helper-text">{{ formField.helper }}</span>
     </transition>
     <transition name="form-field-info">
-      <span v-if="!!error" class="form-field__error">{{ error }}</span>
+      <span v-if="!!formField.error" class="form-field__error">{{ formField.error }}</span>
     </transition>
   </div>
 </template>
@@ -17,60 +28,41 @@
   export default {
     name: 'FormField',
     props: {
-      type: {
-        type: String,
-        validator(type) {
-          return [
-            'text',
-            'email',
-            'phone',
-            'password',
-          ].includes(type);
-        },
-        default: 'text',
-      },
-      predefinedValue: {
-        type: String,
-      },
-      label: {
-        type: String,
-      },
-      helper: {
-        type: String,
-      },
-      required: {
-        type: Boolean,
-        default: false,
+      field: {
+        type: Object,
+        required: true,
       },
     },
 
     data() {
       return {
-        error: '',
-        focused: false,
-        value: this.predefinedValue || '',
+        formField: this.field,
       };
     },
 
     methods: {
       onInput({ target }) {
-        this.value = target.value;
-        this.$emit('onInput', this.value);
+        this.formField.value = target.value;
+        this.$emit('onInput', this.formField.value);
 
-        if (this.error) {
+        if (this.formField.error) {
           this.validate();
         }
       },
 
       onBlur() {
-        this.$emit('onInputEnd', this.value);
+        this.$emit('onInputEnd', this.formField.value);
         this.validate();
       },
 
       validate() {
-        this.error = this.required && !this.value.trim()
-                     ? this.$text('PLAYER_AUTH.FIELD_REQUIRED')
-                     : '';
+        const emptyInput = this.formField.value.trim() === '';
+
+        if (emptyInput && this.formField.required) {
+          this.formField.error = this.$text('PLAYER_AUTH.FIELD_REQUIRED');
+        } else {
+          this.formField.error = '';
+        }
       }
     }
   };
@@ -81,6 +73,7 @@
     display: flex;
     flex-direction: column;
     margin-bottom: 16px;
+    width: 100%;
 
     &__wrapper {
       display: flex;

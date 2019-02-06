@@ -1,11 +1,11 @@
 <template>
   <div class="game-ui">
     <GameRoomPlayers />
-    <MoveCardsList />
     <Trash />
     <GameDeck />
-    <PlayerDeck />
     <PlayerMove />
+    <MoveCardsList />
+    <PlayerDeck />
     <GameLog />
     <Dialog />
     <ShowGameDeck

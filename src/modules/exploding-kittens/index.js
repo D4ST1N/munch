@@ -219,7 +219,7 @@ export default function init() {
     room.history.newMove(move);
 
     move.addCards(cards, options).then(() => {
-      if (isNopeCard(cards)) {
+      if (isNopeCard(cards) && move.timer) {
         move.timer.stopTimer();
         bridge.emit(room.id, 'stopTimer');
       }
