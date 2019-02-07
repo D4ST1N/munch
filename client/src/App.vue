@@ -1,8 +1,9 @@
 <template>
-  <div id="app">
+  <div id="app" :style="{ zoom: `${zoomCoef}%` }">
     <div class="app-version">{{ version }}</div>
     <div v-if="player" class="app__wrapper">
       <router-view></router-view>
+      <MainMenu />
     </div>
     <PlayerAuth v-else />
     <NotificationCenter />
@@ -12,6 +13,7 @@
 <script>
   import auth from './assets/mixins/auth';
   import PlayerAuth from './components/ExplodingKittens/PlayerAuth';
+  import MainMenu from './components/ExplodingKittens/MainMenu';
   import NotificationCenter from './components/Notifications/NotificationCenter';
   import gameData from '../package';
 
@@ -21,6 +23,7 @@
     components: {
       NotificationCenter,
       PlayerAuth,
+      MainMenu,
     },
 
     data() {
@@ -37,6 +40,9 @@
       this.styles.href = `/themes/${this.theme}.css`;
 
       document.head.appendChild(this.styles);
+      console.log(window.innerWidth);
+      console.log(window.innerWidth / 1920);
+      this.zoomCoef = window.innerWidth / 1920 * 100;
     },
 
     methods: {

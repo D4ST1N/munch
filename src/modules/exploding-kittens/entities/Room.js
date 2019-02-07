@@ -124,6 +124,7 @@ export default class Room {
       player.deck = new Deck(getPlayerStartCards(this.deck.cards));
       player.deck.shuffle();
     });
+    this.deck.shuffle();
   }
 
   getPlayer(playerName) {
@@ -186,8 +187,25 @@ export default class Room {
     return this.penaltyMoves > 0;
   }
 
-  killCurrent() {
-    this.players.splice(this.currentPlayerIndex, 1);
+  killPlayer(name) {
+    let playerIndex;
+
+    if (name) {
+      playerIndex = this.players.findIndex(player => player.name === name);
+    } else {
+      playerIndex = this.currentPlayerIndex;
+    }
+
+    const player = this.players[playerIndex];
+
+    if (!player) {
+      return false;
+    }
+
+    this.trash.addCard(...player.deck.cards, false);
+    player.deck.clear();
+
+    this.players.splice(playerIndex, 1);
     this.previousPlayer();
     this.nextPlayer();
   }

@@ -1,6 +1,7 @@
 const state = {
   selectedCards: [],
   trash: [],
+  isPlayer: false,
 };
 
 const mutations = {
@@ -21,11 +22,19 @@ const mutations = {
   updateTrash(state, trash) {
     state.trash = trash;
   },
+
+  updatePlayerStatus(state, isPlayer) {
+    state.isPlayer = isPlayer;
+  },
 };
 
 const getters = {
   selectedCards(state) {
     return state.selectedCards;
+  },
+
+  isPlayer(state) {
+    return state.isPlayer;
   },
 };
 

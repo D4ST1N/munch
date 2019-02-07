@@ -127,6 +127,7 @@ export default function cardsApply(bridge, cards, room, socket, options) {
         const onPlayerSelectFavorCard = (socket, { room, cards }) => {
           const [card] = cards;
 
+          console.log(favorPlayer.deck, card);
           player.deck.addCard(...favorPlayer.deck.useCard(card.id));
           gameUpdate(bridge, room);
           bridge.off('playerSelectFavorCard', onPlayerSelectFavorCard);
@@ -164,14 +165,15 @@ export default function cardsApply(bridge, cards, room, socket, options) {
     });
 
     const onPlayerSelectCard = (socket, { card }) => {
+      const usedCard = selectedPlayer.deck.useCard(card.id);
       room.logs.push({
         text: 'LOGS.PLAYER_GET_CARD',
         options: {
           player: player.name,
         },
-        deck: [{ ...card }],
+        deck: [{ ...usedCard }],
       });
-      player.deck.addCard(...selectedPlayer.deck.useCard(card.id));
+      player.deck.addCard(...usedCard);
       gameUpdate(bridge, room);
 
       bridge.off('selectPlayerCard', onPlayerSelectCard);
@@ -194,14 +196,15 @@ export default function cardsApply(bridge, cards, room, socket, options) {
     });
 
     if (selectedPlayerHasCard) {
+      const usedCard = selectedPlayer.deck.useCardByType(selectedCard.props.type);
       room.logs.push({
         text: 'LOGS.PLAYER_GET_CARD',
         options: {
           player: player.name,
         },
-        deck: [{ ...card }],
+        deck: [{ ...usedCard }],
       });
-      player.deck.addCard(...selectedPlayer.deck.useCardByType(selectedCard.props.type));
+      player.deck.addCard(...usedCard);
       gameUpdate(bridge, room);
     } else {
       bridge.emit(player.id, 'gameMessage', {

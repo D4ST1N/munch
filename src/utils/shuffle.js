@@ -4,5 +4,5 @@
  */
 
 export default function shuffle(a) {
-  return a.sort(() => 0.5 - Math.random());
+  return [ ...a.sort(() => 0.5 - Math.random()) ];
 }

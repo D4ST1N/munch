@@ -21,7 +21,7 @@ export default function playerConnect(bridge, name, room, socket) {
     const userName = reconnected ? name : false;
     const watcherName = player ? false : watcher.name;
 
-    bridge.emit(socket.id, 'gameStart');
+    bridge.emit(socket.id, 'gameStart', { players: room.players });
 
     sendGameMessage(
       bridge,

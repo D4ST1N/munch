@@ -18,7 +18,7 @@ export default function newMove(bridge, room, player) {
         const text = 'NOTIFICATIONS.GAME.TIME_TO_STOP';
         let title;
         let options = {
-          player: this.who.name,
+          player: room.currentPlayer.name,
         };
 
         switch (cards.length) {

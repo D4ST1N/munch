@@ -2,12 +2,14 @@
   <div class="player-auth">
     <div class="player-auth__content">
       <h1 class="player-auth__title">{{ formTitle }}</h1>
-      <FormField
-        v-for="(field, fieldName) in forms[currentForm]"
-        :key="`${currentForm}/${fieldName}`"
-        :field="field"
-        @onInput="fieldInput(field, ...arguments)"
-      />
+      <transition-group tag="div" class="player-auth__form" name="form-field" :duration="500">
+        <FormField
+          v-for="(field, fieldName) in forms[currentForm]"
+          :key="`${currentForm}/${fieldName}`"
+          :field="field"
+          @onInput="fieldInput(field, ...arguments)"
+        />
+      </transition-group>
       <div class="player-auth__actions">
         <Button type="green" :text="actionButtonText" @buttonClick="save" :disabled="disabled" />
         <Button type="blue" :text="$text(formChangeText)" @buttonClick="changeForm" />
@@ -68,7 +70,6 @@
               required: true,
               type: 'password',
               label: this.$text('PLAYER_AUTH.ADD_PASSWORD'),
-              helper: this.$text('PLAYER_AUTH.PASSWORD_HELPER'),
               error: '',
             },
           }
@@ -210,6 +211,27 @@
       font-size: 20px;
       margin: 16px;
       cursor: pointer;
+    }
+
+    &__form {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+  }
+
+  .form-field {
+    &-enter-active,
+    &-leave-active {
+      transition: all .5s linear, opacity .375s linear;
+      transform-origin: 50% -100%;
+    }
+
+    &-enter,
+    &-leave-to {
+      transform: scale(1, 0);
+      opacity: 0;
+      margin-bottom: -44px;
     }
   }
 </style>

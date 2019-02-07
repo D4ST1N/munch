@@ -15,7 +15,7 @@ export default class Deck {
   }
 
   shuffle() {
-    shuffle(this.cards);
+    this.cards = shuffle(this.cards);
   }
 
   addCard(card, random = true) {

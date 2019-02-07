@@ -74,6 +74,7 @@
     flex-direction: column;
     margin-bottom: 16px;
     width: 100%;
+    transform: scale(1);
 
     &__wrapper {
       display: flex;

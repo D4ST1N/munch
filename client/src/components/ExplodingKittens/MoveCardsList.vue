@@ -1,5 +1,11 @@
 <template>
-  <div v-if="cards.length" class="move-cards-list">
+  <div v-if="cards.length"
+       class="move-cards-list"
+       :style="{
+         left: leftOffset,
+         width: `${width}px`
+       }"
+  >
     <CardStack :cards="cards" :areaWidth="1140" />
   </div>
 </template>
@@ -16,7 +22,14 @@
     data() {
       return {
         cards: [],
+        width: 1140,
       };
+    },
+
+    computed: {
+      leftOffset() {
+        return `${(window.innerWidth - this.width) / 2}px`
+      }
     },
 
     created() {

@@ -29,10 +29,8 @@ export default function playerGetExplodingKitten(bridge, room, player, card) {
 
   sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_EXPLODED', room, player.name);
   bridge.emit(player.id, 'endGame', { win: false });
-  room.trash.addCard(...player.deck.cards, false);
   room.trash.addCard(card, false);
-  player.deck.clear();
-  room.killCurrent();
+  room.killPlayer();
   room.logs.push({
     text: 'LOGS.PLAYER_EXPLODED',
     options: {

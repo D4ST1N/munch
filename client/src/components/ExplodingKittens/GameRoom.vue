@@ -50,6 +50,7 @@
     data() {
       return {
         players: [],
+        watchers: [],
         state: 'joined',
         roomExist: false,
         gameStarted: false,
@@ -84,6 +85,17 @@
       document.body.removeEventListener('keyup', this.onKeyUp);
     },
 
+    watch: {
+      '$route'(to, from) {
+        console.log(to, from);
+      },
+    },
+
+    beforeRouteUpdate(to, from, next) {
+      console.log(to, from);
+      next();
+    },
+
     methods: {
       onRoomStatus({ exist }) {
         if (exist) {
@@ -99,7 +111,7 @@
         });
       },
 
-      onGameStatus({players, watchers}) {
+      onGameStatus({ players, watchers }) {
         console.log('player list update');
         console.log(players);
         this.players = players;
@@ -107,11 +119,22 @@
         this.updateState();
       },
 
-      onGameStart() {
+      onGameStart({ players }) {
         console.log('game start event', this.gameStarted);
 
         if (this.gameStarted) {
+          this.$store.commit('updatePlayerStatus', false);
+
           return;
+        }
+
+        if (players) {
+          console.log(players);
+          const isPlayer = !!players.find(
+            player => player.name === this.$store.getters.player.username
+          );
+
+          this.$store.commit('updatePlayerStatus', isPlayer);
         }
 
         this.gameStart(true);

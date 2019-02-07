@@ -137,7 +137,7 @@
       background: var(--ui-player-current-label-background);
       color: var(--ui-player-current-label-color);
       top: 20px;
-      left: 20px;
+      left: 220px;
       padding: 8px 16px;
 
       &--centered {

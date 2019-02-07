@@ -127,7 +127,7 @@ export default function init() {
     console.log('game start');
 
     bridge.emitAll('newGameStarted');
-    bridge.emit(room.id, 'gameStart');
+    bridge.emit(room.id, 'gameStart', { players: room.players });
     sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_TURN', room);
     gameUpdate(bridge, room);
     room.logs.push({
@@ -243,6 +243,33 @@ export default function init() {
       logs: room.status === 'ended' ? room.logs : [],
     };
     bridge.emit(socket.id, event, data);
+  });
+
+  bridge.on('playerLeave', (socket, { room, name }) => {
+    const player = room.getPlayer(name);
+
+    if (!player) {
+      return;
+    }
+
+    room.killPlayer(name);
+
+    if (room.gameEnded) {
+      const winner = room.players[0];
+
+      sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_WIN', room, winner.name);
+      bridge.emit(winner.id, 'endGame', { win: true });
+
+      room.gameEnd();
+      room.logs.push({
+        text: 'LOGS.PLAYER_WIN',
+        options: {
+          player: player.name,
+        },
+      });
+    }
+
+    gameUpdate(bridge, room);
   });
 
   bridge.on('disconnect', (socket) => {
