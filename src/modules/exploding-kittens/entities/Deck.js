@@ -52,6 +52,10 @@ export default class Deck {
     return this.cards.pop();
   }
 
+  useLowerCard() {
+    return this.cards.shift();
+  }
+
   clear() {
     this.cards = [];
   }

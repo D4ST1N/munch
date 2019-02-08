@@ -1,7 +1,6 @@
 import sendGameMessage from './sendGameMessage';
 import gameUpdate      from './gameUpdate';
 import cardsApply      from './cardsApply';
-import isNopeCard      from './hasNopeCard';
 
 export default function cardsCancel(bridge, cards, room, socket, options) {
   console.log(arguments);
@@ -54,6 +53,28 @@ export default function cardsCancel(bridge, cards, room, socket, options) {
             .then(() => {
               cardsApply(bridge, applyingCards, room, socket, mergedOptions);
             }).catch(console.error);
+
+        break;
+
+      case 'reverse':
+        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_BLOCK_REVERSE', room);
+
+        room.reverse();
+        room.previousPlayer();
+
+        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_TURN', room);
+        gameUpdate(bridge, room);
+
+        break;
+
+      case 'attack-target':
+        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_BLOCK_ATTACK_TARGET', room);
+
+        room.previousPlayer();
+        room.penaltyMoves -= 2;
+
+        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_TURN', room);
+        gameUpdate(bridge, room);
 
         break;
 

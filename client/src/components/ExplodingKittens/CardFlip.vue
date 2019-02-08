@@ -189,6 +189,22 @@
         background: url(../../assets/img/cards/small/watermelon-cat.jpg) no-repeat center/cover;
       }
 
+      &--get-lower {
+        background: url(../../assets/img/cards/small/get-lower.jpg) no-repeat center/cover;
+      }
+
+      &--wild-cat {
+        background: url(../../assets/img/cards/small/wild-cat.jpg) no-repeat center/cover;
+      }
+
+      &--reverse {
+        background: url(../../assets/img/cards/small/reverse.jpg) no-repeat center/cover;
+      }
+
+      &--attack-target {
+        background: url(../../assets/img/cards/small/attack-target.jpg) no-repeat center/cover;
+      }
+
       &--back {
         background: url('../../assets/img/card-cover.png') no-repeat center/cover;
         transform: rotateY(180deg);
@@ -279,6 +295,22 @@
 
       &--potato-cat {
         background: url(../../assets/img/icons/small/potato-cat.png) no-repeat center/cover;
+      }
+
+      &--get-lower {
+        background: url(../../assets/img/icons/small/get-lower.png) no-repeat center/cover;
+      }
+
+      &--wild-cat {
+        background: url(../../assets/img/icons/small/wild-cat.png) no-repeat center/cover;
+      }
+
+      &--reverse {
+        background: url(../../assets/img/icons/small/reverse.png) no-repeat center/cover;
+      }
+
+      &--attack-target {
+        background: url(../../assets/img/icons/small/attack-target.png) no-repeat center/cover;
       }
 
       &--exploding-kitten {

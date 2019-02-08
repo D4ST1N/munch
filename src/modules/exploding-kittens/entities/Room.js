@@ -20,6 +20,7 @@ export default class Room {
     this.previousPlayerIndex = null;
     this.history = new History();
     this.logs = [];
+    this.direction = 1;
   }
 
   get currentPlayer() {
@@ -106,6 +107,8 @@ export default class Room {
         case 'nope':
         case 'favor':
         case 'shuffle':
+        case 'get-lower':
+        case 'wild-card':
           cardsCount = playersCount + 2;
           break;
         default:
@@ -150,13 +153,21 @@ export default class Room {
     }));
   }
 
-  nextPlayer(info) {
+  nextPlayer(name, info) {
     let index = this.currentPlayerIndex;
 
-    index++;
+    if (name) {
+      index = this.players.findIndex(player => player.name === name);
+    } else {
+      index += this.direction;
+    }
 
     if (index >= this.players.length) {
       index = 0;
+    }
+
+    if (index < 0) {
+      index = this.players.length - 1;
     }
 
     if (info) {
@@ -167,6 +178,10 @@ export default class Room {
     this.currentPlayerIndex = index;
 
     return this.currentPlayer
+  }
+
+  reverse() {
+    this.direction *= -1;
   }
 
   previousPlayer(info) {

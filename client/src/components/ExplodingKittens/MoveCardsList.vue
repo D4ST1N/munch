@@ -22,13 +22,13 @@
     data() {
       return {
         cards: [],
-        width: 1140,
+        width: 1420,
       };
     },
 
     computed: {
       leftOffset() {
-        return `${(window.innerWidth - this.width) / 2}px`
+        return `${(2200 - this.width) / 2}px`
       }
     },
 

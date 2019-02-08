@@ -6,6 +6,12 @@
         'game-room-players__container--active': active
       }"
     >
+      <div
+        :class="{
+          'game-room-players__direction': true,
+          'game-room-players__direction--reversed': direction === 'left'
+        }"
+      ></div>
       <PlayerCircle
         v-for="player in players"
         :key="player.name"
@@ -44,6 +50,7 @@
         resolve: null,
         reject: null,
         active: false,
+        direction: 'right',
       };
     },
 
@@ -61,9 +68,9 @@
 
     methods: {
       updateStats(gameData) {
-        console.log('game update');
         this.updatePlayersList(gameData.players);
         this.current = gameData.currentPlayer;
+        this.direction = gameData.direction > 0 ? 'right' : 'left';
       },
 
       isCurrent(name) {
@@ -118,6 +125,19 @@
       &--active {
         background: rgba(207,216,220 ,1);
         box-shadow: 0 0 0 100vw rgba(38,50,56 ,.8);
+      }
+    }
+
+    &__direction {
+      width: 64px;
+      height: 44px;
+      background: url('../../assets/img/direction-arrow.png') no-repeat center;
+      margin-top: 58px;
+      margin-right: 16px;
+      transition: all .375s;
+
+      &--reversed {
+        transform: rotate(180deg);
       }
     }
 

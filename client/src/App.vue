@@ -40,9 +40,7 @@
       this.styles.href = `/themes/${this.theme}.css`;
 
       document.head.appendChild(this.styles);
-      console.log(window.innerWidth);
-      console.log(window.innerWidth / 1920);
-      this.zoomCoef = window.innerWidth / 1920 * 100;
+      this.zoomCoef = window.innerWidth / 2200 * 100;
     },
 
     methods: {

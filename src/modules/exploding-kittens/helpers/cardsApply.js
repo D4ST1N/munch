@@ -2,6 +2,7 @@ import sendGameMessage from './sendGameMessage';
 import gameUpdate      from './gameUpdate';
 import shuffle         from '../../../utils/shuffle';
 import cardsCancel     from './cardsCancel';
+import playerGetCard   from './playerGetCard';
 
 export default function cardsApply(bridge, cards, room, socket, options) {
   const player = room.currentPlayer;
@@ -98,6 +99,38 @@ export default function cardsApply(bridge, cards, room, socket, options) {
         if (previousPart) {
           cardsCancel(bridge, previousPart.deck.cards, room, socket, options);
         }
+
+        break;
+
+      case 'get-lower':
+        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_GET_LOWER', room, player.name);
+        playerGetCard(bridge, room, player.name, false);
+
+        break;
+
+      case 'reverse':
+        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_REVERSE', room, player.name);
+        room.reverse();
+
+        if (!room.playerEndMove()) {
+          room.nextPlayer();
+        }
+
+        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_TURN', room);
+        gameUpdate(bridge, room);
+
+        break;
+
+      case 'attack-target':
+        const attackedPlayer = room.getPlayer(options.name);
+
+        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_ATTACK_TARGET', room, player.name, {
+          whom: attackedPlayer.name,
+        });
+
+        room.nextPlayer(attackedPlayer.name);
+        room.penaltyMoves += 2;
+        gameUpdate(bridge, room);
 
         break;
 

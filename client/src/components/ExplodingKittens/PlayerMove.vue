@@ -32,6 +32,9 @@
           'nope',
           'attack',
           'favor',
+          'get-lower',
+          'reverse',
+          'attack-target',
         ],
       };
     },
@@ -67,7 +70,9 @@
 
           case 2:
           case 3:
-            return new Set(cards.map(card => card.props.type)).size === 1;
+            const hasWildCat = !!cards.find(card => card.props.type === 'wild-cat');
+            const differentCards = new Set(cards.map(card => card.props.type)).size;
+            return differentCards === 1 || differentCards === 2 && hasWildCat;
 
           case 5:
             return new Set(cards.map(card => card.props.type)).size === 5;
@@ -93,6 +98,7 @@
           switch (this.$store.getters.selectedCards.length) {
             case 2:
               this.$root.$emit('choosePlayer', resolve, reject);
+
               break;
             case 3:
               this.$root.$emit('chooseCardType', ({ card }) => {
@@ -103,13 +109,17 @@
                   });
                 }, reject);
               }, reject);
+
               break;
             default:
-              if (this.$store.getters.selectedCards[0].props.type === 'favor') {
+              const cardType = this.$store.getters.selectedCards[0].props.type;
+
+              if (['favor', 'attack-target'].includes(cardType)) {
                 this.$root.$emit('choosePlayer', resolve, reject);
               } else {
                 resolve();
               }
+
               break;
           }
         })

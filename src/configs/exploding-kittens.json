@@ -90,6 +90,34 @@
       "description": "CARDS.EXPLODING_KITTEN.DESCRIPTION",
       "color": "rgba(38,50,56 ,1)",
       "isCatCard": false
+    },
+    {
+      "type": "get-lower",
+      "name": "CARDS.GET_LOWER.NAME",
+      "description": "CARDS.GET_LOWER.DESCRIPTION",
+      "color": "rgba(0,105,92 ,1)",
+      "isCatCard": false
+    },
+    {
+      "type": "wild-cat",
+      "name": "CARDS.WILD_CAT.NAME",
+      "description": "CARDS.WILD_CAT.DESCRIPTION",
+      "color": "rgba(224,224,224 ,1)",
+      "isCatCard": true
+    },
+    {
+      "type": "reverse",
+      "name": "CARDS.REVERSE.NAME",
+      "description": "CARDS.REVERSE.DESCRIPTION",
+      "color": "rgba(25,118,210 ,1)",
+      "isCatCard": false
+    },
+    {
+      "type": "attack-target",
+      "name": "CARDS.ATTACK_TARGET.NAME",
+      "description": "CARDS.ATTACK_TARGET.DESCRIPTION",
+      "color": "rgba(230,81,0 ,1)",
+      "isCatCard": false
     }
   ],
   "game": {
