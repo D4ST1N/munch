@@ -80,13 +80,11 @@
         this.show = true;
       });
       document.body.addEventListener('keyup', this.onKeyUp);
-      window.addEventListener('keypress', console.log);
     },
 
     methods: {
       onKeyUp(event) {
-        console.log(event.code);
-        if (event.code === 'KeyO') {
+        if (event.code === 'KeyO' && event.shiftKey) {
           this.show = true;
         }
       },

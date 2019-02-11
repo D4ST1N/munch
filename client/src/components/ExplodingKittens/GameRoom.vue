@@ -27,7 +27,7 @@
       <div v-else class="game-room__content">
         <h2 class="game-room__players">{{ $text('GAME_ROOMS.NOT_EXIST') }}</h2>
         <router-link to="/exploding-kittens" class="game-room__action">
-          <Button size="small" type="green" :text="$text('GAME_ROOMS.GO_HOME')" />
+          <Button size="big" type="green" :text="$text('GAME_ROOMS.GO_HOME')" />
         </router-link>
       </div>
     </div>

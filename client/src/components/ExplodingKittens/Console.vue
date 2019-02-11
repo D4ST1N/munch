@@ -146,7 +146,7 @@
 
     &__command-line {
       border: 0;
-      background: rgba(69,90,100, .6);
+      background: rgba(91, 115, 132, 1);
       border-bottom: 2px solid #fff8;
       padding: 8px 16px;
       font-size: 24px;

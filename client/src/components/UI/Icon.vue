@@ -35,7 +35,7 @@
 
 <style lang="scss">
   @mixin icon($icon) {
-    background: url('../../assets/icons/#{$icon}.svg') no-repeat center;
+    background: url('../../assets/icons/#{$icon}.svg') no-repeat center/cover;
   }
 
   @mixin monoIcon($icon) {
@@ -165,6 +165,14 @@
 
     &--trash {
       @include icon('trash');
+    }
+
+    &--back {
+      @include icon('back');
+    }
+
+    &--forward {
+      @include icon('forward');
     }
 
     &--search {

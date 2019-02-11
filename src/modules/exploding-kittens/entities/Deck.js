@@ -10,6 +10,14 @@ export default class Deck {
     return this.cards.map((card) => ({ id: card.id, inverted: true }));
   }
 
+  invert(excludedTypes = []) {
+    return this.cards.map((card) => {
+      return excludedTypes.includes(card.props.type)
+        ? card
+        : { id: card.id, inverted: true }
+    });
+  }
+
   hasCardOfType(type) {
     return !!this.cards.find(card => card.props.type === type);
   }

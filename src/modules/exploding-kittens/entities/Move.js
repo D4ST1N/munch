@@ -14,6 +14,7 @@ export default class Move {
   actionCards = [
     'see-the-future',
     'shuffle',
+    'change-the-future',
   ];
 
   get cards() {

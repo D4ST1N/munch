@@ -21,6 +21,7 @@ export default class Room {
     this.history = new History();
     this.logs = [];
     this.direction = 1;
+    this.implodingKittenFound = false;
   }
 
   get currentPlayer() {
@@ -50,6 +51,10 @@ export default class Room {
     });
 
     return deck;
+  }
+
+  invertDeck() {
+    return this.deck.invert(this.implodingKittenFound ? [ 'imploding-kitten' ] : []);
   }
 
   playerConnect(playerName, id) {
@@ -90,16 +95,20 @@ export default class Room {
   }
 
   initGameDeck() {
+    const playersCount = this.players.length;
+
     config.cards.forEach((cardConfig) => {
-      const playersCount = this.players.length;
       let cardsCount;
 
       switch (cardConfig.type) {
         case 'defuse':
           cardsCount = playersCount + (Math.ceil(playersCount / 2));
           break;
+        case 'imploding-kitten':
+          cardsCount = playersCount > 3 ? 1 : 0;
+          break;
         case 'exploding-kitten':
-          cardsCount = playersCount - 1;
+          cardsCount = playersCount > 3 ? playersCount - 2 : playersCount - 1;
           break;
         case 'skip':
         case 'attack':
@@ -109,7 +118,10 @@ export default class Room {
         case 'shuffle':
         case 'get-lower':
         case 'wild-card':
-          cardsCount = playersCount + 2;
+        case 'change-the-future':
+        case 'reverse':
+        case 'attack-target':
+          cardsCount = playersCount + (playersCount > 3 ? 0 : 1);
           break;
         default:
           cardsCount = Math.ceil((playersCount + 1) / 2) * 2;

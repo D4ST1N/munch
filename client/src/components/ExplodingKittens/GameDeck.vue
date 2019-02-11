@@ -16,6 +16,10 @@
         @cardClick="getCard"
       ></CardFlip>
     </transition-group>
+    <div v-if="showCount" class="game-deck__count">
+      {{ $text('NOTIFICATIONS.GAME.CARDS_COUNT') }}:
+      {{ deck.length }}
+    </div>
     <div v-if="showEnd" class="game-deck__cards-indexes">
       <div v-for="index in 3" class="game-deck__index">{{ index }}</div>
     </div>
@@ -45,6 +49,7 @@
         showEnd: false,
         showDeck: false,
         initialLoad: true,
+        showCount: false,
       };
     },
 
@@ -72,12 +77,12 @@
 
       onMouseOver(event) {
         if (event.shiftKey) {
-          this.showDeck = true;
+          this.showCount = true;
         }
       },
 
       onMouseOut() {
-        this.showDeck = false;
+        this.showCount = false;
       },
 
       isCardFlipped(card) {
@@ -85,17 +90,17 @@
       },
 
       getOffset(card, index) {
-        return `translate(${this.cardOffsetX(card, index)}px, ${this.cardOffsetY(card, index)}px) scale(${this.isCardFlipped(card) ? 1 : 0.85})`;
+        return `translate(${this.cardOffsetX(card, index)}px, ${this.cardOffsetY(card, index)}px) scale(${this.isCardFlipped(card) || !this.showEnd ? 1 : 0.85})`;
       },
 
       cardOffsetX(card, index) {
-        return this.isCardFlipped(card)
+        return this.isCardFlipped(card) || !this.showEnd
                ? (this.showDeck ? 15 : -0.25) * index
                : -110 * (3 - (this.deck.length - index)) + 10;
       },
 
       cardOffsetY(card, index) {
-        return this.isCardFlipped(card) ? -0.5 * index : 220;
+        return this.isCardFlipped(card) || !this.showEnd ? -0.5 * index : 220;
       },
 
       endSeeTheFuture() {
@@ -129,6 +134,14 @@
 
     &__card {
       position: absolute;
+    }
+
+    &__count {
+      position: absolute;
+      top: 230px;
+      left: 0;
+      color: #fff;
+      white-space: nowrap;
     }
 
     &__cards-indexes {

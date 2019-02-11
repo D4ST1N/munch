@@ -205,6 +205,10 @@
         background: url(../../assets/img/cards/small/attack-target.jpg) no-repeat center/cover;
       }
 
+      &--change-the-future {
+        background: url(../../assets/img/cards/small/change-the-future.jpg) no-repeat center/cover;
+      }
+
       &--back {
         background: url('../../assets/img/card-cover.png') no-repeat center/cover;
         transform: rotateY(180deg);
@@ -311,6 +315,14 @@
 
       &--attack-target {
         background: url(../../assets/img/icons/small/attack-target.png) no-repeat center/cover;
+      }
+
+      &--change-the-future {
+        background: url(../../assets/img/icons/small/change-the-future.png) no-repeat center/cover;
+      }
+
+      &--imploding-kitten {
+        background: #000;
       }
 
       &--exploding-kitten {

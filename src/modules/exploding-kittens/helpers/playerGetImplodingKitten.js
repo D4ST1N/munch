@@ -1,27 +1,12 @@
 import sendGameMessage from './sendGameMessage';
 import gameUpdate      from './gameUpdate';
 
-export default function playerGetExplodingKitten(bridge, room, player, card) {
-  sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_GET_EXPLODING_KITTEN', room, player.name);
+export default function playerGetImplodingKitten(bridge, room, player, card) {
+  sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_GET_IMPLODING_KITTEN', room, player.name);
 
-  if (player.deck.isCardExist('defuse')) {
-    console.log('player has defuse');
-
-    room.trash.addCard(...player.deck.useCardByType('defuse'), false);
+  if (!room.implodingKittenFound) {
     room.deck.addCard(card);
-
-    sendGameMessage(
-      bridge,
-      'NOTIFICATIONS.GAME.PLAYER_DEFUSE_EXPLODING_KITTEN',
-      room,
-      player.name,
-    );
-    room.logs.push({
-      text: 'LOGS.PLAYER_DEFUSE_EXPLODING_KITTEN',
-      options: {
-        player: player.name,
-      }
-    });
+    room.implodingKittenFound = true;
 
     return true;
   }

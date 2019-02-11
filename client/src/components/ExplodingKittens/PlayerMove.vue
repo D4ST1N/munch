@@ -35,6 +35,7 @@
           'get-lower',
           'reverse',
           'attack-target',
+          'change-the-future',
         ],
       };
     },
@@ -71,8 +72,10 @@
           case 2:
           case 3:
             const hasWildCat = !!cards.find(card => card.props.type === 'wild-cat');
+            const isOnlyCatCards = cards.every(card => card.props.isCatCard);
             const differentCards = new Set(cards.map(card => card.props.type)).size;
-            return differentCards === 1 || differentCards === 2 && hasWildCat;
+
+            return differentCards === 1 || differentCards === 2 && hasWildCat && isOnlyCatCards;
 
           case 5:
             return new Set(cards.map(card => card.props.type)).size === 5;
@@ -176,6 +179,7 @@
       top: -20px;
       left: calc(50% - 168px);
       animation: paw-in 1.5s ease;
+      transform-origin: 50% 0;
     }
   }
 

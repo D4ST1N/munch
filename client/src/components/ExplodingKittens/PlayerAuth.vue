@@ -110,12 +110,19 @@
       if (playerName) {
         this.name = playerName;
       }
+
+      document.body.addEventListener('keyup', this.onKeyUp);
+    },
+
+    beforeDestroy() {
+      document.body.removeEventListener('keyup', this.onKeyUp);
     },
 
     methods: {
       fieldInput(field, value) {
         this.$set(field, 'value', value);
       },
+
       save() {
         const method = this.currentForm;
         let userData = {};
@@ -161,11 +168,18 @@
               })
           });
       },
+
       changeForm() {
         this.currentForm = this.currentForm === 'login' ? 'register' : 'login';
         this.formChangeText = this.changeTexts.filter(item => item !== this.formChangeText)[0];
         this.formError = '';
-      }
+      },
+
+      onKeyUp(event) {
+        if (event.code === 'Enter') {
+          this.save();
+        }
+      },
     },
   };
 </script>

@@ -118,6 +118,20 @@
       "description": "CARDS.ATTACK_TARGET.DESCRIPTION",
       "color": "rgba(230,81,0 ,1)",
       "isCatCard": false
+    },
+    {
+      "type": "change-the-future",
+      "name": "CARDS.CHANGE_THE_FUTURE.NAME",
+      "description": "CARDS.CHANGE_THE_FUTURE.DESCRIPTION",
+      "color": "rgba(230,81,0 ,1)",
+      "isCatCard": false
+    },
+    {
+      "type": "imploding-kitten",
+      "name": "CARDS.IMPLODING_KITTEN.NAME",
+      "description": "CARDS.IMPLODING_KITTEN.DESCRIPTION",
+      "color": "rgba(38,50,56 ,1)",
+      "isCatCard": false
     }
   ],
   "game": {

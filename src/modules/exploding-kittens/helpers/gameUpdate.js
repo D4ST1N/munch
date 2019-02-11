@@ -4,7 +4,7 @@ const sendUpdateToUser = (bridge, room, userName, isWatcher = false) => {
     : 'getWatcher';
   const user = room[correctMethod](userName);
 
-  const invertedDeck = room.invertedDeck;
+  const invertedDeck = room.invertDeck();
   const currentPlayer = room.currentPlayer.name;
   const players = room.playersList();
 

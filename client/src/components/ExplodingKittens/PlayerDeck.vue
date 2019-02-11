@@ -3,6 +3,7 @@
     <CardStack
       :cards="deck"
       :selectedCards="$store.getters.selectedCards"
+      :areaWidth="2160"
       @cardClick="toggleCard"
     />
   </div>

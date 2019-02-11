@@ -3,6 +3,7 @@ import writeLog                 from './writeLog';
 import sendGameMessage          from './sendGameMessage';
 import newMove                  from './newMove';
 import gameUpdate               from './gameUpdate';
+import playerGetImplodingKitten from './playerGetImplodingKitten';
 
 export default function playerGetCard(bridge, room, name, upper = true) {
   const player = room.currentPlayer;
@@ -34,6 +35,8 @@ export default function playerGetCard(bridge, room, name, upper = true) {
 
   if (card.props.type === 'exploding-kitten') {
     next = playerGetExplodingKitten(bridge, room, player, card);
+  } else if (card.props.type === 'imploding-kitten') {
+    next = playerGetImplodingKitten(bridge, room, player, card);
   } else {
     player.deck.addCard(card);
   }

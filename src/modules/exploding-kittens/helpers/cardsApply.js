@@ -51,6 +51,26 @@ export default function cardsApply(bridge, cards, room, socket, options) {
 
         break;
 
+      case 'change-the-future':
+        bridge.emit(player.id, 'showCardList', {
+          deck: room.deck.cards.slice(-3).reverse(),
+          event: 'submitNewFuture',
+          changeCardOrder: true,
+        });
+
+        bridge.on('submitNewFuture', (socket, { room, cards }) => {
+          room.deck.cards.splice(-3, 3, ...cards.reverse());
+
+          gameUpdate(bridge, room);
+          setTimeout(() => {
+            gameUpdate(bridge, room);
+          }, 150);
+
+          bridge.off('submitNewFuture');
+        });
+
+        break;
+
       case 'skip':
         sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_SKIP', room);
 

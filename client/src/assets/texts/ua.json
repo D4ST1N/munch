@@ -92,6 +92,14 @@
     "ATTACK_TARGET": {
       "NAME": "Атакуй влучно",
       "DESCRIPTION": ""
+    },
+    "CHANGE_THE_FUTURE": {
+      "NAME": "Переінакш майбутнє",
+      "DESCRIPTION": ""
+    },
+    "IMPLODING_KITTEN": {
+      "NAME": "Нищівне кошеня",
+      "DESCRIPTION": ""
     }
   },
   "NOTIFICATIONS": {
@@ -115,6 +123,10 @@
       "PLAYER_GET_EXPLODING_KITTEN": {
         "YOU": "Ти витягнув вибухове кошеня.",
         "OTHER": "Гравець {player} витягнув вибухове кошеня"
+      },
+      "PLAYER_GET_IMPLODING_KITTEN": {
+        "YOU": "Ти витягнув нищівне кошеня.",
+        "OTHER": "Гравець {player} витягнув нищівне кошеня"
       },
       "PLAYER_DEFUSE_EXPLODING_KITTEN": {
         "YOU": "Ти знешкодив вибухове кошеня, карта \"Знешкодь\" була викинута у відбій",
@@ -180,6 +192,8 @@
       "DEFUSE": "Знешкодити",
       "FAVOR": "Зробити ласку",
       "CANCEL": "Відмінити",
+      "SUBMIT": "Підтвердити",
+      "CARDS_COUNT": "Кількість карт",
       "DEFUSE_KITTEN": "Ти витягнув вибухове кошеня, проте була використана карта \"Знешкодь\"",
       "DEFUSE_WILL_BE_USED": "Карта \"Знешкодь\" буде використана та викинута у відбій",
       "END_SEE_THE_FUTURE": "Закінчити дивитись у майбутнє",
