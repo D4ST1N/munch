@@ -13,7 +13,7 @@ export default class EventBridge {
       socket.onpacket = (pack) => {
         const [event, payload] = pack.data;
         let room;
-        console.log('new event emit', event);
+        console.log('new event emit', event, payload);
 
         if (payload && payload.roomId) {
           room = getRoom(Rooms, payload.roomId);
@@ -63,7 +63,7 @@ export default class EventBridge {
     let listeners = this.events[event];
 
     if (!fn) {
-      listeners = [];
+      this.events[event] = [];
 
       return;
     }

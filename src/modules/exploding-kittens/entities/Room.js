@@ -105,10 +105,10 @@ export default class Room {
           cardsCount = playersCount + (Math.ceil(playersCount / 2));
           break;
         case 'imploding-kitten':
-          cardsCount = playersCount > 3 ? 1 : 0;
+          cardsCount = playersCount > 2 ? 1 : 0;
           break;
         case 'exploding-kitten':
-          cardsCount = playersCount > 3 ? playersCount - 2 : playersCount - 1;
+          cardsCount = playersCount > 2 ? playersCount - 2 : playersCount - 1;
           break;
         case 'skip':
         case 'attack':
@@ -231,6 +231,7 @@ export default class Room {
 
     this.trash.addCard(...player.deck.cards, false);
     player.deck.clear();
+    this.penaltyMoves = 0;
 
     this.players.splice(playerIndex, 1);
     this.previousPlayer();

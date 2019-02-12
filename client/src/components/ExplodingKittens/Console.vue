@@ -31,6 +31,10 @@
             options: ['cardType'],
           },
           {
+            name: '_showPlayerCards',
+            options: ['playerName'],
+          },
+          {
             name: '_getDefuse',
           },
           {

@@ -54,6 +54,7 @@
         this.disabled = !this.isMoveAvailable();
       });
       this.$store.getters.socket.on('playerUseFavor', this.onFavor);
+      this.$store.getters.socket.on('playerEndFavor', this.onFavorEnd);
     },
 
     methods: {
@@ -153,6 +154,11 @@
 
       onFavor() {
         this.favorActive = true;
+      },
+
+      onFavorEnd() {
+        console.log('here');
+        this.favorActive = false;
       },
     },
   };

@@ -45,6 +45,9 @@
 
     created() {
       this.$store.getters.socket.on('showCardList', this.updateDeck);
+      this.$store.getters.socket.on('hideCardList', () => {
+        this.deck = [];
+      });
       this.$root.$on('chooseCardType', (resolve, reject) => {
         this.resolve = resolve;
         this.reject = reject;

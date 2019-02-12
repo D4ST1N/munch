@@ -27,6 +27,10 @@ export default class Deck {
   }
 
   addCard(card, random = true) {
+    if (!card) {
+      return;
+    }
+
     if (random) {
       this.cards.splice(randomInt(0, this.cards.length - 1), 0, card);
     } else {

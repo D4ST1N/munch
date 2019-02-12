@@ -37,6 +37,20 @@ export default function cardsCancel(bridge, cards, room, socket, options) {
 
         break;
 
+      case 'favor': {
+        const move = room.history.current;
+        const applyingPart = move.parts[move.parts.length - 2];
+        const mergedOptions = Object.assign({}, options, applyingPart.options);
+        const player = room.getPlayer(mergedOptions.name);
+
+        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_BLOCK_ATTACK', room);
+
+        bridge.emit(player.id, 'playerEndFavor');
+        gameUpdate(bridge, room);
+
+        break;
+      }
+
       case 'nope':
         const move = room.history.current;
 
@@ -45,7 +59,7 @@ export default function cardsCancel(bridge, cards, room, socket, options) {
         gameUpdate(bridge, room);
         bridge.emit(room.id, 'updateMove', { cards: move.allCards });
 
-        const applyingPart = room.history.current.parts[room.history.current.parts.length - 1];
+        const applyingPart = move.parts[move.parts.length - 1];
         const mergedOptions = Object.assign({}, options, applyingPart.options);
         const applyingCards = applyingPart.deck.cards;
 

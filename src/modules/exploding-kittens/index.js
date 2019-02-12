@@ -8,11 +8,9 @@ import sendGameMessage from './helpers/sendGameMessage';
 import getRoomsList    from './helpers/getRoomsList';
 import gameUpdate      from './helpers/gameUpdate';
 import playerConnect   from './helpers/playerConnect';
-import newMove         from './helpers/newMove';
-import cardsApply      from './helpers/cardsApply';
-import isNopeCard      from './helpers/hasNopeCard';
 import writeLog        from './helpers/writeLog';
 import playerGetCard   from './helpers/playerGetCard';
+import playerMove      from './helpers/playerMove';
 
 export default function init() {
   const io = ioStarter('/ws/exploding-kittens');
@@ -117,69 +115,15 @@ export default function init() {
     const usedCard = player.deck.useCardByType('nope');
     console.log(usedCard);
 
-    const move = room.history.current;
-    move.addCards(usedCard).then(console.log).catch(console.error);
-    move.timer.stopTimer();
-
-    bridge.emit(room.id, 'stopTimer');
-    bridge.emit(room.id, 'updateMove', { cards: move.allCards });
-    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_BLOCK_ACTION', room, player.name, {
-      personalized: false,
-    });
-    gameUpdate(bridge, room);
-    room.logs.push({
-      text: 'LOGS.PLAYER_BLOCK_ACTION',
-      options: {
-        player: name,
-      },
+    playerMove(bridge, socket, {
+      room,
+      name,
+      cards: usedCard,
     });
   });
 
-  bridge.on('playerMove', (socket, { room, name, cards, options }) => {
-    console.log('player move');
-    const player = room.getPlayer(name);
-
-    if (!player) {
-      return;
-    }
-
-    const currentPlayer = room.currentPlayer;
-
-    if (player.name !== currentPlayer.name && !isNopeCard(cards)) {
-      return;
-    }
-
-    console.log('new move');
-
-    if (!room.history.current) {
-      newMove(bridge, room, player);
-    }
-
-    const move = room.history.current;
-
-    // TODO check for cheats
-    cards.forEach(card => player.deck.useCard(card.id));
-    gameUpdate(bridge, room, player.name);
-    room.logs.push({
-      text: 'LOGS.PLAYER_MAKE_MOVE',
-      options: {
-        player: name,
-      },
-      deck: [...cards],
-    });
-
-    room.history.newMove(move);
-
-    move.addCards(cards, options).then(() => {
-      if (isNopeCard(cards) && move.timer) {
-        move.timer.stopTimer();
-        bridge.emit(room.id, 'stopTimer');
-      }
-
-      cardsApply(bridge, cards, room, socket, options);
-    }).catch(console.error);
-
-    bridge.emit(room.id, 'updateMove', { cards: move.allCards });
+  bridge.on('playerMove', (socket, payload) => {
+    playerMove(bridge, socket, payload);
   });
 
   bridge.on('getAllCardsType', (socket) => {
@@ -278,10 +222,32 @@ export default function init() {
     const showTime = 10000;
 
     sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CHEATS', room, name);
-    bridge.emit(socket.id, '_showCurrentGameDeck', { deck: room.deck.cards, timer: showTime });
+    bridge.emit(socket.id, 'showCardList', { deck: room.deck.cards, timer: showTime });
 
     const hideDeckTimeout = setTimeout(() => {
-      bridge.emit(socket.id, '_hideCurrentGameDeck');
+      bridge.emit(socket.id, 'hideCardList');
+      clearTimeout(hideDeckTimeout);
+    }, showTime);
+  });
+
+  bridge.on('_showPlayerCards', (socket, { room, name, options }) => {
+    const player = room.getPlayer(name);
+    const [ playerName ] = options;
+    const chosenPlayer = room.getPlayer(playerName);
+    console.log(player, chosenPlayer);
+
+    if (!player || !chosenPlayer) {
+      return;
+    }
+
+
+    const showTime = 10000;
+
+    bridge.emit(player.id, 'showCardList', { deck: chosenPlayer.deck.cards, timer: showTime });
+
+    const hideDeckTimeout = setTimeout(() => {
+      console.log('now');
+      bridge.emit(player.id, 'hideCardList');
       clearTimeout(hideDeckTimeout);
     }, showTime);
   });

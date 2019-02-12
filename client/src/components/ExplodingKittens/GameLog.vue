@@ -38,12 +38,12 @@
 
     &__content {
       width: 360px;
-      height: 50vh;
+      height: 60vh;
       padding: 10px;
       background: var(--ui-game-log-background-color);
       border-radius: 8px;
       overflow: auto;
-      max-height: 50vh;
+      max-height: 60vh;
     }
 
     &__message {

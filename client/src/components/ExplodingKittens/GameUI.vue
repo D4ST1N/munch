@@ -8,10 +8,6 @@
     <PlayerDeck />
     <GameLog />
     <Dialog />
-    <ShowGameDeck
-      v-if="showDeck"
-      :current-deck="deck"
-    />
     <CardsList />
     <EndGamePopup />
   </div>
@@ -41,7 +37,6 @@
       PlayerMove,
       Trash,
       MoveCardsList,
-      ShowGameDeck,
       CardsList,
       EndGamePopup,
     },
@@ -51,23 +46,6 @@
         showDeck: false,
         deck: []
       };
-    },
-
-    created() {
-      // TODO remove cheats events here
-      this.$store.getters.socket.on('_showCurrentGameDeck', ({deck, timer}) => {
-        this.deck = deck;
-        this.showDeck = true;
-        this.$root.$emit('showDialog', {
-          time: timer
-        });
-      });
-
-      this.$store.getters.socket.on('_hideCurrentGameDeck', () => {
-        this.deck = [];
-        this.showDeck = false;
-        this.$root.$emit('hideDialog');
-      });
     },
 
     mounted() {

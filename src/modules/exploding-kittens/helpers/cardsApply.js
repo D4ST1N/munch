@@ -58,16 +58,18 @@ export default function cardsApply(bridge, cards, room, socket, options) {
           changeCardOrder: true,
         });
 
-        bridge.on('submitNewFuture', (socket, { room, cards }) => {
-          room.deck.cards.splice(-3, 3, ...cards.reverse());
+        const onSubmitNewFuture = (socket, { room, cards }) => {
+          room.deck.cards.splice(-3, 3, ...(cards.reverse()));
 
           gameUpdate(bridge, room);
           setTimeout(() => {
             gameUpdate(bridge, room);
           }, 150);
 
-          bridge.off('submitNewFuture');
-        });
+          bridge.off('submitNewFuture', onSubmitNewFuture);
+        };
+
+        bridge.on('submitNewFuture', onSubmitNewFuture);
 
         break;
 
