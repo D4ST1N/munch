@@ -40,6 +40,7 @@
           'change-the-future-x5',
           'swap-top-and-bottom',
           'freedom',
+          'catomic-bomb',
         ],
       };
     },
@@ -185,10 +186,11 @@
       height: 752px;
       position: fixed;
       background: url("../../assets/img/paw.png") no-repeat center;
-      top: -20px;
+      top: 0;
       left: calc(50% - 168px);
       animation: paw-in 1.5s ease;
       transform-origin: 50% 0;
+      scale: 1.1;
     }
   }
 

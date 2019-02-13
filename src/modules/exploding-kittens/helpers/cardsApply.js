@@ -151,6 +151,7 @@ export default function cardsApply(bridge, cards, room, socket, options) {
         break;
 
       case 'attack-target':
+        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_ATTACK_TARGET', room, player.name);
         const attackedPlayer = room.getPlayer(options.name);
 
         sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_ATTACK_TARGET', room, player.name, {
@@ -160,6 +161,22 @@ export default function cardsApply(bridge, cards, room, socket, options) {
         room.nextPlayer(attackedPlayer.name);
         room.penaltyMoves += 2;
         gameUpdate(bridge, room);
+
+        break;
+
+      case 'catomic-bomb':
+        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CATOMIC_BOMB', room, player.name);
+
+        const explodingKittens = ['exploding-kitten', 'imploding-kitten'];
+        const explodingCards = room.deck.cards.filter(card => explodingKittens.includes(card.props.type));
+        const saveCards = room.deck.cards.filter(card => !explodingKittens.includes(card.props.type));
+
+        room.deck.cards = [].concat(saveCards, explodingCards);
+        room.nextPlayer();
+        gameUpdate(bridge, room);
+        setTimeout(() => {
+          gameUpdate(bridge, room);
+        }, 150);
 
         break;
 

@@ -17,7 +17,11 @@
 
 <script>
   export default {
-    name: 'Home'
+    name: 'Home',
+
+    created() {
+      this.$router.push('/exploding-kittens');
+    }
   };
 </script>
 

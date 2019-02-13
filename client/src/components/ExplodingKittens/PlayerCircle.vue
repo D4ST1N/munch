@@ -65,6 +65,7 @@
           width: 6,
         });
 
+        console.log(this.$refs);
         this.init([this.progress], {
           width: 200,
           height: 200,

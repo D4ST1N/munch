@@ -35,8 +35,8 @@ export default function init() {
     bridge.emit(socket.id, 'roomList', roomsArray);
   });
 
-  bridge.on('createRoom', (socket, { name }) => {
-    Rooms.push(new Room());
+  bridge.on('createRoom', (socket, { name, options }) => {
+    Rooms.push(new Room(options));
 
     console.log(name);
     const roomsArray = getRoomsList(Rooms, name);

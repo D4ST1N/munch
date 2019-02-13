@@ -160,6 +160,13 @@
       "description": "CARDS.FREEDOM.DESCRIPTION",
       "color": "rgba(0,121,107 ,1)",
       "isCatCard": false
+    },
+    {
+      "type": "catomic-bomb",
+      "name": "CARDS.CATOMIC_BOMB.NAME",
+      "description": "CARDS.CATOMIC_BOMB.DESCRIPTION",
+      "color": "rgba(255,235,59 ,1)",
+      "isCatCard": false
     }
   ],
   "game": {

@@ -1,5 +1,5 @@
 <template>
-  <div class="game-deck" @mouseover="onMouseOver" @mouseout="onMouseOut">
+  <div class="game-deck">
     <transition-group name="game-deck" tag="div" :duration="{ enter: 500, leave: 0 }">
       <CardFlip
         v-for="(card, index) in deck"
@@ -16,7 +16,7 @@
         @cardClick="getCard"
       ></CardFlip>
     </transition-group>
-    <div v-if="showCount" class="game-deck__count">
+    <div class="game-deck__count">
       {{ $text('NOTIFICATIONS.GAME.CARDS_COUNT') }}:
       {{ deck.length }}
     </div>
@@ -36,7 +36,6 @@
       return {
         deck: [],
         initialLoad: true,
-        showCount: false,
       };
     },
 
@@ -55,16 +54,6 @@
         setTimeout(() => {
           this.initialLoad = false;
         }, 2000);
-      },
-
-      onMouseOver(event) {
-        if (event.shiftKey) {
-          this.showCount = true;
-        }
-      },
-
-      onMouseOut() {
-        this.showCount = false;
       },
 
       isCardFlipped(card) {

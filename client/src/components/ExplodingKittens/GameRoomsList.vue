@@ -16,26 +16,45 @@
           />
         </router-link>
       </div>
-      <Button
-        class="game-rooms-list__btn"
-        type="green"
-        :text="$text('GAME_ROOMS.CREATE')"
-        @buttonClick="createRoom"
-      >
-        <Icon slot="before" size="x-small" type="add_mono"></Icon>
-      </Button>
+      <div class="game-rooms-list__actions">
+        <Button
+          type="green"
+          :text="$text('GAME_ROOMS.CREATE')"
+          :offset="false"
+          @buttonClick="createRoom"
+        >
+          <Icon slot="before" size="x-small" type="add_mono"></Icon>
+        </Button>
+        <Button type="green" :squash="true" @buttonClick="openOptionPopup">
+          <Icon slot="before" size="medium" type="gears"></Icon>
+        </Button>
+      </div>
     </div>
+    <GameOptionsPopup v-if="showOptionsPopup" @createRoom="createRoom" />
   </div>
 </template>
 
 <script>
+  import GameOptionsPopup from './GameOptionsPopup';
+  import settings from './settings';
+
   export default {
     name: 'GameRoomsList',
+    components: {
+      GameOptionsPopup,
+    },
 
     data() {
       return {
         rooms: [],
-      }
+        showOptionsPopup: false,
+        defaultSettings: {
+          packs: settings.packs,
+          fastGame: {
+            selected: false,
+          },
+        },
+      };
     },
 
     created() {
@@ -59,8 +78,13 @@
         this.$store.getters.socket.emit('getRoomList', { name: this.playerName });
       },
 
-      createRoom() {
-        this.$store.getters.socket.emit('createRoom', { name: this.playerName });
+      createRoom(options = { settings: this.defaultSettings }) {
+        this.$store.getters.socket.emit('createRoom', { options, name: this.playerName });
+        this.showOptionsPopup = false;
+      },
+
+      openOptionPopup() {
+        this.showOptionsPopup = true;
       },
     }
   };
@@ -77,8 +101,9 @@
       flex-wrap: wrap;
     }
 
-    &__btn {
+    &__actions {
       margin: 8px;
+      display: flex;
     }
 
     &__room {

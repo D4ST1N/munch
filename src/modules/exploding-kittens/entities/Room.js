@@ -6,9 +6,11 @@ import History             from './History';
 import addCards            from './../helpers/addCards';
 import getPlayerStartCards from './../helpers/getPlayerStartCards';
 import config              from '../../../configs/exploding-kittens';
+import randomInt           from '../../../utils/randomInt';
 
 export default class Room {
-  constructor() {
+  constructor({ settings = {} } = {}) {
+    this.settings = settings;
     this.id = uuid();
     this.players = [];
     this.watchers = [];
@@ -97,7 +99,22 @@ export default class Room {
   initGameDeck() {
     const playersCount = this.players.length;
 
-    config.cards.forEach((cardConfig) => {
+    console.log(this.settings);
+
+    const selectedCards = [].concat(
+      ...this.settings.packs.map(
+        pack => pack.items.filter(item => item.selected)
+                    .map(item => item.name)
+      )
+    );
+
+    console.log(selectedCards);
+
+    selectedCards.forEach((cardType) => {
+      const cardConfig = config.cards.find(card => card.type === cardType);
+
+      if (!cardConfig) return;
+
       let cardsCount;
 
       switch (cardConfig.type) {
@@ -108,7 +125,9 @@ export default class Room {
           cardsCount = playersCount > 2 ? 1 : 0;
           break;
         case 'exploding-kitten':
-          cardsCount = playersCount > 2 ? playersCount - 2 : playersCount - 1;
+          cardsCount = playersCount > 2 && selectedCards.includes('imploding-kitten')
+                       ? playersCount - 2
+                       : playersCount - 1;
           break;
         case 'skip':
         case 'attack':
@@ -127,6 +146,7 @@ export default class Room {
         case 'change-the-future-x5':
         case 'swap-top-and-bottom':
         case 'freedom':
+        case 'catomic-bomb':
           cardsCount = playersCount > 3 ? 4 : 2;
           break;
         default:
@@ -137,6 +157,7 @@ export default class Room {
       addCards(this.deck.cards, cardConfig, cardsCount);
     });
 
+    console.log('before handing out');
     console.log(this.deck.cards.map(card => card.props.type));
   }
 
@@ -145,7 +166,32 @@ export default class Room {
       player.deck = new Deck(getPlayerStartCards(this.deck.cards));
       player.deck.shuffle();
     });
+
     this.deck.shuffle();
+
+    if (this.settings.fastGame.selected) {
+      const newCount = Math.ceil(this.deck.cards.length / 2);
+
+      while (this.deck.cards.length > newCount) {
+        const cardIndex = randomInt(0, this.deck.cards.length - 1);
+        const card = this.deck.cards[cardIndex];
+
+        if (!card) {
+          debugger;
+        }
+
+        if (['exploding-kitten', 'imploding-kitten'].includes(card.props.type)) {
+          continue;
+        }
+
+        this.deck.cards.splice(cardIndex, 1);
+      }
+
+      this.deck.shuffle();
+    }
+
+    console.log('after handing out');
+    console.log(this.deck.cards.map(card => card.props.type));
   }
 
   getPlayer(playerName) {

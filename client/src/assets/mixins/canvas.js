@@ -15,7 +15,11 @@ export default {
   methods: {
     init(entities, size) {
       this.canvas = this.$refs.canvas;
-      console.log(this.canvas, size);
+
+      if (!this.canvas) {
+        console.log(this.$refs);
+      }
+
       this.canvas.width = size.width;
       this.canvas.height = size.height;
       this.context = this.canvas.getContext('2d');

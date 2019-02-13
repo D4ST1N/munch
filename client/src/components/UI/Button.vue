@@ -35,6 +35,10 @@
         type: Boolean,
         default: false,
       },
+      offset: {
+        type: Boolean,
+        default: true,
+      },
       stop: {
         type: Boolean,
         default: false,
@@ -61,6 +65,7 @@
           [`button--${this.size}`]: true,
           ['button--squash']: this.squash,
           ['button--rectangle']: this.rectangular,
+          ['button--clear-offset']: !this.offset,
         };
       },
     },
@@ -99,7 +104,8 @@
       background: rgba(69,90,100 ,1);
     }
 
-    &:last-child {
+    &:last-child,
+    &--clear-offset {
       margin-right: 0;
     }
 

@@ -13,6 +13,10 @@
         type: String,
         default: 'medium'
       },
+      clickable: {
+        type: Boolean,
+        default: false,
+      }
     },
 
     computed: {
@@ -21,6 +25,7 @@
           icon: true,
           [`icon--${this.type}`]: !!this.type,
           [`icon--${this.size}`]: true,
+          ['icon--clickable']: this.clickable,
         };
       },
     },
@@ -47,6 +52,11 @@
     display: inline-flex;
     pointer-events: none;
     transition: width .375s, height .375s;
+
+    &--clickable {
+      pointer-events: all;
+      cursor: pointer;
+    }
 
     &--medium {
       width: 32px;
@@ -173,6 +183,10 @@
 
     &--forward {
       @include icon('forward');
+    }
+
+    &--gears {
+      @include icon('gears');
     }
 
     &--search {
