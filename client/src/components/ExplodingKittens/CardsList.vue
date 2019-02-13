@@ -5,15 +5,16 @@
         <CardStack
           :cards="deck"
           :areaWidth="1840"
-          :numbered="changeCardOrder"
-          :static="changeCardOrder"
+          :numbered="options.numbered"
+          :static="options.numbered"
+          :changeOrder="options.changeCardOrder"
           @cardClick="cardClick"
           @leftClick="leftClick"
           @rightClick="rightClick"
         />
       </div>
       <Button
-        v-if="changeCardOrder"
+        v-if="options.submitAvailable"
         class="cards-list__btn"
         type="green"
         size="medium"
@@ -39,7 +40,7 @@
         event: '',
         resolve: null,
         reject: null,
-        changeCardOrder: false,
+        option: {},
       };
     },
 
@@ -56,11 +57,12 @@
     },
 
     methods: {
-      updateDeck({ deck, event, changeCardOrder = false }) {
-        console.log(deck, event, changeCardOrder);
+      updateDeck({ deck, event, options = {} }) {
         this.deck = deck;
         this.event = event;
-        this.changeCardOrder = changeCardOrder;
+
+        console.log(options);
+        this.options = options;
       },
 
       submit() {
@@ -110,6 +112,7 @@
     align-items: center;
     justify-content: center;
     background: rgba(55,71,79 ,.8);
+    z-index: 1;
 
     &__content {
       background: rgba(144,164,174 ,1);

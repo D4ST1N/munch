@@ -3,6 +3,9 @@ import gameUpdate      from './gameUpdate';
 import shuffle         from '../../../utils/shuffle';
 import cardsCancel     from './cardsCancel';
 import playerGetCard   from './playerGetCard';
+import Card            from '../entities/Card';
+import seeTheFuture    from './cards/seeTheFuture';
+import changeTheFuture from './cards/changeTheFuture';
 
 export default function cardsApply(bridge, cards, room, socket, options) {
   const player = room.currentPlayer;
@@ -33,43 +36,36 @@ export default function cardsApply(bridge, cards, room, socket, options) {
         break;
 
       case 'see-the-future':
-        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_SEE_THE_FUTURE', room);
-        gameUpdate(bridge, room);
+        seeTheFuture(bridge, room, player);
 
-        bridge.emit(player.id, 'seeTheFuture', room.deck.cards.slice(-3));
-        bridge.on('endSeeTheFuture', (socket, { room }) => {
-          gameUpdate(bridge, room);
-          bridge.off('endSeeTheFuture');
-        });
-        room.logs.push({
-          text: 'LOGS.PLAYER_SEE_THE_FUTURE',
-          options: {
-            player: room.currentPlayer.name,
-          },
-          deck: [...room.deck.cards.slice(-3)],
-        });
+        break;
+
+      case 'see-the-future-x5':
+        seeTheFuture(bridge, room, player, 5);
 
         break;
 
       case 'change-the-future':
-        bridge.emit(player.id, 'showCardList', {
-          deck: room.deck.cards.slice(-3).reverse(),
-          event: 'submitNewFuture',
-          changeCardOrder: true,
-        });
+        changeTheFuture(bridge, room, player);
 
-        const onSubmitNewFuture = (socket, { room, cards }) => {
-          room.deck.cards.splice(-3, 3, ...(cards.reverse()));
+        break;
 
+      case 'change-the-future-x5':
+        changeTheFuture(bridge, room, player, 5);
+
+        break;
+
+      case 'swap-top-and-bottom':
+        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_SWAP_TOP_AND_BOTTOM', room);
+
+        const cards = room.deck.cards;
+        const last = cards.length - 1;
+        [ cards[0], cards[last] ] = [ cards[last], cards[0] ];
+
+        gameUpdate(bridge, room);
+        setTimeout(() => {
           gameUpdate(bridge, room);
-          setTimeout(() => {
-            gameUpdate(bridge, room);
-          }, 150);
-
-          bridge.off('submitNewFuture', onSubmitNewFuture);
-        };
-
-        bridge.on('submitNewFuture', onSubmitNewFuture);
+        }, 150);
 
         break;
 
@@ -96,6 +92,17 @@ export default function cardsApply(bridge, cards, room, socket, options) {
         });
         gameUpdate(bridge, room);
 
+        break;
+
+      case 'freedom':
+        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_FREEDOM', room);
+
+        room.penaltyMoves = 0;
+        room.nextPlayer();
+
+        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_TURN', room);
+
+        gameUpdate(bridge, room);
         break;
 
       case 'attack':
@@ -182,8 +189,15 @@ export default function cardsApply(bridge, cards, room, socket, options) {
         const onPlayerSelectFavorCard = (socket, { room, cards }) => {
           const [card] = cards;
 
-          console.log(favorPlayer.deck, card);
-          player.deck.addCard(...favorPlayer.deck.useCard(card.id));
+          try {
+            player.deck.addCard(...favorPlayer.deck.useCard(card.id));
+          } catch (e) {
+            console.error(e);
+            console.log(card.id, card.props.type);
+            console.log(favorPlayer.deck.cards.map(card => card.id));
+            player.deck.addCard(Card.newCard('favor'));
+          }
+
           gameUpdate(bridge, room);
           bridge.off('playerSelectFavorCard', onPlayerSelectFavorCard);
           room.logs.push({

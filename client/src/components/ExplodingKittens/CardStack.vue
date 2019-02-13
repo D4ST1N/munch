@@ -32,6 +32,7 @@
       }"
       >
         <Button
+          v-if="changeOrder"
           class="card-stack__number-arrow card-stack__number-arrow--left"
           size="small"
           type="transparent"
@@ -43,6 +44,7 @@
         </Button>
         {{ cardIndex }}
         <Button
+          v-if="changeOrder"
           class="card-stack__number-arrow card-stack__number-arrow--right"
           size="small"
           type="transparent"
@@ -87,6 +89,10 @@
         default: window.innerWidth - 40,
       },
       numbered: {
+        type: Boolean,
+        default: false,
+      },
+      changeOrder: {
         type: Boolean,
         default: false,
       },

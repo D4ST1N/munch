@@ -70,6 +70,7 @@
       this.$store.getters.socket.on('gameMessage', this.onGameMessage);
       this.$store.getters.socket.on('playerUseFavor', this.onFavor);
       this.$store.getters.socket.on('startActionTimer', this.onStartActionTimer);
+      this.$store.getters.socket.on('startWaitingTimer', this.onStartTimer);
 
       document.body.addEventListener('keyup', this.onKeyUp);
     },
@@ -81,6 +82,7 @@
       this.$store.getters.socket.off('gameMessage', this.onGameMessage);
       this.$store.getters.socket.off('playerUseFavor', this.onFavor);
       this.$store.getters.socket.off('startActionTimer', this.onStartActionTimer);
+      this.$store.getters.socket.off('startWaitingTimer', this.onStartTimer);
 
       document.body.removeEventListener('keyup', this.onKeyUp);
     },
@@ -231,6 +233,17 @@
             this.$root.$emit('hideDialog');
           },
         })
+      },
+
+      onStartTimer({ time }) {
+        console.log(time);
+        this.$root.$emit('showDialog', {
+          time: time,
+
+          onEnd() {
+            this.$root.$emit('hideDialog');
+          },
+        });
       },
 
       gameStart(start) {

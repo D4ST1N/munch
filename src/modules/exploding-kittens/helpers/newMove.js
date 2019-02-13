@@ -2,13 +2,18 @@ import Move from '../entities/Move';
 
 export default function newMove(bridge, room, player) {
   room.history.newMove(new Move({
-    who: player,
-
     onTimer(cards, time, moveOptions) {
+      const who = room.getPlayer(moveOptions.playerName);
+
       console.log('on timer');
+      console.log(who.id);
+
       bridge.emit(room.id, 'startTimer', time);
+      bridge.emit(who.id, 'startWaitingTimer', { time });
+
       room.players.forEach((player) => {
-        if (player.name === this.who.name) {
+        if (player.name === who.name) {
+          console.log('hey');
           return;
         }
 

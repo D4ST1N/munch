@@ -22,7 +22,6 @@
   import PlayerMove      from './PlayerMove';
   import Trash           from './Trash';
   import MoveCardsList   from './MoveCardsList';
-  import ShowGameDeck    from './ShowGameDeck';
   import CardsList       from './CardsList';
   import EndGamePopup    from './EndGamePopup';
 

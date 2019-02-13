@@ -27,9 +27,11 @@
       </div>
       <Button type="red" size="small" :text="$text('NOTIFICATIONS.GAME.CANCEL')" @buttonClick="cancelAction"></Button>
     </div>
-    <div v-if="playerMove" class="game-room-players__label">
-      {{ $text('NOTIFICATIONS.GAME.PLAYER_TURN.YOU') }}
-    </div>
+    <div
+      :class="{
+        'game-room-players__gradient': true,
+        'game-room-players__gradient--green': playerMove
+      }"></div>
   </div>
 </template>
 
@@ -172,6 +174,22 @@
         background: rgba(25,118,210 ,1);
         border-radius: 0 0 10px 10px;
         color: #fff;
+      }
+    }
+
+    &__gradient {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      background: linear-gradient(rgba(244,67,54 ,1), rgba(244,67,54 ,0));
+      z-index: -1;
+      pointer-events: none;
+      transition: all .5s ease;
+
+      &--green {
+        background: linear-gradient(rgba(67,160,71 ,1), rgba(67,160,71 ,0));
       }
     }
   }

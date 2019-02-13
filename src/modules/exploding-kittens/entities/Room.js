@@ -121,7 +121,13 @@ export default class Room {
         case 'change-the-future':
         case 'reverse':
         case 'attack-target':
-          cardsCount = playersCount + (playersCount > 3 ? 0 : 1);
+          cardsCount = playersCount > 3 ? 6 : 4;
+          break;
+        case 'see-the-future-x5':
+        case 'change-the-future-x5':
+        case 'swap-top-and-bottom':
+        case 'freedom':
+          cardsCount = playersCount > 3 ? 4 : 2;
           break;
         default:
           cardsCount = Math.ceil((playersCount + 1) / 2) * 2;

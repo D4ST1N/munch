@@ -28,6 +28,7 @@
         allowedSingleCards: [
           'shuffle',
           'see-the-future',
+          'see-the-future-x5',
           'skip',
           'nope',
           'attack',
@@ -36,6 +37,9 @@
           'reverse',
           'attack-target',
           'change-the-future',
+          'change-the-future-x5',
+          'swap-top-and-bottom',
+          'freedom',
         ],
       };
     },
@@ -157,7 +161,6 @@
       },
 
       onFavorEnd() {
-        console.log('here');
         this.favorActive = false;
       },
     },

@@ -145,7 +145,8 @@
         background: url(../../assets/img/cards/small/nope.jpg) no-repeat center/cover;
       }
 
-      &--see-the-future {
+      &--see-the-future,
+      &--see-the-future-x5 {
         background: url(../../assets/img/cards/small/see-the-future.jpg) no-repeat center/cover;
       }
 
@@ -205,7 +206,8 @@
         background: url(../../assets/img/cards/small/attack-target.jpg) no-repeat center/cover;
       }
 
-      &--change-the-future {
+      &--change-the-future,
+      &--change-the-future-x5 {
         background: url(../../assets/img/cards/small/change-the-future.jpg) no-repeat center/cover;
       }
 
@@ -261,7 +263,8 @@
         background: url(../../assets/img/icons/small/nope.png) no-repeat center/cover;
       }
 
-      &--see-the-future {
+      &--see-the-future,
+      &--see-the-future-x5 {
         background: url(../../assets/img/icons/small/see-the-future.png) no-repeat center/cover;
       }
 
@@ -317,7 +320,8 @@
         background: url(../../assets/img/icons/small/attack-target.png) no-repeat center/cover;
       }
 
-      &--change-the-future {
+      &--change-the-future,
+      &--change-the-future-x5 {
         background: url(../../assets/img/icons/small/change-the-future.png) no-repeat center/cover;
       }
 

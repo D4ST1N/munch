@@ -76,6 +76,7 @@
       position: fixed;
       top: 0;
       left: 0;
+      z-index: 2;
       display: inline-flex;
       font-family: monospace;
       font-size: 12px;

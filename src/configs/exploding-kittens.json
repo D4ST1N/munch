@@ -127,10 +127,38 @@
       "isCatCard": false
     },
     {
+      "type": "change-the-future-x5",
+      "name": "CARDS.CHANGE_THE_FUTURE_X5.NAME",
+      "description": "CARDS.CHANGE_THE_FUTURE_X5.DESCRIPTION",
+      "color": "rgba(230,81,0 ,1)",
+      "isCatCard": false
+    },
+    {
       "type": "imploding-kitten",
       "name": "CARDS.IMPLODING_KITTEN.NAME",
       "description": "CARDS.IMPLODING_KITTEN.DESCRIPTION",
       "color": "rgba(38,50,56 ,1)",
+      "isCatCard": false
+    },
+    {
+      "type": "see-the-future-x5",
+      "name": "CARDS.SEE_THE_FUTURE_X5.NAME",
+      "description": "CARDS.SEE_THE_FUTURE_X5.DESCRIPTION",
+      "color": "rgba(236,64,122 ,1)",
+      "isCatCard": false
+    },
+    {
+      "type": "swap-top-and-bottom",
+      "name": "CARDS.SWAP_TOP_AND_BOTTOM.NAME",
+      "description": "CARDS.SWAP_TOP_AND_BOTTOM.DESCRIPTION",
+      "color": "rgba(175,180,43 ,1)",
+      "isCatCard": false
+    },
+    {
+      "type": "freedom",
+      "name": "CARDS.FREEDOM.NAME",
+      "description": "CARDS.FREEDOM.DESCRIPTION",
+      "color": "rgba(0,121,107 ,1)",
       "isCatCard": false
     }
   ],

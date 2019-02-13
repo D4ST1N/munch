@@ -59,5 +59,6 @@
     transition: all 0.15s ease;
     left: 20px;
     top: 120px;
+    z-index: 1;
   }
 </style>
