@@ -9,7 +9,7 @@
         <div class="game-rooms-list__room-players">
           {{ $text('GAME_ROOMS.NUMBER_OF_PLAYERS') }} {{ room.players.length }}
         </div>
-        <router-link :to="`/exploding-kittens/room/${room.id}`" class="game-rooms-list__room-join" type="button">
+        <router-link :to="`/room/${room.id}`" class="game-rooms-list__room-join" type="button">
           <Button
             :type="room.reconnected ? 'green' : 'black'"
             :text="$text(room.reconnected ? 'GAME_ROOMS.RETURN' : 'GAME_ROOMS.JOIN')"

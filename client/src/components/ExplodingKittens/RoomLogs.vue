@@ -26,7 +26,7 @@
     },
 
     created() {
-      axios.get(`/exploding-kittens/logs/${this.$route.params.id}`)
+      axios.get(`/logs/${this.$route.params.id}`)
            .then(({ data }) => {
              this.logs = data;
            })

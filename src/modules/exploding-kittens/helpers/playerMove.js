@@ -39,6 +39,7 @@ export default function playerMove(bridge, socket, { room, name, cards, options 
   room.history.newMove(move);
 
   move.addCards(cards, { playerName: name, ...options }).then(() => {
+    console.log(isNopeCard(cards), move.timer);
     if (isNopeCard(cards) && move.timer) {
       move.timer.stopTimer();
       bridge.emit(room.id, 'stopTimer');

@@ -18,6 +18,8 @@ export default class Move {
     'change-the-future',
     'change-the-future-x5',
     'swap-top-and-bottom',
+    'swap',
+    'garbage-collector',
   ];
 
   get cards() {
@@ -73,6 +75,7 @@ export default class Move {
           },
 
           cancel() {
+            console.log('cancel');
             reject(cards);
           },
         });

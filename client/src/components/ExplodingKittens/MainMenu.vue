@@ -27,7 +27,7 @@
               return this.$route.name !== 'exploding-kittens';
             },
             action() {
-              this.$router.push('/exploding-kittens');
+              this.$router.push('/');
               this.show = false;
             },
           },

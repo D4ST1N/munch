@@ -176,6 +176,26 @@ export default {
           selected: true,
           disabled: false,
         },
+        {
+          name: 'garbage-collector',
+          label: 'CARDS.GARBAGE_COLLECTOR.NAME',
+          selected: true,
+          disabled: false,
+        },
+      ],
+    },
+    {
+      name: 'extension-pack-3',
+      label: 'GAME_ROOMS.PACKS.EXTENSION_PACK_3',
+      selected: true,
+      disabled: false,
+      items: [
+        {
+          name: 'swap',
+          label: 'CARDS.SWAP.NAME',
+          selected: true,
+          disabled: false,
+        },
       ],
     },
   ],

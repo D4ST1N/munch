@@ -73,6 +73,17 @@
         this.updatePlayersList(gameData.players);
         this.current = gameData.currentPlayer;
         this.direction = gameData.direction > 0 ? 'right' : 'left';
+
+        console.log(!this.$store.getters.focused);
+        if (this.playerMove && !this.$store.getters.focused) {
+          this.$root.$emit('showNotification', {
+            title: this.$text('NOTIFICATIONS.GAME.PLAYER_TURN.YOU'),
+            options: {
+              body: this.$text('PUSH.START_MOVE'),
+              icon: '/kittens.png',
+            },
+          });
+        }
       },
 
       isCurrent(name) {

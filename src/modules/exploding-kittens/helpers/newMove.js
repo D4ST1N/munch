@@ -28,8 +28,15 @@ export default function newMove(bridge, room, player) {
 
         switch (cards.length) {
           case 1:
-            title = 'NOTIFICATIONS.GAME.PLAYER_USE_CARD';
-            options.card = cards[0].props.name;
+            if (moveOptions.name) {
+              title = 'NOTIFICATIONS.GAME.PLAYER_USE_CARD_ON_PLAYER';
+              options.card = cards[0].props.name;
+              options.whom = moveOptions.name;
+            } else {
+              title = 'NOTIFICATIONS.GAME.PLAYER_USE_CARD';
+              options.card = cards[0].props.name;
+            }
+
             break;
           case 2:
             title = 'NOTIFICATIONS.GAME.PLAYER_USE_TWO_CARDS_COMBO';

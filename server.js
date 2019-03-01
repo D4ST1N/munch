@@ -1,5 +1,6 @@
 import express          from 'express';
 import http             from 'http';
+import https            from 'https';
 import path             from 'path';
 import fs               from 'fs';
 import {
@@ -21,7 +22,11 @@ import registerUser     from "./src/auth/registerUser";
 const { combine, printf } = format;
 const { Console, File } = transports;
 const app = express();
-const server = http.Server(app);
+const options = {
+  key: fs.readFileSync('./src/ssl/kittens.key'),
+  cert: fs.readFileSync('./src/ssl/kittens-cert.crt')
+};
+const server = https.createServer(options, app);
 
 const logFormat = printf(info => {
   return `${new Date()}: [${info.level}]: ${info.message}`;
@@ -81,13 +86,13 @@ app.post('/user/register', registerUser);
 
 app.get('/user/profile', authMiddleware, getProfile);
 
-app.use('/static', express.static(__dirname + '/client/dist'));
+app.use('/', express.static(__dirname + '/client'));
 
 app.get('/circle-crush/config', (request, response) => {
   response.sendFile(path.join(__dirname, '/src/configs/circle-crush.json'));
 });
 
-app.get('/exploding-kittens/logs/:id', (request, response, next) => {
+app.get('/logs/:id', (request, response, next) => {
   const filePath = path.join(__dirname, `/logs/games/${request.params.id}.js`);
 
   fs.readFile(filePath, (err) => {
@@ -117,8 +122,9 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 });
 
 // Start server
-server.listen(5000, function() {
-  console.log('Server is starting on port 5000');
+const port = 443;
+server.listen(port, function() {
+  console.log(`Server is starting on port ${port}`);
 });
 
 export {

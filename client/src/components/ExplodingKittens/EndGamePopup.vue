@@ -13,10 +13,10 @@
       <h1 class="end-game-popup__title">
         {{ $text(win ? 'NOTIFICATIONS.GAME.END_GAME.WIN' : 'NOTIFICATIONS.GAME.END_GAME.LOOSE')}}
       </h1>
-      <router-link to="/exploding-kittens" class="end-game-popup__link">
+      <router-link to="/" class="end-game-popup__link">
         <Button type="white" size="big" :text="$text('NOTIFICATIONS.GAME.BACK_TO_ROOMS')" />
       </router-link>
-      <router-link :to="`/exploding-kittens/room/${$route.params.id}/logs`" class="end-game-popup__link">
+      <router-link :to="`/room/${$route.params.id}/logs`" class="end-game-popup__link">
         <Button type="blue" size="big" :text="$text('NOTIFICATIONS.GAME.SEE_LOGS')" />
       </router-link>
     </div>

@@ -37,19 +37,6 @@
     },
 
     created() {
-      this.$root.$on('showNotification', (notificationData) => {
-        this.notificationsStack.push(
-          new NotificationClass(Object.assign(
-            { id: uuid() },
-            notificationDefaultOption,
-            notificationData
-          )),
-        );
-
-        if (this.notifications.length === 0) {
-          this.addNotification();
-        }
-      });
     },
 
     methods: {

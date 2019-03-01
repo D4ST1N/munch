@@ -1,4 +1,7 @@
 module.exports = {
-  baseUrl: '/static/',
+  baseUrl: '/dist/',
   outputDir: './dist/',
+  devServer: {
+    https: true
+  }
 };

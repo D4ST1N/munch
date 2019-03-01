@@ -2,6 +2,7 @@ const state = {
   selectedCards: [],
   trash: [],
   isPlayer: false,
+  focused: true,
 };
 
 const mutations = {
@@ -26,6 +27,14 @@ const mutations = {
   updatePlayerStatus(state, isPlayer) {
     state.isPlayer = isPlayer;
   },
+
+  gameFocus(state) {
+    state.focused = true;
+  },
+
+  gameBlur(state) {
+    state.focused = false;
+  },
 };
 
 const getters = {
@@ -35,6 +44,10 @@ const getters = {
 
   isPlayer(state) {
     return state.isPlayer;
+  },
+
+  focused(state) {
+    return state.focused;
   },
 };
 

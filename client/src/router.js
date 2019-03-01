@@ -14,10 +14,10 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home,
+      name: 'exploding-kittens',
+      component: GameRoomList,
       meta: {
-        title: 'Home',
+        title: 'Exploding kittens game rooms',
       },
     },
     {
@@ -29,14 +29,6 @@ const router = new Router({
       },
     },
     {
-      path: '/exploding-kittens',
-      name: 'exploding-kittens',
-      component: GameRoomList,
-      meta: {
-        title: 'Exploding kittens game rooms',
-      },
-    },
-    {
       path: '/auth',
       name: 'auth',
       component: PlayerAuth,
@@ -45,7 +37,7 @@ const router = new Router({
       },
     },
     {
-      path: '/exploding-kittens/room/:id',
+      path: '/room/:id',
       name: 'exploding-kittens/room',
       component: GameRoom,
       meta: {
@@ -53,7 +45,7 @@ const router = new Router({
       },
     },
     {
-      path: '/exploding-kittens/room/:id/logs',
+      path: '/room/:id/logs',
       name: 'exploding-kittens/room/logs',
       component: RoomLogs,
       meta: {

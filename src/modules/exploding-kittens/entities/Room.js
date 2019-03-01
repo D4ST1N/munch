@@ -147,6 +147,8 @@ export default class Room {
         case 'swap-top-and-bottom':
         case 'freedom':
         case 'catomic-bomb':
+        case 'swap':
+        case 'garbage-collector':
           cardsCount = playersCount > 3 ? 4 : 2;
           break;
         default:
@@ -286,7 +288,10 @@ export default class Room {
     this.penaltyMoves = 0;
 
     this.players.splice(playerIndex, 1);
-    this.previousPlayer();
-    this.nextPlayer();
+
+    if (playerIndex === this.currentPlayerIndex) {
+      this.previousPlayer();
+      this.nextPlayer();
+    }
   }
 }

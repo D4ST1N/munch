@@ -9,6 +9,7 @@
     <GameLog />
     <Dialog />
     <CardsList />
+    <CardDescription />
     <EndGamePopup />
   </div>
 </template>
@@ -24,6 +25,7 @@
   import MoveCardsList   from './MoveCardsList';
   import CardsList       from './CardsList';
   import EndGamePopup    from './EndGamePopup';
+  import CardDescription from './CardDescription';
 
   export default {
     name: 'GameUI',
@@ -38,6 +40,7 @@
       MoveCardsList,
       CardsList,
       EndGamePopup,
+      CardDescription,
     },
 
     data() {

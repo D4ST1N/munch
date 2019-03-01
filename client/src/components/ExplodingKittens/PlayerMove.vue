@@ -41,6 +41,8 @@
           'swap-top-and-bottom',
           'freedom',
           'catomic-bomb',
+          'swap',
+          'garbage-collector',
         ],
       };
     },
@@ -123,7 +125,7 @@
             default:
               const cardType = this.$store.getters.selectedCards[0].props.type;
 
-              if (['favor', 'attack-target'].includes(cardType)) {
+              if (['favor', 'attack-target', 'swap'].includes(cardType)) {
                 this.$root.$emit('choosePlayer', resolve, reject);
               } else {
                 resolve();

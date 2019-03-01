@@ -83,8 +83,12 @@
     },
 
     methods: {
-      cardClick() {
-        this.$emit('cardClick', this.card);
+      cardClick(event) {
+        if (event.ctrlKey) {
+          this.$root.$emit('showCardDescription', this.card);
+        } else {
+          this.$emit('cardClick', this.card);
+        }
       },
     },
   };
@@ -160,6 +164,10 @@
 
       &--exploding-kitten {
         background: url(../../assets/img/cards/small/exploding-kitten.jpg) no-repeat center/cover;
+
+        .card-flip__name {
+          opacity: 0;
+        }
       }
 
       &--shuffle {
@@ -209,6 +217,14 @@
       &--change-the-future,
       &--change-the-future-x5 {
         background: url(../../assets/img/cards/small/change-the-future.jpg) no-repeat center/cover;
+      }
+
+      &--imploding-kitten {
+        background: url(../../assets/img/cards/small/imploding-kitten.jpg) no-repeat center/cover;
+
+        .card-flip__name {
+          opacity: 0;
+        }
       }
 
       &--back {

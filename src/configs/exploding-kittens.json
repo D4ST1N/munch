@@ -167,6 +167,20 @@
       "description": "CARDS.CATOMIC_BOMB.DESCRIPTION",
       "color": "rgba(255,235,59 ,1)",
       "isCatCard": false
+    },
+    {
+      "type": "swap",
+      "name": "CARDS.SWAP.NAME",
+      "description": "CARDS.SWAP.DESCRIPTION",
+      "color": "rgba(255,235,59 ,1)",
+      "isCatCard": false
+    },
+    {
+      "type": "garbage-collector",
+      "name": "CARDS.GARBAGE_COLLECTOR.NAME",
+      "description": "CARDS.GARBAGE_COLLECTOR.DESCRIPTION",
+      "color": "rgba(255,235,59 ,1)",
+      "isCatCard": false
     }
   ],
   "game": {

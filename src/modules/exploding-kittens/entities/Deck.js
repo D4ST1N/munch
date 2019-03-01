@@ -68,6 +68,10 @@ export default class Deck {
     return this.cards.shift();
   }
 
+  useRandomCard() {
+    return this.cards.splice(randomInt(0, this.cards.length - 1), 1);
+  }
+
   clear() {
     this.cards = [];
   }

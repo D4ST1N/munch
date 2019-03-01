@@ -18,9 +18,9 @@ export default class MoveTimer {
   }
 
   stopTimer() {
+    console.log('here');
     this.time = this.timeLeft;
     clearTimeout(this.timerId);
     this.cancel();
-
   }
 }

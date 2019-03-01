@@ -6,7 +6,7 @@
         Circle crush!
       </div>
     </router-link>
-    <router-link to="/exploding-kittens" class="home__link">
+    <router-link to="/" class="home__link">
       <div class="menu-item">
         <img src="../assets/img/kittens.png" alt="" class="menu-item__icon">
         Exploding kittens
@@ -20,7 +20,7 @@
     name: 'Home',
 
     created() {
-      this.$router.push('/exploding-kittens');
+      this.$router.push('/');
     }
   };
 </script>

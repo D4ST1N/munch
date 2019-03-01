@@ -61,11 +61,11 @@
       },
 
       getOffset(card, index) {
-        return `translate(${this.cardOffsetX(card, index)}px, ${this.cardOffsetY(card, index)}px) scale(${this.isCardFlipped(card) || !this.showEnd ? 1 : 0.85})`;
+        return `translate(${this.cardOffsetX(card, index)}px, ${this.cardOffsetY(card, index)}px)`;
       },
 
       cardOffsetX(card, index) {
-        return (this.showDeck ? 15 : -0.25) * index;
+        return -0.25 * index + (card.props ? 10 : 0);
       },
 
       cardOffsetY(card, index) {

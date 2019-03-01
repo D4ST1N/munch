@@ -151,7 +151,6 @@ export default function cardsApply(bridge, cards, room, socket, options) {
         break;
 
       case 'attack-target':
-        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_ATTACK_TARGET', room, player.name);
         const attackedPlayer = room.getPlayer(options.name);
 
         sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_ATTACK_TARGET', room, player.name, {
@@ -180,6 +179,31 @@ export default function cardsApply(bridge, cards, room, socket, options) {
 
         break;
 
+      case 'swap':
+        console.log(options);
+        const swapPlayer = room.getPlayer(options.name);
+        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_SWAP', room, player.name, {
+          whom: swapPlayer.name,
+        });
+        const swapPlayerCards = swapPlayer.deck.cards;
+        swapPlayer.deck.cards = player.deck.cards;
+        player.deck.cards = swapPlayerCards;
+        gameUpdate(bridge, room);
+
+        break;
+
+      case 'garbage-collector':
+        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_GARBAGE_COLLECTOR', room, player.name);
+
+        room.players.forEach((somePlayer) => {
+          if (somePlayer.name === player.name) return;
+
+          room.trash.addCard(...somePlayer.deck.useRandomCard());
+          gameUpdate(bridge, room);
+
+        });
+        break;
+
       case 'favor':
         console.log(options);
         const favorPlayer = room.getPlayer(options.name);
@@ -205,6 +229,7 @@ export default function cardsApply(bridge, cards, room, socket, options) {
 
         const onPlayerSelectFavorCard = (socket, { room, cards }) => {
           const [card] = cards;
+          console.log(player);
 
           try {
             player.deck.addCard(...favorPlayer.deck.useCard(card.id));
@@ -252,17 +277,24 @@ export default function cardsApply(bridge, cards, room, socket, options) {
 
     const onPlayerSelectCard = (socket, { card }) => {
       const usedCard = selectedPlayer.deck.useCard(card.id);
-      room.logs.push({
-        text: 'LOGS.PLAYER_GET_CARD',
-        options: {
-          player: player.name,
-        },
-        deck: [{ ...usedCard }],
-      });
-      player.deck.addCard(...usedCard);
-      gameUpdate(bridge, room);
 
-      bridge.off('selectPlayerCard', onPlayerSelectCard);
+      if (usedCard === false) {
+        console.log(selectedPlayer.deck.cards, card);
+      } else {
+        room.logs.push({
+          text: 'LOGS.PLAYER_GET_CARD',
+          options: {
+            player: player.name,
+          },
+          deck: [{ ...usedCard }],
+        });
+
+        console.log(usedCard);
+        player.deck.addCard(...usedCard);
+        gameUpdate(bridge, room);
+
+        bridge.off('selectPlayerCard', onPlayerSelectCard);
+      }
     };
 
     bridge.on('selectPlayerCard', onPlayerSelectCard);

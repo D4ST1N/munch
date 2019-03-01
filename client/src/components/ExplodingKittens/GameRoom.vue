@@ -26,7 +26,7 @@
       </div>
       <div v-else class="game-room__content">
         <h2 class="game-room__players">{{ $text('GAME_ROOMS.NOT_EXIST') }}</h2>
-        <router-link to="/exploding-kittens" class="game-room__action">
+        <router-link to="/" class="game-room__action">
           <Button size="big" type="green" :text="$text('GAME_ROOMS.GO_HOME')" />
         </router-link>
       </div>
@@ -232,7 +232,17 @@
             console.log('end');
             this.$root.$emit('hideDialog');
           },
-        })
+        });
+
+        if (options.whom === this.$store.getters.player.username) {
+          this.$root.$emit('showNotification', {
+            title: this.$text('PUSH.CARD_USED_ON_YOU'),
+            options: {
+              body: this.$text('PUSH.SEE_WHAT_HAPPENS'),
+              icon: '/kittens.png',
+            },
+          });
+        }
       },
 
       onStartTimer({ time }) {

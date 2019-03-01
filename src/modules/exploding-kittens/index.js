@@ -112,6 +112,9 @@ export default function init() {
       return;
     }
 
+    const move = room.history.current;
+    move.timer.stopTimer();
+
     const usedCard = player.deck.useCardByType('nope');
     console.log(usedCard);
 
@@ -146,6 +149,10 @@ export default function init() {
 
     if (!player) {
       return;
+    }
+
+    if (!room.deck.useCardByType('exploding-kitten')) {
+      room.deck.useCardByType('imploding-kitten');
     }
 
     room.killPlayer(name);

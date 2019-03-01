@@ -16,6 +16,7 @@
   import MainMenu from './components/ExplodingKittens/MainMenu';
   import NotificationCenter from './components/Notifications/NotificationCenter';
   import gameData from '../package';
+  import notification from './sw-setup';
 
   export default {
     name: 'app',
@@ -41,6 +42,15 @@
 
       document.head.appendChild(this.styles);
       this.zoomCoef = window.innerWidth / 2200 * 100;
+      window.onblur = () => {
+        this.$store.commit('gameBlur');
+      };
+      window.onfocus = () => {
+        this.$store.commit('gameFocus');
+      };
+      this.$root.$on('showNotification', ({ title, options }) => {
+        notification(title, options);
+      });
     },
 
     methods: {
