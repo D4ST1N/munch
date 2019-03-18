@@ -25,12 +25,12 @@
         >
           <Icon slot="before" size="x-small" type="add_mono"></Icon>
         </Button>
-        <Button type="green" :squash="true" @buttonClick="openOptionPopup">
+        <Button type="green" :squash="true" @buttonClick="openOptionsPopup">
           <Icon slot="before" size="medium" type="gears"></Icon>
         </Button>
       </div>
     </div>
-    <GameOptionsPopup v-if="showOptionsPopup" @createRoom="createRoom" />
+    <GameOptionsPopup v-if="showOptionsPopup" @createRoom="createRoom" @close="closeOptionsPopup" />
   </div>
 </template>
 
@@ -83,9 +83,13 @@
         this.showOptionsPopup = false;
       },
 
-      openOptionPopup() {
+      openOptionsPopup() {
         this.showOptionsPopup = true;
       },
+
+      closeOptionsPopup() {
+        this.showOptionsPopup = false;
+      }
     }
   };
 </script>

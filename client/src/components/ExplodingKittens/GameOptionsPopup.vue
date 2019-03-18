@@ -1,5 +1,5 @@
 <template>
-  <div class="game-options-popup">
+  <div class="game-options-popup" @click="close">
     <div class="game-options-popup__wrapper">
       <h1 class="game-options-popup__title">{{ $text('GAME_ROOMS.GAME_SETTINGS') }}</h1>
       <h3 class="game-options-popup__title">{{ $text('GAME_ROOMS.PACKS.LABEL') }}</h3>
@@ -53,7 +53,11 @@
             playerLimit: this.playerLimit,
           },
         });
-      }
+      },
+
+      close() {
+        this.$emit('close');
+      },
     }
   };
 </script>

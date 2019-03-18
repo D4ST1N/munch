@@ -150,6 +150,9 @@
       background: var(--ui-player-circle-label-background-color);
       color: var(--ui-player-circle-label-color);
       border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
 
       &--current {
         background: var(--ui-player-circle-label-current-background-color);
