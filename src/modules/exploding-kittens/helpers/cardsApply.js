@@ -237,7 +237,7 @@ export default function cardsApply(bridge, cards, room, socket, options) {
             console.error(e);
             console.log(card.id, card.props.type);
             console.log(favorPlayer.deck.cards.map(card => card.id));
-            player.deck.addCard(Card.newCard('favor'));
+            room.currentPlayer.deck.addCard(Card.newCard('favor'));
           }
 
           gameUpdate(bridge, room);

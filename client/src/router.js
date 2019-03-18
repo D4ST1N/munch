@@ -1,7 +1,5 @@
 import Vue              from 'vue';
 import Router           from 'vue-router';
-import store            from './store'
-import Home             from './components/Home';
 import CircleCrush      from './components/CircleCrush/CircleCrush';
 import GameRoomList     from './components/ExplodingKittens/GameRoomsList';
 import PlayerAuth       from './components/ExplodingKittens/PlayerAuth';

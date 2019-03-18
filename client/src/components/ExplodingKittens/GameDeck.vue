@@ -20,6 +20,10 @@
       {{ $text('NOTIFICATIONS.GAME.CARDS_COUNT') }}:
       {{ deck.length }}
     </div>
+    <div v-if="penaltyMoves > 0" class="game-deck__count game-deck__count--penalty">
+      {{ $text('NOTIFICATIONS.GAME.PENALTY_COUNT') }}:
+      {{ penaltyMoves }}
+    </div>
   </div>
 </template>
 
@@ -35,6 +39,7 @@
     data() {
       return {
         deck: [],
+        penaltyMoves: 0,
         initialLoad: true,
       };
     },
@@ -51,6 +56,8 @@
 
       updateStats(gameData) {
         this.updateDeck(gameData.gameDeck);
+        this.penaltyMoves = gameData.penaltyMoves;
+        console.log(gameData);
         setTimeout(() => {
           this.initialLoad = false;
         }, 2000);
@@ -107,6 +114,10 @@
       left: 0;
       color: #fff;
       white-space: nowrap;
+
+      &--penalty {
+        top: 250px;
+      }
     }
 
     &-enter,

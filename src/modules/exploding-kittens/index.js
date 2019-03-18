@@ -11,6 +11,7 @@ import playerConnect   from './helpers/playerConnect';
 import writeLog        from './helpers/writeLog';
 import playerGetCard   from './helpers/playerGetCard';
 import playerMove      from './helpers/playerMove';
+import stopAction from './helpers/stopAction';
 
 export default function init() {
   const io = ioStarter('/ws/exploding-kittens');
@@ -105,24 +106,7 @@ export default function init() {
   });
 
   bridge.on('stopAction', (socket, { room, name }) => {
-    console.log('stop action');
-    const player = room.getPlayer(name);
-
-    if (!player) {
-      return;
-    }
-
-    const move = room.history.current;
-    move.timer.stopTimer();
-
-    const usedCard = player.deck.useCardByType('nope');
-    console.log(usedCard);
-
-    playerMove(bridge, socket, {
-      room,
-      name,
-      cards: usedCard,
-    });
+    stopAction(bridge, socket, { room, name });
   });
 
   bridge.on('playerMove', (socket, payload) => {

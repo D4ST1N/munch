@@ -97,7 +97,14 @@
       onChoosePlayer(resolve, reject) {
         this.resolve = resolve;
         this.reject = reject;
-        this.active = true;
+
+        if (this.players.length === 2) {
+          this.resolve({
+            name: this.players.find(player => player.name !== this.playerName).name,
+          });
+        } else {
+          this.active = true;
+        }
       },
 
       playerClick(player) {
