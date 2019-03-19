@@ -198,7 +198,9 @@ export default function cardsApply(bridge, cards, room, socket, options) {
         room.players.forEach((somePlayer) => {
           if (somePlayer.name === player.name) return;
 
-          room.trash.addCard(...somePlayer.deck.useRandomCard());
+          const usedCard = somePlayer.deck.useRandomCard();
+          room.trash.addCard(...usedCard);
+          somePlayer.emit('looseCard', ...usedCard);
           gameUpdate(bridge, room);
 
         });
@@ -232,7 +234,10 @@ export default function cardsApply(bridge, cards, room, socket, options) {
           console.log(player);
 
           try {
-            player.deck.addCard(...favorPlayer.deck.useCard(card.id));
+            const usedCard = favorPlayer.deck.useCard(card.id);
+            player.deck.addCard(...usedCard);
+            player.emit('getCard', ...usedCard);
+            favorPlayer.emit('looseCard', ...usedCard);
           } catch (e) {
             console.error(e);
             console.log(card.id, card.props.type);
@@ -291,6 +296,8 @@ export default function cardsApply(bridge, cards, room, socket, options) {
 
         console.log(usedCard);
         player.deck.addCard(...usedCard);
+        player.emit('getCard', ...usedCard);
+        selectedPlayer.emit('looseCard', ...usedCard);
         gameUpdate(bridge, room);
 
         bridge.off('selectPlayerCard', onPlayerSelectCard);
@@ -323,6 +330,8 @@ export default function cardsApply(bridge, cards, room, socket, options) {
         deck: [{ ...usedCard }],
       });
       player.deck.addCard(...usedCard);
+      player.emit('getCard', ...usedCard);
+      selectedPlayer.emit('looseCard', ...usedCard);
       gameUpdate(bridge, room);
     } else {
       bridge.emit(player.id, 'gameMessage', {
@@ -351,7 +360,9 @@ export default function cardsApply(bridge, cards, room, socket, options) {
         },
         deck: [{ ...card }],
       });
-      player.deck.addCard(...room.trash.useCard(card.id));
+      const usedCard = room.trash.useCard(card.id);
+      player.deck.addCard(...usedCard);
+      player.emit('getCard', ...usedCard);
       gameUpdate(bridge, room);
       bridge.off('selectTrashCard', onSelectTrashCard);
     };

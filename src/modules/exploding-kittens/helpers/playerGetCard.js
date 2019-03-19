@@ -34,6 +34,7 @@ export default function playerGetCard(bridge, room, name, upper = true) {
   });
 
   if (card.props.type === 'exploding-kitten') {
+    player.deck.addCard(card);
     next = playerGetExplodingKitten(bridge, room, player, card);
   } else if (card.props.type === 'imploding-kitten') {
     next = playerGetImplodingKitten(bridge, room, player, card);

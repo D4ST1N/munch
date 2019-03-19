@@ -2,7 +2,18 @@
   <div class="game-rooms-list">
     <h1>{{ $text('GAME_ROOMS.LIST') }}</h1>
     <div class="game-rooms-list__content">
-      <div v-for="room in rooms" :key="room.id" class="game-rooms-list__room">
+      <div
+        v-for="room in rooms"
+        :key="room.id"
+        :class="{
+          'game-rooms-list__room': true,
+          'game-rooms-list__room--fast': room.settings.fastGame.selected
+        }"
+      >
+        <div class="game-rooms-list__room-creator">
+          {{ $text('GAME_ROOMS.CREATOR') }}:
+          {{ room.creator }}
+        </div>
         <div class="game-rooms-list__room-name">
           {{ room.name }}
         </div>
@@ -120,6 +131,19 @@
       flex-direction: column;
       align-items: flex-start;
       justify-content: center;
+      box-sizing: border-box;
+      box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, .4);
+
+      &--fast {
+        box-shadow: inset 0 0 0 6px rgba(21,101,192 ,1),
+                    1px 1px 4px 0 rgba(0, 0, 0, .25);
+      }
+
+      &-creator {
+        font-weight: 900;
+        font-size: 18px;
+        margin-bottom: 8px;
+      }
 
       &-players {
         margin-bottom: 10px;
