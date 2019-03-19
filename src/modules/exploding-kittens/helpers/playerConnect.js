@@ -1,10 +1,11 @@
 import sendGameMessage from './sendGameMessage';
 import gameUpdate      from './gameUpdate';
+import getCardsList from './getCardsList';
 
 export default function playerConnect(bridge, name, room, socket) {
   console.log('player connect', name);
 
-  const reconnected = room.playerConnect(name, socket.id);
+  const reconnected = room.playerConnect(bridge, name, socket.id);
 
   console.log('join room');
 
@@ -41,7 +42,15 @@ export default function playerConnect(bridge, name, room, socket) {
       },
     });
   } else {
-    bridge.emit(room.id, 'gameStatus', { players: room.players, watchers: room.watchers });
+    bridge.emit(
+      room.id,
+      'gameStatus',
+      {
+        players: room.players,
+        watchers: room.watchers,
+        cards: getCardsList(room),
+      }
+    );
     room.logs.push({
       text: 'LOGS.PLAYER_CONNECT',
       options: {

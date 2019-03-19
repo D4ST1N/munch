@@ -12,6 +12,7 @@ import writeLog        from './helpers/writeLog';
 import playerGetCard   from './helpers/playerGetCard';
 import playerMove      from './helpers/playerMove';
 import stopAction from './helpers/stopAction';
+import getCardsList from './helpers/getCardsList';
 
 export default function init() {
   const io = ioStarter('/ws/exploding-kittens');
@@ -37,7 +38,7 @@ export default function init() {
   });
 
   bridge.on('createRoom', (socket, { name, options }) => {
-    Rooms.push(new Room(options));
+    Rooms.push(new Room(name, options));
 
     console.log(name);
     const roomsArray = getRoomsList(Rooms, name);
@@ -61,7 +62,15 @@ export default function init() {
     player.ready = true;
 
     console.log('emit status', player.name);
-    bridge.emit(room.id, 'gameStatus', { players: room.players, watchers: room.watchers });
+    console.log(getCardsList(room));
+    bridge.emit(
+      room.id,
+      'gameStatus',
+      {
+        players: room.players,
+        watchers: room.watchers,
+        cards: getCardsList(room),
+      });
     room.logs.push({
       text: 'LOGS.PLAYER_READY',
       options: {

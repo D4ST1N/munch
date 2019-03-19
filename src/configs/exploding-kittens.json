@@ -181,6 +181,13 @@
       "description": "CARDS.GARBAGE_COLLECTOR.DESCRIPTION",
       "color": "rgba(255,235,59 ,1)",
       "isCatCard": false
+    },
+    {
+      "type": "cat-box",
+      "name": "CARDS.CAT_BOX.NAME",
+      "description": "CARDS.CAT_BOX.DESCRIPTION",
+      "color": "rgba(255,235,59 ,1)",
+      "isCatCard": false
     }
   ],
   "game": {

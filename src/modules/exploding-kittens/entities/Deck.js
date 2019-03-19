@@ -46,6 +46,10 @@ export default class Deck {
     return this.getCardIndex(cardType) !== -1;
   }
 
+  getCardCount(cardType) {
+    return this.cards.filter(card => card.props.type === cardType).length;
+  }
+
   useCard(cardId) {
     const index = this.cards.findIndex(card => card.id === cardId);
 

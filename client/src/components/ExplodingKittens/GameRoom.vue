@@ -15,6 +15,20 @@
             ></div>
           </div>
         </div>
+        <div class="game-room__cards-container">
+          <div class="game-room__cards-title" @click="showCards = !showCards">
+            {{ $text('GAME_ROOMS.CARDS_LIST') }}
+            <Icon
+              size="x-small"
+              type="select_arrow_down"
+            ></Icon>
+          </div>
+          <transition-group name="cards">
+            <div v-if="showCards" v-for="card in cards" :key="card" class="game-room__card">
+              {{ $text(card) }}
+            </div>
+          </transition-group>
+        </div>
         <Button
           v-if="state === 'joined'"
           class="game-room__action"
@@ -51,9 +65,11 @@
       return {
         players: [],
         watchers: [],
+        cards: [],
         state: 'joined',
         roomExist: false,
         gameStarted: false,
+        showCards: false,
         lastShiftTime: null,
       };
     },
@@ -113,9 +129,10 @@
         });
       },
 
-      onGameStatus({ players, watchers }) {
+      onGameStatus({ players, watchers, cards }) {
         console.log('player list update');
         console.log(players);
+        this.cards = cards;
         this.players = players;
         this.watchers = watchers;
         this.updateState();
@@ -349,6 +366,77 @@
         &--ready {
           background: url("../../assets/img/checked.png") no-repeat center;
         }
+      }
+    }
+
+    &__cards-title {
+      margin: 8px 0 4px;
+      font-size: 18px;
+      font-weight: bold;
+      border-bottom: 1px solid rgba(255, 255, 255, .4);
+      cursor: pointer;
+      transition: all .375s;
+
+      &:hover {
+        background: rgba(255, 255, 255, .4);
+      }
+    }
+
+    &__card {
+      margin-bottom: 2px;
+    }
+
+    .cards-enter,
+    .cards-enter-active {
+      animation: card-in .5s ease-in forwards;
+    }
+
+    .cards-leave,
+    .cards-leave-active {
+      animation: card-out .5s ease-out forwards;
+    }
+
+    @keyframes card-in {
+      0% {
+        opacity: 0;
+        margin-bottom: -18px;
+      }
+
+      25% {
+        margin-bottom: 0;
+        opacity: 0;
+      }
+
+      75% {
+        margin-bottom: 5px;
+        opacity: 1;
+      }
+
+      100% {
+        margin-bottom: 2px;
+        opacity: 1;
+      }
+    }
+
+    @keyframes card-out {
+      0% {
+        margin-bottom: 2px;
+        opacity: 1;
+      }
+
+      25% {
+        margin-bottom: 5px;
+        opacity: 1;
+      }
+
+      75% {
+        margin-bottom: 0;
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 0;
+        margin-bottom: -18px;
       }
     }
   }

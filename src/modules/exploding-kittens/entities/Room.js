@@ -7,9 +7,11 @@ import addCards            from './../helpers/addCards';
 import getPlayerStartCards from './../helpers/getPlayerStartCards';
 import config              from '../../../configs/exploding-kittens';
 import randomInt           from '../../../utils/randomInt';
+import playerGetExplodingKitten from '../helpers/playerGetExplodingKitten';
 
 export default class Room {
-  constructor({ settings = {} } = {}) {
+  constructor(creator, { settings = {} } = {}) {
+    this.creator = creator;
     this.settings = settings;
     this.id = uuid();
     this.players = [];
@@ -59,7 +61,7 @@ export default class Room {
     return this.deck.invert(this.implodingKittenFound ? [ 'imploding-kitten' ] : []);
   }
 
-  playerConnect(playerName, id) {
+  playerConnect(bridge, playerName, id) {
     const isPlayer = this.isPlayerExist(playerName);
     const isWatcher = this.isWatcherExist(playerName);
     let reconnect = false;
@@ -69,10 +71,25 @@ export default class Room {
 
       this.getPlayer(playerName).reconnect(id);
     } else if (!this.gameStarted) {
-      this.players.push(new Player({
+      const player = new Player({
         id,
         name: playerName,
-      }));
+      });
+      this.players.push(player);
+      player.on('getCard', (card) => {
+        console.log('player getCard event', card);
+
+        if (card.props.type === 'exploding-kitten') {
+          playerGetExplodingKitten(bridge, this, player, card);
+        }
+      });
+      player.on('looseCard', (card) => {
+        console.log('player looseCard event', card);
+
+        if (card.props.type === 'cat-box' && player.deck.isCardExist('exploding-kitten')) {
+          playerGetExplodingKitten(bridge, this, player, card);
+        }
+      });
     } else if (!isWatcher) {
       this.watchers.push(new Watcher({
         id,
@@ -150,6 +167,9 @@ export default class Room {
         case 'swap':
         case 'garbage-collector':
           cardsCount = playersCount > 3 ? 4 : 2;
+          break;
+        case 'cat-box':
+          cardsCount = 1;
           break;
         default:
           cardsCount = Math.ceil((playersCount + 1) / 2) * 2;

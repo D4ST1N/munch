@@ -182,6 +182,12 @@ export default {
           selected: true,
           disabled: false,
         },
+        {
+          name: 'cat-box',
+          label: 'CARDS.CAT_BOX.NAME',
+          selected: true,
+          disabled: false,
+        },
       ],
     },
     {
