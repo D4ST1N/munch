@@ -35,7 +35,30 @@
             options: ['playerName'],
           },
           {
+            name: '_killPlayer',
+            options: ['playerName'],
+          },
+          {
+            name: '_changeCurrentPlayer',
+            options: ['playerName'],
+          },
+          {
+            name: '_removeCard',
+            options: ['cardType'],
+          },
+          {
+            name: '_removePlayerCard',
+            options: ['playerName', 'cardType'],
+          },
+          {
+            name: '_givePlayerCard',
+            options: ['playerName', 'cardType'],
+          },
+          {
             name: '_getDefuse',
+          },
+          {
+            name: '_reverse',
           },
           {
             name: '_shuffle',
