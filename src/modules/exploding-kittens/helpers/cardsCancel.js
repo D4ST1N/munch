@@ -51,6 +51,16 @@ export default function cardsCancel(bridge, cards, room, socket, options) {
         break;
       }
 
+      case 'freedom': {
+        room.previousPlayer();
+        room.penaltyMoves = room.penaltyBackup;
+
+        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_BLOCK_FREEDOM', room);
+        gameUpdate(bridge, room);
+
+        break;
+      }
+
       case 'nope':
         const move = room.history.current;
 

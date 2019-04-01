@@ -97,6 +97,7 @@ export default function cardsApply(bridge, cards, room, socket, options) {
       case 'freedom':
         sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_FREEDOM', room);
 
+        room.penaltyBackup = room.penaltyMoves;
         room.penaltyMoves = 0;
         room.nextPlayer();
 
