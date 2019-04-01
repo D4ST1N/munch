@@ -21,6 +21,7 @@ export default class Room {
     this.currentPlayerIndex = 0;
     this.status = 'wait';
     this.penaltyMoves = 0;
+    this.penaltyBackup = 0;
     this.previousPlayerIndex = null;
     this.history = new History();
     this.logs = [];
@@ -310,7 +311,10 @@ export default class Room {
     this.players.splice(playerIndex, 1);
 
     if (playerIndex === this.currentPlayerIndex) {
-      this.previousPlayer();
+      if (this.direction > 0) {
+        this.previousPlayer();
+      }
+
       this.nextPlayer();
     }
   }

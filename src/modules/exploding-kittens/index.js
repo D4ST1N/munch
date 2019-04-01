@@ -182,7 +182,9 @@ export default function init() {
       return;
     }
 
-    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CHEATS', room, name);
+    if (!options.includes('--quite')) {
+      sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CHEATS', room, name);
+    }
 
     const [ cardType ] = options;
 
