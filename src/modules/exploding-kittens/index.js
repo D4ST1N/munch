@@ -194,6 +194,51 @@ export default function init() {
     gameUpdate(bridge, room);
   });
 
+  bridge.on('_givePlayerCard', (socket, { room, name, options }) => {
+    const [ playerName, cardType ] = options;
+    const player = room.getPlayer(playerName);
+
+    if (!player) {
+      return;
+    }
+
+    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CHEATS', room, name);
+
+    player.deck.addCard(Card.newCard(cardType));
+
+    gameUpdate(bridge, room);
+  });
+
+  bridge.on('_removeCard', (socket, { room, name, options }) => {
+    const player = room.getPlayer(name);
+
+    if (!player) {
+      return;
+    }
+
+    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CHEATS', room, name);
+
+    const [ cardType ] = options;
+
+    player.deck.useCardByType(cardType);
+
+    gameUpdate(bridge, room);
+  });
+
+  bridge.on('_removePlayerCard', (socket, { room, name, options }) => {
+    const [ playerName, cardType ] = options;
+    const player = room.getPlayer(playerName);
+
+    if (!player) {
+      return;
+    }
+
+    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CHEATS', room, name);
+    player.deck.useCardByType(cardType);
+
+    gameUpdate(bridge, room);
+  });
+
   bridge.on('_getDefuse', (socket, { room, name }) => {
     const player = room.getPlayer(name);
 
@@ -256,5 +301,36 @@ export default function init() {
 
   bridge.on('_saveLogs', (socket, { room }) => {
     writeLog(room.id, room.logs);
+  });
+
+
+  bridge.on('_reverse', (socket, { room }) => {
+    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CHEATS', room, name);
+    room.reverse();
+    gameUpdate(bridge, room);
+  });
+
+  bridge.on('_killPlayer', (socket, { room, name, options }) => {
+    const [ playerName ] = options;
+
+    if (!room.getPlayer(playerName)) {
+      return;
+    }
+
+    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CHEATS', room, name);
+    room.killPlayer(playerName);
+    gameUpdate(bridge, room);
+  });
+
+  bridge.on('_changeCurrentPlayer', (socket, { room, name, options }) => {
+    const [ playerName ] = options;
+
+    if (!room.getPlayer(playerName)) {
+      return;
+    }
+
+    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CHEATS', room, name);
+    room.nextPlayer(playerName);
+    gameUpdate(bridge, room);
   });
 }
