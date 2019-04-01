@@ -32,7 +32,7 @@
         fastGame: {
           name: 'fast-game',
           label: 'GAME_ROOMS.QUICK_GAME',
-          selected: false,
+          selected: true,
           disabled: false,
         },
         // playerLimit: {
