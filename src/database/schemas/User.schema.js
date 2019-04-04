@@ -31,6 +31,10 @@ export const user = new Schema({
     avatar: {
         type: String
     },
+    gender: {
+        type: String,
+        default: 'undefined'
+    },
     role: {
         type: String,
         default: 'User'

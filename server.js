@@ -18,6 +18,7 @@ import explodingKittens from './src/modules/exploding-kittens';
 import getProfile       from "./src/auth/getProfile";
 import userLogin        from "./src/auth/userLogin";
 import registerUser     from "./src/auth/registerUser";
+import editProfile     from "./src/auth/editProfile";
 
 const { combine, printf } = format;
 const { Console, File } = transports;
@@ -85,6 +86,8 @@ app.post('/user/login', userLogin);
 app.post('/user/register', registerUser);
 
 app.get('/user/profile', authMiddleware, getProfile);
+
+app.post('/user/edit', authMiddleware, editProfile);
 
 app.use('/', express.static(__dirname + '/client'));
 
