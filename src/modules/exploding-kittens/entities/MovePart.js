@@ -4,13 +4,14 @@ import settings from '../../../settings';
 import getActionTime from '../helpers/getActionTime';
 
 export default class MovePart {
-  constructor({ who, whom, cards, started, complete, failure }) {
+  constructor({ who, whom, cards, started, complete, failure, options }) {
     this.who = who;
     this.whom = whom;
     this.deck = new Deck(cards);
     this.complete = complete;
     this.failure = failure;
     this.started = started;
+    this.options = options;
     this.actionComplete = false;
     this.applyCards();
   }

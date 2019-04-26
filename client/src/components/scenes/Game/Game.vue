@@ -12,6 +12,7 @@
     <CardDescription />
     <Timer />
     <TargetedModal />
+    <EndGamePopup />
   </div>
 </template>
 
@@ -29,6 +30,7 @@
   import Console from './Console';
   import Timer from './Timer';
   import TargetedModal from './TargetedModal';
+  import EndGamePopup from './EndGamePopup';
 
   export default {
     name: 'Game',
@@ -45,6 +47,7 @@
       Console,
       Timer,
       TargetedModal,
+      EndGamePopup,
     },
     mixins: [
       room,

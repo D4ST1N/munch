@@ -6,6 +6,7 @@ export default function newMovePart(bridge, { room, who, cards, options }) {
   room.move.newPart({
     cards,
     who,
+    options,
     whom: options.name || room.next.name,
     started: () => {
       beforeActionMessage(bridge, room, cards, options);

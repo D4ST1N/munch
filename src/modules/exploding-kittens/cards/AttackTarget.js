@@ -2,6 +2,7 @@ import sendPlayerUseCardOnPLayer from '../helpers/messages/sendPlayerUseCardOnPL
 import sendPlayerTurnMessage from '../helpers/messages/sendPlayerTurnMessage';
 import gameUpdate from '../helpers/gameUpdate';
 import sendPlayerBlockCard from '../helpers/messages/sendPlayerBlockCard';
+import removeTargetFromPlayers from '../helpers/removeTargetFromPlayers';
 
 export default {
   apply(bridge, room, card, options) {
@@ -23,6 +24,7 @@ export default {
     room.previousPlayer();
     room.penaltyMoves -= 2;
 
+    removeTargetFromPlayers(room);
     sendPlayerTurnMessage(bridge, room);
     gameUpdate(bridge, room);
   }

@@ -16,6 +16,7 @@ import Favor from '../cards/Favor';
 import BlindCombo from '../cards/combinations/BlindCombo';
 import SightedCombo from '../cards/combinations/SightedCombo';
 import TrashCombo from '../cards/combinations/TrashCombo';
+import Trash from '../cards/Trash';
 
 export default function cardsApply(bridge, cards, room, options) {
   const player = room.currentPlayer;
@@ -109,6 +110,11 @@ export default function cardsApply(bridge, cards, room, options) {
 
       case 'favor':
         Favor.apply(bridge, room, card, player, options);
+
+        break;
+
+      case 'trash':
+        Trash.apply(bridge, room, card, player);
 
         break;
 

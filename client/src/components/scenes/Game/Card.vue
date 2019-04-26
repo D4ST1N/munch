@@ -16,13 +16,13 @@
         'border-color': cardBorderColor,
       }"
     >
-      <div v-if="!this.flipped" class="Card__content">
+      <div v-if="this.card.props" class="Card__content">
         <div class="Card__iconWrapper">
           <CardIcon :name="card.props.name" size="big" />
         </div>
         <div
           :class="{ 'Card__name': true, 'Card__name--fruit': card.props.isFruitCard }"
-        >{{ $text(card.props.label) }}</div>
+        >{{ $text(this.card.props.label) }}</div>
       </div>
     </div>
   </div>

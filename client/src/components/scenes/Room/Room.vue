@@ -109,7 +109,7 @@
           } else {
             clearInterval(intervalId);
           }
-        }, 80);
+        }, 55);
       },
 
       onGameStart() {
@@ -144,7 +144,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 600px;
+      width: 750px;
       padding: 20px;
       border-radius: 5px;
       background: #37474F;

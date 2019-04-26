@@ -38,7 +38,7 @@
 <style lang="scss" scoped>
   @import '../../../assets/styles/cardIcons/mixins/iconSizes';
 
-  $cards-list: defuse, exploding-kitten, attack, shuffle, see-the-future, see-the-future-x5, favor, nope, skip, get-lower, gmo, reverse, attack-target, change-the-future, change-the-future-x5, imploding-kitten, swap-top-and-bottom, freedom, catomic-bomb, swap, garbage-collector, cat-box, avocado, banana, mango, pineapple, orange, apple, grapes, cherry;
+  $cards-list: defuse, exploding-kitten, attack, shuffle, see-the-future, see-the-future-x5, favor, nope, skip, get-lower, gmo, reverse, attack-target, change-the-future, change-the-future-x5, imploding-kitten, swap-top-and-bottom, freedom, catomic-bomb, swap, garbage-collector, cat-box, avocado, banana, mango, pineapple, orange, apple, grapes, cherry, trash;
 
   .CardIcon {
     display: flex;

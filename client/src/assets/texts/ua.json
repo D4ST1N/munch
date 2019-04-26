@@ -159,6 +159,10 @@
     "CAT_BOX": {
       "NAME": "Котяча коробка",
       "DESCRIPTION": "Дозволяє взяти вибухове кошеня на руки і не підірватись, якщо хтось витягне в тебе карту вибухового кошеняти, він мусить його знешкодити, якщо в тебе є вибухове кошеня і ця карта, і в тебе витягнуть цю карту ти мусиш знешкодити це вибухове кошеня"
+    },
+    "TRASH": {
+      "NAME": "Сміттєвий бак",
+      "DESCRIPTION": "Використай цю карту та витягни випадкову карту з відбою"
     }
   },
   "GAME": {
@@ -173,11 +177,14 @@
       "PLAYER_EXPLODE": "{who} підірвався",
       "PLAYER_DEFUSE": "{who} знешкодив ${CardIcon}",
       "PLAYER_GET_CARD": "{who} витягнув ${CardIcon}",
+      "PLAYER_GIVE_CARD": "{who} віддав карту",
       "PLAYER_BLOCK_ACTION": "{who} заблокував дію",
       "PLAYER_USE_COMBINATION": "{who} використав комбінацію з {count} карт",
       "PLAYER_USE_COMBINATION_ON_PLAYER": "{who} використав комбінацію з {count} карт на {whom}",
       "PLAYER_WANT_TO_USE_COMBINATION": "{who} хоче використати комбінацію з {count} карт",
+      "PLAYER_WANT_TO_USE_COMBINATION_WITH_CARD": "{who} хоче використати комбінацію з {count} карт та витягнути ${CardIcon}",
       "PLAYER_WANT_TO_USE_COMBINATION_ON_PLAYER": "{who} хоче використати комбінацію з {count} карт на {whom}",
+      "PLAYER_WANT_TO_USE_COMBINATION_ON_PLAYER_WITH_CARD": "{who} хоче використати комбінацію з {count} карт на {whom} та витягнути ${CardIcon}",
       "PLAYER_BLOCK_COMBINATION": "{who} заблокував комбінацію з {count} карт",
       "PLAYER_USE_CHEATS": "{who} використав чіти!"
     }

@@ -598,5 +598,23 @@ export default {
         return 2;
       },
     },
+    {
+      name: 'trash',
+      label: 'CARDS.TRASH.NAME',
+      selected: true,
+      disabled: false,
+      description: 'CARDS.TRASH.DESCRIPTION',
+      color: '#a8369b',
+      isFruitCard: false,
+      actionCard: true,
+      canBeUsed: true,
+      selectPlayer: false,
+      time: 5000,
+      pack: 'extension-pack-3',
+
+      count(playersCount) {
+        return playersCount > 3 ? 6 : 4;
+      },
+    },
   ],
 };

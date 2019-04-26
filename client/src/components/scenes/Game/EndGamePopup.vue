@@ -7,8 +7,8 @@
       }"
     >
       <div class="end-game-popup__icon">
-        <img v-if="win" src="../../assets/img/award.png" alt="">
-        <img v-else src="../../assets/img/explode.png" alt="">
+        <img v-if="win" src="../../../assets/img/award.png" alt="">
+        <img v-else src="../../../assets/img/explode.png" alt="">
       </div>
       <h1 class="end-game-popup__title">
         {{ $text(win ? 'NOTIFICATIONS.GAME.END_GAME.WIN' : 'NOTIFICATIONS.GAME.END_GAME.LOOSE')}}
@@ -16,14 +16,13 @@
       <router-link to="/" class="end-game-popup__link">
         <Button type="white" size="big" :text="$text('NOTIFICATIONS.GAME.BACK_TO_ROOMS')" />
       </router-link>
-      <router-link :to="`/room/${$route.params.id}/logs`" class="end-game-popup__link">
-        <Button type="blue" size="big" :text="$text('NOTIFICATIONS.GAME.SEE_LOGS')" />
-      </router-link>
     </div>
   </div>
 </template>
 
 <script>
+  import Socket from '../../../entities/Socket';
+
   export default {
     name: 'EndGamePopup',
     data() {
@@ -34,7 +33,7 @@
     },
 
     created() {
-      this.$store.getters.socket.on('endGame', ({ win }) => {
+      Socket.on('endGame', ({ win }) => {
         this.win = win;
         this.show = true;
       });

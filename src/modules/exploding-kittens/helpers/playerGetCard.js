@@ -1,11 +1,10 @@
 import playerGetExplodingKitten from './playerGetExplodingKitten';
-import writeLog                 from './writeLog';
-import sendGameMessage          from './sendGameMessage';
-import newMovePart                  from './newMovePart';
-import gameUpdate               from './gameUpdate';
+import writeLog from './writeLog';
+import sendGameMessage from './sendGameMessage';
 import playerGetImplodingKitten from './playerGetImplodingKitten';
 import delayedGameUpdate from './delayedGameUpdate';
 import removeCatBox from './removeCatBox';
+import removeTargetFromPlayers from './removeTargetFromPlayers';
 
 export default function playerGetCard(bridge, room, name, upper = true) {
   const player = room.currentPlayer;
@@ -26,6 +25,8 @@ export default function playerGetCard(bridge, room, name, upper = true) {
     : room.deck.useLowerCard();
 
   console.log('player get', card.props.name, 'card');
+  removeTargetFromPlayers(room, player.name);
+
   let next = true;
 
   if (card.props.name === 'exploding-kitten') {
@@ -48,12 +49,6 @@ export default function playerGetCard(bridge, room, name, upper = true) {
   sendGameMessage(bridge, room, {
     key: 'GAME.LOGS.PLAYER_TURN',
   });
-  // newMovePart(bridge, {
-  //   room,
-  //   player,
-  //   cards,
-  //   options,
-  // });
   bridge.emit(room.id, 'updateMove', { cards: room.move ? room.move.partsCards : [] });
   delayedGameUpdate(bridge, room);
 

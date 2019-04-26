@@ -4,6 +4,7 @@ import sendPlayerUseCardOnPLayer from '../helpers/messages/sendPlayerUseCardOnPL
 import sendPlayerBlockCard from '../helpers/messages/sendPlayerBlockCard';
 import endFavor from '../helpers/endFavor';
 import removeTargetFromPlayers from '../helpers/removeTargetFromPlayers';
+import sendPlayerGiveCard from '../helpers/messages/sendPlayerGiveCard';
 
 export default {
   apply(bridge, room, card, player, options) {
@@ -23,6 +24,7 @@ export default {
         player.deck.addCard(...usedCard);
         player.emit('getCard', ...usedCard);
         favorPlayer.emit('looseCard', ...usedCard);
+        sendPlayerGiveCard(bridge, room, favorPlayer.name);
       } catch (e) {
         console.error(e);
         console.log(card.id, card.props.name);

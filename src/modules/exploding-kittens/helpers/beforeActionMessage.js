@@ -5,6 +5,8 @@ import sendPlayerWantToUseCombinationOnPlayer
   from './messages/sendPlayerWantToUseCombinationOnPlayer';
 import sendPlayerWantToUseCombination from './messages/sendPlayerWantToUseCombination';
 import targetPlayer from './targetPlayer';
+import sendPlayerWantToUseCombinationOnPlayerWithCard
+  from './messages/sendPlayerWantToUseCombinationOnPlayerWithCard';
 
 export default function beforeActionMessage(bridge, room, cards, options) {
   console.log(options);
@@ -30,10 +32,22 @@ export default function beforeActionMessage(bridge, room, cards, options) {
       sendPlayerWantToUseCard(bridge, room, card.props.name);
     }
   } else {
-    if (options.name) {
-      sendPlayerWantToUseCombinationOnPlayer(bridge, room, cards.length, options.name);
-    } else {
-      sendPlayerWantToUseCombination(bridge, room, cards.length);
+    switch (cards.length) {
+      case 2:
+        sendPlayerWantToUseCombinationOnPlayer(bridge, room, cards.length, options.name);
+        break;
+      case 3:
+        sendPlayerWantToUseCombinationOnPlayerWithCard(
+          bridge,
+          room,
+          cards.length,
+          options.name,
+          options.card.props.name,
+        );
+        break;
+      default:
+        sendPlayerWantToUseCombination(bridge, room, cards.length);
+        break;
     }
   }
 }
