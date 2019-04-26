@@ -11,7 +11,7 @@ export default function stopAction(bridge, socket, { room, name }) {
   const move = room.history.current;
   move.timer.stopTimer();
 
-  const usedCard = player.deck.useCardByType('nope');
+  const usedCard = player.deck.useCardByName('nope');
   console.log(usedCard);
 
   playerMove(bridge, socket, {

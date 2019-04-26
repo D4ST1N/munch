@@ -1,11 +1,18 @@
+import axios from 'axios';
+
 const state = {
   selectedCards: [],
   trash: [],
   isPlayer: false,
   focused: true,
+  settings: {},
 };
 
 const mutations = {
+  updateSettings(state, settings) {
+    state.settings = settings;
+  },
+
   toggleCard(state, toggledCard) {
     const cardIndex = state.selectedCards.findIndex(card => card.id === toggledCard.id);
 
@@ -37,7 +44,23 @@ const mutations = {
   },
 };
 
+const actions = {
+  getSettings({ commit }) {
+    return axios.post('/settings')
+      .then(({ data }) => {
+        commit('updateSettings', data);
+
+        return data;
+      })
+      .catch(console.error)
+  },
+};
+
 const getters = {
+  settings(state) {
+    return state.settings;
+  },
+
   selectedCards(state) {
     return state.selectedCards;
   },
@@ -54,5 +77,6 @@ const getters = {
 export default {
   state,
   mutations,
+  actions,
   getters,
 };

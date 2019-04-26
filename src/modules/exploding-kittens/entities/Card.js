@@ -1,5 +1,5 @@
-import uuid      from 'uuid/v1';
-import { cards } from '../../../configs/exploding-kittens';
+import uuid from 'uuid/v1';
+import settings from '../../../settings';
 
 export default class Card {
   constructor(props) {
@@ -7,8 +7,8 @@ export default class Card {
     this.id = uuid();
   }
 
-  static newCard(type) {
-    const cardConfig = cards.find(card => card.type === type);
+  static newCard(name) {
+    const cardConfig = settings.cards.find(card => card.name === name);
 
     if (cardConfig) {
       return new Card(cardConfig);

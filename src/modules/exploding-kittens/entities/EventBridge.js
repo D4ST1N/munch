@@ -1,5 +1,6 @@
 import Rooms   from './Rooms';
 import getRoom from '../helpers/getRoom';
+import gameUpdate from '../helpers/gameUpdate';
 
 export default class EventBridge {
   constructor(io) {
@@ -8,7 +9,7 @@ export default class EventBridge {
 
     io.on('connection', (socket) => {
       console.log('new connection', socket.id);
-      socket.emit('roomList', Rooms);
+      // socket.emit('roomList', Rooms);
 
       socket.onpacket = (pack) => {
         const [event, payload] = pack.data;
@@ -19,6 +20,8 @@ export default class EventBridge {
           room = getRoom(Rooms, payload.roomId);
 
           if (!room) {
+            socket.emit('roomStatus', { exist: false });
+
             return;
           }
         }

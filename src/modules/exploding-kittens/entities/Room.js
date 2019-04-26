@@ -5,9 +5,9 @@ import Watcher             from './Watcher';
 import History             from './History';
 import addCards            from './../helpers/addCards';
 import getPlayerStartCards from './../helpers/getPlayerStartCards';
-import config              from '../../../configs/exploding-kittens';
 import randomInt           from '../../../utils/randomInt';
 import playerGetExplodingKitten from '../helpers/playerGetExplodingKitten';
+import settings from '../../../settings';
 
 export default class Room {
   constructor(creator, { settings = {} } = {}) {
@@ -23,6 +23,7 @@ export default class Room {
     this.penaltyMoves = 0;
     this.penaltyBackup = 0;
     this.previousPlayerIndex = null;
+    this.move = null;
     this.history = new History();
     this.logs = [];
     this.direction = 1;
@@ -41,17 +42,33 @@ export default class Room {
     if (this.status === 'started') return true;
 
     return !this.players.find(player => player.ready === false)
-      && this.players.length >= config.game.minPlayerCount;
+      && this.players.length >= settings.game.minPlayerCount;
   }
 
   get gameEnded() {
     return this.players.length === 1;
   }
 
+  get next() {
+    let index = this.currentPlayerIndex;
+
+    index += this.direction;
+
+    if (index >= this.players.length) {
+      index = 0;
+    }
+
+    if (index < 0) {
+      index = this.players.length - 1;
+    }
+
+    return this.players[index];
+  }
+
   static getAllCardsTypes() {
     const deck = new Deck();
 
-    config.cards.forEach((cardConfig) => {
+    settings.cards.forEach((cardConfig) => {
       addCards(deck.cards, cardConfig, 1);
     });
 
@@ -59,7 +76,7 @@ export default class Room {
   }
 
   invertDeck() {
-    return this.deck.invert(this.implodingKittenFound ? [ 'imploding-kitten' ] : []);
+    return this.deck.invert(this.implodingKittenFound ? ['imploding-kitten'] : []);
   }
 
   playerConnect(bridge, playerName, id) {
@@ -80,14 +97,14 @@ export default class Room {
       player.on('getCard', (card) => {
         console.log('player getCard event', card);
 
-        if (card.props.type === 'exploding-kitten') {
+        if (card.props.name === 'exploding-kitten') {
           playerGetExplodingKitten(bridge, this, player, card);
         }
       });
       player.on('looseCard', (card) => {
         console.log('player looseCard event', card);
 
-        if (card.props.type === 'cat-box' && player.deck.isCardExist('exploding-kitten')) {
+        if (card.props.name === 'cat-box' && player.deck.isCardExist('exploding-kitten')) {
           playerGetExplodingKitten(bridge, this, player, card);
         }
       });
@@ -117,71 +134,21 @@ export default class Room {
   initGameDeck() {
     const playersCount = this.players.length;
 
-    console.log(this.settings);
-
     const selectedCards = [].concat(
       ...this.settings.packs.map(
-        pack => pack.items.filter(item => item.selected)
-                    .map(item => item.name)
-      )
+        pack => pack.items.filter(item => item.selected).map(item => item.name),
+      ),
     );
 
-    console.log(selectedCards);
-
-    selectedCards.forEach((cardType) => {
-      const cardConfig = config.cards.find(card => card.type === cardType);
+    selectedCards.forEach((cardName) => {
+      const cardConfig = settings.cards.find(card => card.name === cardName);
 
       if (!cardConfig) return;
 
-      let cardsCount;
-
-      switch (cardConfig.type) {
-        case 'defuse':
-          cardsCount = playersCount + (Math.ceil(playersCount / 2));
-          break;
-        case 'imploding-kitten':
-          cardsCount = playersCount > 2 ? 1 : 0;
-          break;
-        case 'exploding-kitten':
-          cardsCount = playersCount > 2 && selectedCards.includes('imploding-kitten')
-                       ? playersCount - 2
-                       : playersCount - 1;
-          break;
-        case 'skip':
-        case 'attack':
-        case 'see-the-future':
-        case 'nope':
-        case 'favor':
-        case 'shuffle':
-        case 'get-lower':
-        case 'wild-card':
-        case 'change-the-future':
-        case 'reverse':
-        case 'attack-target':
-          cardsCount = playersCount > 3 ? 6 : 4;
-          break;
-        case 'see-the-future-x5':
-        case 'change-the-future-x5':
-        case 'swap-top-and-bottom':
-        case 'freedom':
-        case 'catomic-bomb':
-        case 'swap':
-        case 'garbage-collector':
-          cardsCount = playersCount > 3 ? 4 : 2;
-          break;
-        case 'cat-box':
-          cardsCount = 1;
-          break;
-        default:
-          cardsCount = Math.ceil((playersCount + 1) / 2) * 2;
-          break;
-      }
+      const cardsCount = cardConfig.count(playersCount, selectedCards);
 
       addCards(this.deck.cards, cardConfig, cardsCount);
     });
-
-    console.log('before handing out');
-    console.log(this.deck.cards.map(card => card.props.type));
   }
 
   giveCardsToPlayers() {
@@ -190,9 +157,7 @@ export default class Room {
       player.deck.shuffle();
     });
 
-    this.deck.shuffle();
-
-    if (this.settings.fastGame.selected) {
+    if (this.settings.options.fastGame.selected) {
       const newCount = Math.ceil(this.deck.cards.length / 2);
 
       while (this.deck.cards.length > newCount) {
@@ -203,18 +168,19 @@ export default class Room {
           debugger;
         }
 
-        if (['exploding-kitten', 'imploding-kitten'].includes(card.props.type)) {
+        if (['exploding-kitten', 'imploding-kitten'].includes(card.props.name)) {
           continue;
         }
 
         this.deck.cards.splice(cardIndex, 1);
       }
-
-      this.deck.shuffle();
     }
 
-    console.log('after handing out');
-    console.log(this.deck.cards.map(card => card.props.type));
+    console.log(this.deck.cards.map(card => card.props.name));
+
+    this.deck.shuffle();
+
+    console.log(this.deck.cards.map(card => card.props.name));
   }
 
   getPlayer(playerName) {

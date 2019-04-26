@@ -12,26 +12,29 @@ export default function playerGetExplodingKitten(bridge, room, player, card) {
     return true;
   }
 
-  sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_GET_EXPLODING_KITTEN', room, player.name);
+  sendGameMessage(bridge, room, {
+    key: 'GAME.LOGS.PLAYER_GET_CARD',
+    options: {
+      component: {
+        name: card.props.name,
+      },
+    },
+  });
 
   if (player.deck.isCardExist('defuse')) {
     console.log('player has defuse');
-    const explodingKittenCard = player.deck.useCardByType('exploding-kitten');
+    const explodingKittenCard = player.deck.useCardByName('exploding-kitten');
 
-    room.trash.addCard(...player.deck.useCardByType('defuse'), false);
+    room.trash.addCard(...player.deck.useCardByName('defuse'), false);
     room.deck.addCard(...explodingKittenCard);
 
-    sendGameMessage(
-      bridge,
-      'NOTIFICATIONS.GAME.PLAYER_DEFUSE_EXPLODING_KITTEN',
-      room,
-      player.name,
-    );
-    room.logs.push({
-      text: 'LOGS.PLAYER_DEFUSE_EXPLODING_KITTEN',
+    sendGameMessage(bridge, room, {
+      key: 'GAME.LOGS.PLAYER_DEFUSE',
       options: {
-        player: player.name,
-      }
+        component: {
+          name: card.props.name,
+        },
+      },
     });
 
     return true;
@@ -39,31 +42,20 @@ export default function playerGetExplodingKitten(bridge, room, player, card) {
 
   player.exploded = true;
 
-  sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_EXPLODED', room, player.name);
+  sendGameMessage(bridge, room, {
+    key: 'GAME.LOGS.PLAYER_EXPLODE',
+  });
   bridge.emit(player.id, 'endGame', { win: false });
   room.killPlayer();
-  room.logs.push({
-    text: 'LOGS.PLAYER_EXPLODED',
-    options: {
-      player: player.name,
-    },
-  });
 
   gameUpdate(bridge, room);
 
   if (room.gameEnded) {
     const winner = room.players[0];
 
-    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_WIN', room, winner.name);
     bridge.emit(winner.id, 'endGame', { win: true });
 
     room.gameEnd();
-    room.logs.push({
-      text: 'LOGS.PLAYER_WIN',
-      options: {
-        player: player.name,
-      },
-    });
   }
 
   return false;

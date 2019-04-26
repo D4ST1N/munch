@@ -24,6 +24,7 @@
 <script>
   import cookie    from '../../assets/utils/cookie';
   import FormField from '../UI/Forms/FormField';
+  import Socket from '../../entities/Socket';
 
   export default {
     name: 'PlayerAuth',
@@ -91,8 +92,8 @@
     computed: {
       formTitle() {
         return this.currentForm === 'login'
-               ? this.$text('PLAYER_AUTH.TITLE')
-               : this.$text('PLAYER_AUTH.REGISTER_FORM');
+          ? this.$text('PLAYER_AUTH.TITLE')
+          : this.$text('PLAYER_AUTH.REGISTER_FORM');
       },
 
       actionButtonText() {
@@ -161,9 +162,10 @@
                 data.json()
                   .then((body) => {
                     this.$store.commit('authorization', body.data);
-                    this.$store.commit('connect');
+                    // this.$store.commit('connect');
+                    Socket.connect();
                     this.$emit('auth', body.data.username);
-                    this.$router.push('/');
+                    this.$router.go(-1);
                   });
               })
           });

@@ -1,0 +1,3 @@
+@function cardIcon($size, $column, $x, $y) {
+  @return (-$size * $x - $column * $x) (-$size * $y - $column * $y);
+}

@@ -1,3 +1,5 @@
+import User from '../../entities/User';
+
 const state = {
   isLoggedIn: false,
   player: null,
@@ -8,7 +10,8 @@ const state = {
 const mutations = {
   authorization(state, payload) {
     state.isLoggedIn = true;
-    state.player = {...payload};
+    const { username, ...data } = payload;
+    state.player = new User(username, data);
     state.error = false;
   },
 

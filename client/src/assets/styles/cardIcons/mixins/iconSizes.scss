@@ -1,0 +1,22 @@
+@import './bigIcon';
+@import "./mediumIcon";
+@import "./smallIcon";
+@import "./tinyIcon";
+
+@mixin iconSizes($x, $y) {
+  &.CardIcon--big {
+    background-position: bigIcon($x, $y);
+  }
+
+  &.CardIcon--medium {
+    background-position: mediumIcon($x, $y);
+  }
+
+  &.CardIcon--small {
+    background-position: smallIcon($x, $y);
+  }
+
+  &.CardIcon--tiny {
+    background-position: tinyIcon($x, $y);
+  }
+}

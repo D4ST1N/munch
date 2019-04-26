@@ -1,10 +1,11 @@
-import Vue              from 'vue';
-import Router           from 'vue-router';
-import CircleCrush      from './components/CircleCrush/CircleCrush';
-import GameRoomList     from './components/ExplodingKittens/GameRoomsList';
-import PlayerAuth       from './components/ExplodingKittens/PlayerAuth';
-import GameRoom         from './components/ExplodingKittens/GameRoom';
-import RoomLogs         from './components/ExplodingKittens/RoomLogs';
+import Vue from 'vue';
+import Router from 'vue-router';
+import Lobby from './components/scenes/Lobby/Lobby';
+import PlayerAuth from './components/ExplodingKittens/PlayerAuth';
+import Room from './components/scenes/Room/Room';
+import RoomNotFound from './components/scenes/Room/RoomNotFound';
+import Game from './components/scenes/Game/Game';
+import Results from './components/scenes/Results/Results';
 
 Vue.use(Router);
 
@@ -13,17 +14,9 @@ const router = new Router({
     {
       path: '/',
       name: 'exploding-kittens',
-      component: GameRoomList,
+      component: Lobby,
       meta: {
         title: 'Exploding kittens game rooms',
-      },
-    },
-    {
-      path: '/circle-crush',
-      name: 'circle-crush',
-      component: CircleCrush,
-      meta: {
-        title: 'Circle Crush!',
       },
     },
     {
@@ -35,19 +28,35 @@ const router = new Router({
       },
     },
     {
-      path: '/room/:id',
-      name: 'exploding-kittens/room',
-      component: GameRoom,
+      path: '/room/404',
+      name: 'room-not-found',
+      component: RoomNotFound,
       meta: {
-        title: 'Exploding kittens',
+        title: 'Room not found',
       },
     },
     {
-      path: '/room/:id/logs',
-      name: 'exploding-kittens/room/logs',
-      component: RoomLogs,
+      path: '/room/:id/lobby',
+      name: 'room-lobby',
+      component: Room,
       meta: {
-        title: 'Exploding kittens',
+        title: 'Room lobby',
+      },
+    },
+    {
+      path: '/room/:id/game',
+      name: 'game',
+      component: Game,
+      meta: {
+        title: 'Game',
+      },
+    },
+    {
+      path: '/room/:id/results',
+      name: 'game-results',
+      component: Results,
+      meta: {
+        title: 'Game results',
       },
     },
   ],

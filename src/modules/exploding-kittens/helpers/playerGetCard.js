@@ -1,9 +1,11 @@
 import playerGetExplodingKitten from './playerGetExplodingKitten';
 import writeLog                 from './writeLog';
 import sendGameMessage          from './sendGameMessage';
-import newMove                  from './newMove';
+import newMovePart                  from './newMovePart';
 import gameUpdate               from './gameUpdate';
 import playerGetImplodingKitten from './playerGetImplodingKitten';
+import delayedGameUpdate from './delayedGameUpdate';
+import removeCatBox from './removeCatBox';
 
 export default function playerGetCard(bridge, room, name, upper = true) {
   const player = room.currentPlayer;
@@ -12,31 +14,24 @@ export default function playerGetCard(bridge, room, name, upper = true) {
     return;
   }
 
-  const oldMove = room.history.current;
+  console.log(player);
 
-  if (oldMove) {
-    oldMove.endMove();
-    oldMove.allCards.forEach(card => room.trash.addCard(card, false));
+  if (room.move) {
+    room.move.partsCards.forEach(card => room.trash.addCard(card, false));
+    room.move = null;
   }
 
   const card = upper
     ? room.deck.useUpperCard()
     : room.deck.useLowerCard();
 
-  console.log('player get', card.props.type, 'card');
+  console.log('player get', card.props.name, 'card');
   let next = true;
-  room.logs.push({
-    text: 'LOGS.PLAYER_GET_CARD',
-    options: {
-      player: name,
-    },
-    deck: [{...card}],
-  });
 
-  if (card.props.type === 'exploding-kitten') {
+  if (card.props.name === 'exploding-kitten') {
     player.deck.addCard(card);
     next = playerGetExplodingKitten(bridge, room, player, card);
-  } else if (card.props.type === 'imploding-kitten') {
+  } else if (card.props.name === 'imploding-kitten') {
     next = playerGetImplodingKitten(bridge, room, player, card);
   } else {
     player.deck.addCard(card);
@@ -50,14 +45,19 @@ export default function playerGetCard(bridge, room, name, upper = true) {
     room.nextPlayer();
   }
 
-  sendGameMessage(bridge,'NOTIFICATIONS.GAME.PLAYER_TURN', room);
-  room.logs.push({
-    text: 'LOGS.PLAYER_MOVE',
-    options: {
-      player: room.currentPlayer.name,
-    },
+  sendGameMessage(bridge, room, {
+    key: 'GAME.LOGS.PLAYER_TURN',
   });
-  newMove(bridge, room, room.currentPlayer);
-  bridge.emit(room.id, 'updateMove', { cards: room.history.current.allCards });
-  gameUpdate(bridge, room);
+  // newMovePart(bridge, {
+  //   room,
+  //   player,
+  //   cards,
+  //   options,
+  // });
+  bridge.emit(room.id, 'updateMove', { cards: room.move ? room.move.partsCards : [] });
+  delayedGameUpdate(bridge, room);
+
+  if (room.deck.count === 0) {
+    removeCatBox(room);
+  }
 }

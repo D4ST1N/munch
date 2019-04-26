@@ -32,7 +32,6 @@ function sendSubscriptionToServer(subscription) {
   //
   // For compatibly of Chrome 43, get the endpoint via
   // endpointWorkaround(subscription)
-  console.log('TODO: Implement sendSubscriptionToServer()');
 
   var mergedEndpoint = endpointWorkaround(subscription);
 
@@ -47,8 +46,6 @@ function sendSubscriptionToServer(subscription) {
 function showCurlCommand(mergedEndpoint) {
   // The curl command to trigger a push message straight from GCM
   if (mergedEndpoint.indexOf(GCM_ENDPOINT) !== 0) {
-    window.Demo.debug.log('This browser isn\'t currently ' +
-      'supported for this demo');
     return;
   }
 
@@ -103,10 +100,8 @@ function unsubscribe() {
 function subscribe() {
   // Disable the button so it can't be changed while
   // we process the permission request
-  console.log(0);
   console.log(navigator.serviceWorker);
   navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
-    console.log(1);
     serviceWorkerRegistration.pushManager.subscribe({userVisibleOnly: true})
       .then(function(subscription) {
         // The subscription was successful
@@ -135,8 +130,6 @@ function subscribe() {
 
 // Once the service worker is registered set the initial state
 function initialiseState(register) {
-  console.log(-1);
-  console.log(register);
   // Are Notifications supported in the service worker?
   if (!('showNotification' in ServiceWorkerRegistration.prototype)) {
     window.Demo.debug.log('Notifications aren\'t supported.');
@@ -158,9 +151,7 @@ function initialiseState(register) {
   }
 
   // We need the service worker registration to check for a subscription
-  console.log(-0.95);
   navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
-    console.log(-0.9);
     bridge = serviceWorkerRegistration;
     showDelayed();
     // Do we already have a push message subscription?
@@ -192,7 +183,6 @@ window.addEventListener('load', function() {
   // Check that service workers are supported, if so, progressively
   // enhance and add push messaging support, otherwise continue without it.
   if ('serviceWorker' in navigator) {
-    console.log(-2);
     navigator.serviceWorker.register('/service-worker.js')
              .then(initialiseState);
   } else {

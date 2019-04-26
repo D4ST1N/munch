@@ -16,6 +16,8 @@ const sendUpdateToUser = (bridge, room, userName, isWatcher = false) => {
     playerDeck: !isWatcher ? user.deck.cards : [],
     direction: room.direction,
     penaltyMoves: room.penaltyMoves,
+    selected: user.selected,
+    targeted: user.targeted,
   };
 
   bridge.emit(user.id, 'gameUpdate', gameData);

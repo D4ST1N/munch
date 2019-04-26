@@ -4,7 +4,7 @@ export default function getProp(object, search, defaultValue) {
   }
 
   if (typeof search !== 'string') {
-    throw new SyntaxError('Search is not string');
+    throw new SyntaxError(`Search "${search}" is not string`);
   }
 
   const parsedSearch = search.split('.');

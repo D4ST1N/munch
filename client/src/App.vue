@@ -1,12 +1,15 @@
 <template>
   <div id="app" :style="{ zoom: `${zoomCoef}%` }">
     <div class="app-version">{{ version }}</div>
-    <div v-if="player" class="app__wrapper">
+    <div v-if="player && loaded" class="app__wrapper">
       <router-view></router-view>
       <MainMenu />
     </div>
     <PlayerAuth v-else />
     <NotificationCenter />
+    <transition name="loading">
+      <Loader v-if="!loaded" />
+    </transition>
   </div>
 </template>
 
@@ -15,6 +18,7 @@
   import PlayerAuth from './components/ExplodingKittens/PlayerAuth';
   import MainMenu from './components/ExplodingKittens/MainMenu';
   import NotificationCenter from './components/Notifications/NotificationCenter';
+  import Loader from './components/UI/Loader';
   import gameData from '../package';
   import notification from './sw-setup';
 
@@ -25,6 +29,7 @@
       NotificationCenter,
       PlayerAuth,
       MainMenu,
+      Loader,
     },
 
     data() {
@@ -32,6 +37,8 @@
         theme: 'base',
         styles: null,
         version: gameData.version,
+        loaded: false,
+        zoomCoef: 100,
       };
     },
 
@@ -41,16 +48,30 @@
       this.styles.href = `/themes/${this.theme}.css`;
 
       document.head.appendChild(this.styles);
-      this.zoomCoef = window.innerWidth / 2200 * 100;
+
       window.onblur = () => {
         this.$store.commit('gameBlur');
       };
+
       window.onfocus = () => {
         this.$store.commit('gameFocus');
       };
+
       this.$root.$on('showNotification', ({ title, options }) => {
         notification(title, options);
       });
+
+      this.$store.dispatch('getSettings')
+        .then((settings) => {
+          console.log(settings);
+          this.zoomCoef = window.innerWidth < 800
+            ? window.innerWidth / settings.game.field.width * 250
+            : window.innerWidth / settings.game.field.width * 100;
+        })
+        .catch(console.error)
+        .finally(() => {
+          this.loaded = true;
+        })
     },
 
     methods: {
@@ -66,7 +87,7 @@
   @import url('https://fonts.googleapis.com/css?family=Comfortaa:300,400,700&subset=cyrillic,cyrillic-ext');
 
   #app {
-    font-family: 'Comfortaa', cursive;
+    font-family: Arial, cursive;
     color: #2c3e50;
   }
 
@@ -75,6 +96,7 @@
     padding: 0;
     background: var(--ui-field-background-color);
     user-select: none;
+    height: 100vh;
   }
 
   * {
