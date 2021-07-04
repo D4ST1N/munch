@@ -1,7 +1,7 @@
 @import "colors.css";
 
 :root {
-    --ui-field-background-color: rgba(3,155,229 ,1);
+    --ui-field-background-color: linear-gradient(rgb(60, 180, 236), rgb(134, 216, 255));
     --ui-game-log-background-color: var(--black-coral);
     --ui-game-log-message-color: var(--pale-aqua);
     --ui-game-log-active-message-color: var(--ghost-white);

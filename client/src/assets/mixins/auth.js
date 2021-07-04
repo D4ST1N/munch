@@ -1,4 +1,5 @@
 import cookie from '../utils/cookie';
+import Socket from '../../entities/Socket';
 
 export default {
   computed: {
@@ -21,7 +22,7 @@ export default {
           data.json()
             .then((body) => {
               this.$store.commit('authorization', body.data);
-              this.$store.commit('connect');
+              Socket.connect();
               this.$emit('auth', body.data.username);
             });
         });

@@ -1,13 +1,13 @@
 /**
  * get card from deck
  * @param deck {Object}
- * @param cardType {String}
+ * @param cardName {String}
  * @returns {Array}
  */
 
-export default function getCard(deck, cardType) {
+export default function getCard(deck, cardName) {
   for (let i = deck.length - 1; i > 0; i--) {
-    if (deck[i].props.type === cardType) {
+    if (deck[i].props.name === cardName) {
       return deck.splice(i, 1);
     }
   }

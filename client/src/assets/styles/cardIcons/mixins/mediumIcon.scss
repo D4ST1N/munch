@@ -1,0 +1,5 @@
+@import "./cardIcon";
+
+@function mediumIcon($x, $y) {
+  @return cardIcon(60px, 4px, $x, $y);
+}

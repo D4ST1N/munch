@@ -40,7 +40,7 @@
             },
             action() {
               this.$store.getters.socket.emit('playerLeave', {
-                name: this.$store.getters.player.username,
+                name: this.$store.getters.player.name,
                 roomId: this.$route.params.id
               });
               this.show = false;

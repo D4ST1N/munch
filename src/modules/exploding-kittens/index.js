@@ -55,28 +55,22 @@ export default function init() {
 
     const player = room.getPlayer(name);
 
-    if (!player) {
+    if (!player || player.ready) {
       return;
     }
 
     player.ready = true;
 
     console.log('emit status', player.name);
-    console.log(getCardsList(room));
     bridge.emit(
       room.id,
       'gameStatus',
       {
         players: room.players,
-        watchers: room.watchers,
         cards: getCardsList(room),
-      });
-    room.logs.push({
-      text: 'LOGS.PLAYER_READY',
-      options: {
-        player: name,
+        settings: room.settings,
       },
-    });
+    );
 
     if (!room.gameStarted) {
       return;
@@ -88,30 +82,10 @@ export default function init() {
 
     bridge.emitAll('newGameStarted');
     bridge.emit(room.id, 'gameStart', { players: room.players });
-    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_TURN', room);
+    // sendGameMessage(bridge, room, {
+    //   key: 'GAME.LOGS.PLAYER_TURN',
+    // });
     gameUpdate(bridge, room);
-    room.logs.push({
-      text: 'LOGS.GAME_STARTED',
-    });
-    room.logs.push({
-      text: 'LOGS.START_DECK',
-      deck: [...room.deck.cards],
-    });
-    room.players.forEach((player) => {
-      room.logs.push({
-        text: 'LOGS.PLAYER_DECK',
-        options: {
-          player: player.name,
-        },
-        deck: [...player.deck.cards],
-      });
-    });
-    room.logs.push({
-      text: 'LOGS.PLAYER_MOVE',
-      options: {
-        player: room.currentPlayer.name,
-      },
-    });
   });
 
   bridge.on('stopAction', (socket, { room, name }) => {
@@ -144,8 +118,8 @@ export default function init() {
       return;
     }
 
-    if (!room.deck.useCardByType('exploding-kitten')) {
-      room.deck.useCardByType('imploding-kitten');
+    if (!room.deck.useCardByName('exploding-kitten')) {
+      room.deck.useCardByName('imploding-kitten');
     }
 
     room.killPlayer(name);
@@ -153,7 +127,10 @@ export default function init() {
     if (room.gameEnded) {
       const winner = room.players[0];
 
-      sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_WIN', room, winner.name);
+      sendGameMessage(bridge, room, {
+        key: 'NOTIFICATIONS.GAME.PLAYER_WIN',
+        who: winner.name,
+      });
       bridge.emit(winner.id, 'endGame', { win: true });
 
       room.gameEnd();
@@ -183,28 +160,34 @@ export default function init() {
     }
 
     if (!options.includes('--quite')) {
-      sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CHEATS', room, name);
+      sendGameMessage(bridge, room, {
+        key: 'GAME.LOGS.PLAYER_USE_CHEATS',
+        who: name,
+      });
     }
 
-    const [ cardType ] = options;
+    const [cardName] = options;
 
-    console.log('player get cheat card', cardType);
-    player.deck.addCard(Card.newCard(cardType));
+    console.log('player get cheat card', cardName);
+    player.deck.addCard(Card.newCard(cardName));
 
     gameUpdate(bridge, room);
   });
 
   bridge.on('_givePlayerCard', (socket, { room, name, options }) => {
-    const [ playerName, cardType ] = options;
+    const [playerName, cardName] = options;
     const player = room.getPlayer(playerName);
 
     if (!player) {
       return;
     }
 
-    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CHEATS', room, name);
+    sendGameMessage(bridge, room, {
+      key: 'GAME.LOGS.PLAYER_USE_CHEATS',
+      who: name,
+    });
 
-    player.deck.addCard(Card.newCard(cardType));
+    player.deck.addCard(Card.newCard(cardName));
 
     gameUpdate(bridge, room);
   });
@@ -216,25 +199,31 @@ export default function init() {
       return;
     }
 
-    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CHEATS', room, name);
+    sendGameMessage(bridge, room, {
+      key: 'GAME.LOGS.PLAYER_USE_CHEATS',
+      who: name,
+    });
 
-    const [ cardType ] = options;
+    const [cardName] = options;
 
-    player.deck.useCardByType(cardType);
+    player.deck.useCardByName(cardName);
 
     gameUpdate(bridge, room);
   });
 
   bridge.on('_removePlayerCard', (socket, { room, name, options }) => {
-    const [ playerName, cardType ] = options;
+    const [playerName, cardName] = options;
     const player = room.getPlayer(playerName);
 
     if (!player) {
       return;
     }
 
-    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CHEATS', room, name);
-    player.deck.useCardByType(cardType);
+    sendGameMessage(bridge, room, {
+      key: 'GAME.LOGS.PLAYER_USE_CHEATS',
+      who: name,
+    });
+    player.deck.useCardByName(cardName);
 
     gameUpdate(bridge, room);
   });
@@ -246,7 +235,10 @@ export default function init() {
       return;
     }
 
-    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CHEATS', room, name);
+    sendGameMessage(bridge, room, {
+      key: 'GAME.LOGS.PLAYER_USE_CHEATS',
+      who: name,
+    });
     player.deck.addCard(Card.newCard('defuse'));
 
     gameUpdate(bridge, room);
@@ -255,7 +247,10 @@ export default function init() {
   bridge.on('_shuffle', (socket, { room, name }) => {
     room.deck.shuffle();
 
-    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CHEATS', room, name);
+    sendGameMessage(bridge, room, {
+      key: 'GAME.LOGS.PLAYER_USE_CHEATS',
+      who: name,
+    });
     gameUpdate(bridge, room);
   });
 
@@ -268,7 +263,10 @@ export default function init() {
 
     const showTime = 10000;
 
-    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CHEATS', room, name);
+    sendGameMessage(bridge, room, {
+      key: 'GAME.LOGS.PLAYER_USE_CHEATS',
+      who: name,
+    });
     bridge.emit(socket.id, 'showCardList', { deck: room.deck.cards, timer: showTime });
 
     const hideDeckTimeout = setTimeout(() => {
@@ -305,7 +303,10 @@ export default function init() {
 
 
   bridge.on('_reverse', (socket, { room }) => {
-    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CHEATS', room, name);
+    sendGameMessage(bridge, room, {
+      key: 'GAME.LOGS.PLAYER_USE_CHEATS',
+      who: name,
+    });
     room.reverse();
     gameUpdate(bridge, room);
   });
@@ -317,7 +318,10 @@ export default function init() {
       return;
     }
 
-    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CHEATS', room, name);
+    sendGameMessage(bridge, room, {
+      key: 'GAME.LOGS.PLAYER_USE_CHEATS',
+      who: name,
+    });
     room.killPlayer(playerName);
     gameUpdate(bridge, room);
   });
@@ -329,7 +333,10 @@ export default function init() {
       return;
     }
 
-    sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CHEATS', room, name);
+    sendGameMessage(bridge, room, {
+      key: 'GAME.LOGS.PLAYER_USE_CHEATS',
+      who: name,
+    });
     room.nextPlayer(playerName);
     gameUpdate(bridge, room);
   });

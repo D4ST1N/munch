@@ -15,7 +15,6 @@ export default function playerConnect(bridge, name, room, socket) {
 
   if (room.gameStarted) {
     console.log('game started!');
-    const move = room.history.current;
     const player = room.getPlayer(name);
     const watcher = room.getWatcher(name);
     const currentPlayer = room.currentPlayer;
@@ -24,38 +23,24 @@ export default function playerConnect(bridge, name, room, socket) {
 
     bridge.emit(socket.id, 'gameStart', { players: room.players });
 
-    sendGameMessage(
-      bridge,
-      'NOTIFICATIONS.GAME.PLAYER_TURN',
-      room,
-      currentPlayer.name,
-      {},
-      player ? player.id : watcher.id,
-    );
+    console.log(player);
+    sendGameMessage(bridge, room, {
+      key: 'GAME.LOGS.PLAYER_TURN',
+      who: currentPlayer.name,
+      playerId: player ? player.id : watcher.id,
+    });
 
     gameUpdate(bridge, room, userName, watcherName);
-    bridge.emit(room.id, 'updateMove', { cards: move ? move.allCards : [] });
-    room.logs.push({
-      text: 'LOGS.PLAYER_RECONNECT',
-      options: {
-        player: name,
-      },
-    });
+    bridge.emit(room.id, 'updateMove', { cards: room.move ? room.move.partsCards : [] });
   } else {
     bridge.emit(
       room.id,
       'gameStatus',
       {
         players: room.players,
-        watchers: room.watchers,
         cards: getCardsList(room),
+        settings: room.settings,
       }
     );
-    room.logs.push({
-      text: 'LOGS.PLAYER_CONNECT',
-      options: {
-        player: name,
-      },
-    });
   }
 }

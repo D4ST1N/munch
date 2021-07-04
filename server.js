@@ -1,23 +1,25 @@
-import express          from 'express';
-import http             from 'http';
-import https            from 'https';
-import path             from 'path';
-import fs               from 'fs';
+import express from 'express';
+import http from 'http';
+import https from 'https';
+import path from 'path';
+import fs from 'fs';
 import {
   createLogger,
   format,
-  transports
-}                       from 'winston';
-import morgan           from 'morgan';
-import bodyParser       from 'body-parser';
-import cookieParser     from 'cookie-parser';
-import session          from 'express-session';
-import authMiddleware   from './src/auth/authMiddleware';
-import circleCrush      from './src/modules/circle-crush';
+  transports,
+} from 'winston';
+import morgan from 'morgan';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import authMiddleware from './src/auth/authMiddleware';
+import circleCrush from './src/modules/circle-crush';
 import explodingKittens from './src/modules/exploding-kittens';
-import getProfile       from "./src/auth/getProfile";
-import userLogin        from "./src/auth/userLogin";
-import registerUser     from "./src/auth/registerUser";
+import getProfile from './src/auth/getProfile';
+import userLogin from './src/auth/userLogin';
+import registerUser from './src/auth/registerUser';
+import settings from './src/settings';
+import filterSettings from './src/modules/exploding-kittens/helpers/filterSettings';
 
 const { combine, printf } = format;
 const { Console, File } = transports;
@@ -87,6 +89,10 @@ app.post('/user/register', registerUser);
 app.get('/user/profile', authMiddleware, getProfile);
 
 app.use('/', express.static(__dirname + '/client'));
+
+app.post('/settings', (req, res) => {
+  res.status(200).json(filterSettings(settings, req.body.fields));
+});
 
 app.get('/circle-crush/config', (request, response) => {
   response.sendFile(path.join(__dirname, '/src/configs/circle-crush.json'));

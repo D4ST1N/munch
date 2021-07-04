@@ -1,7 +1,7 @@
+import Move from '../entities/Move';
 import isNopeCard from './hasNopeCard';
-import newMove    from './newMove';
 import gameUpdate from './gameUpdate';
-import cardsApply from './cardsApply';
+import newMovePart from './newMovePart';
 
 export default function playerMove(bridge, socket, { room, name, cards, options }) {
   console.log('player move');
@@ -17,35 +17,27 @@ export default function playerMove(bridge, socket, { room, name, cards, options 
     return;
   }
 
-  console.log('new move');
-
-  if (!room.history.current) {
-    newMove(bridge, room, player);
+  if (!room.move) {
+    console.log('new move');
+    room.move = new Move();
   }
 
-  const move = room.history.current;
-
-  // TODO check for cheats
   cards.forEach(card => player.deck.useCard(card.id));
   gameUpdate(bridge, room, player.name);
-  room.logs.push({
-    text: 'LOGS.PLAYER_MAKE_MOVE',
-    options: {
-      player: name,
-    },
-    deck: [...cards],
-  });
-
-  room.history.newMove(move);
 
   if (isNopeCard(cards)) {
-    move.timer.stopTimer();
+    room.move.lastPart.delayedAction.stopTimer();
+    // move.timer.stopTimer();
     bridge.emit(room.id, 'stopTimer');
   }
 
-  move.addCards(cards, { playerName: name, ...options }).then(() => {
-    cardsApply(bridge, cards, room, socket, options);
-  }).catch(console.error);
+  newMovePart(bridge, {
+    room,
+    cards,
+    options,
+    who: player.name,
+  });
+  console.log('updateMove');
 
-  bridge.emit(room.id, 'updateMove', { cards: move.allCards });
+  bridge.emit(room.id, 'updateMove', { cards: room.move.partsCards });
 }

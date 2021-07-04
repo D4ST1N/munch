@@ -10,16 +10,20 @@ export default class Deck {
     return this.cards.map((card) => ({ id: card.id, inverted: true }));
   }
 
-  invert(excludedTypes = []) {
+  get count() {
+    return this.cards.length;
+  }
+
+  invert(excludedNames = []) {
     return this.cards.map((card) => {
-      return excludedTypes.includes(card.props.type)
+      return excludedNames.includes(card.props.name)
         ? card
         : { id: card.id, inverted: true }
     });
   }
 
-  hasCardOfType(type) {
-    return !!this.cards.find(card => card.props.type === type);
+  hasCardOfName(name) {
+    return !!this.cards.find(card => card.props.name === name);
   }
 
   shuffle() {
@@ -38,16 +42,16 @@ export default class Deck {
     }
   }
 
-  getCardIndex(cardType) {
-    return this.cards.findIndex((card) => card.props.type === cardType);
+  getCardIndex(cardName) {
+    return this.cards.findIndex((card) => card.props.name === cardName);
   }
 
-  isCardExist(cardType) {
-    return this.getCardIndex(cardType) !== -1;
+  isCardExist(cardName) {
+    return this.getCardIndex(cardName) !== -1;
   }
 
-  getCardCount(cardType) {
-    return this.cards.filter(card => card.props.type === cardType).length;
+  getCardCount(cardName) {
+    return this.cards.filter(card => card.props.name === cardName).length;
   }
 
   useCard(cardId) {
@@ -60,8 +64,8 @@ export default class Deck {
     return this.cards.splice(index, 1);
   }
 
-  useCardByType(cardType) {
-    return this.useCard(this.cards[this.getCardIndex(cardType)].id);
+  useCardByName(cardName) {
+    return this.useCard(this.cards[this.getCardIndex(cardName)].id);
   }
 
   useUpperCard() {

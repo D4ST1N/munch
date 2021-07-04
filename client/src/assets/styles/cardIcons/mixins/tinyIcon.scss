@@ -1,0 +1,5 @@
+@import "./cardIcon";
+
+@function tinyIcon($x, $y) {
+  @return cardIcon(20px, 1.25px, $x, $y);
+}

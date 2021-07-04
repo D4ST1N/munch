@@ -1,13 +1,24 @@
-import sendGameMessage from './sendGameMessage';
-import gameUpdate      from './gameUpdate';
-import shuffle         from '../../../utils/shuffle';
-import cardsCancel     from './cardsCancel';
-import playerGetCard   from './playerGetCard';
-import Card            from '../entities/Card';
-import seeTheFuture    from './cards/seeTheFuture';
-import changeTheFuture from './cards/changeTheFuture';
+import Attack from '../cards/Attack';
+import Skip from '../cards/Skip';
+import Nope from '../cards/Nope';
+import Shuffle from '../cards/Shuffle';
+import SeeTheFuture from '../cards/SeeTheFuture';
+import ChangeTheFuture from '../cards/ChangeTheFuture';
+import SwapTopAndBottom from '../cards/SwapTopAndBottom';
+import Freedom from '../cards/Freedom';
+import GetLower from '../cards/GetLower';
+import Reverse from '../cards/Reverse';
+import AttackTarget from '../cards/AttackTarget';
+import CatomicBomb from '../cards/CatomicBomb';
+import Swap from '../cards/Swap';
+import GarbageCollector from '../cards/GarbageCollector';
+import Favor from '../cards/Favor';
+import BlindCombo from '../cards/combinations/BlindCombo';
+import SightedCombo from '../cards/combinations/SightedCombo';
+import TrashCombo from '../cards/combinations/TrashCombo';
+import Trash from '../cards/Trash';
 
-export default function cardsApply(bridge, cards, room, socket, options) {
+export default function cardsApply(bridge, cards, room, options) {
   const player = room.currentPlayer;
   console.log('Cards apply');
 
@@ -16,248 +27,94 @@ export default function cardsApply(bridge, cards, room, socket, options) {
 
     console.log(card);
 
-    switch (card.props.type) {
+    switch (card.props.name) {
       case 'shuffle':
-        room.deck.shuffle();
-
-        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_SHUFFLE', room);
-
-        setTimeout(() => {
-          gameUpdate(bridge, room);
-        }, 150);
-        gameUpdate(bridge, room);
-        room.logs.push({
-          text: 'LOGS.PLAYER_USE_SHUFFLE',
-          options: {
-            player: room.currentPlayer.name,
-          },
-        });
+        Shuffle.apply(bridge, room, card);
 
         break;
 
       case 'see-the-future':
-        seeTheFuture(bridge, room, player);
+        SeeTheFuture.apply(bridge, room, card, player);
 
         break;
 
       case 'see-the-future-x5':
-        seeTheFuture(bridge, room, player, 5);
+        SeeTheFuture.apply(bridge, room, card, player, 5);
 
         break;
 
       case 'change-the-future':
-        changeTheFuture(bridge, room, player);
+        ChangeTheFuture.apply(bridge, room, card, player);
 
         break;
 
       case 'change-the-future-x5':
-        changeTheFuture(bridge, room, player, 5);
+        ChangeTheFuture.apply(bridge, room, card, player, 5);
 
         break;
 
       case 'swap-top-and-bottom':
-        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_SWAP_TOP_AND_BOTTOM', room);
-
-        const cards = room.deck.cards;
-        const last = cards.length - 1;
-        [ cards[0], cards[last] ] = [ cards[last], cards[0] ];
-
-        gameUpdate(bridge, room);
-        setTimeout(() => {
-          gameUpdate(bridge, room);
-        }, 150);
+        SwapTopAndBottom.apply(bridge, room, card);
 
         break;
 
       case 'skip':
-        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_SKIP', room);
-
-        if (!room.playerEndMove()) {
-          room.nextPlayer();
-        }
-
-        room.logs.push({
-          text: 'LOGS.PLAYER_SKIP_MOVE',
-          options: {
-            player: room.currentPlayer.name,
-          },
-        });
-
-        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_TURN', room);
-        room.logs.push({
-          text: 'LOGS.PLAYER_MOVE',
-          options: {
-            player: room.currentPlayer.name,
-          },
-        });
-        gameUpdate(bridge, room);
+        Skip.apply(bridge, room, card);
 
         break;
 
       case 'freedom':
-        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_FREEDOM', room);
+        Freedom.apply(bridge, room, card);
 
-        room.penaltyBackup = room.penaltyMoves;
-        room.penaltyMoves = 0;
-        room.nextPlayer();
-
-        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_TURN', room);
-
-        gameUpdate(bridge, room);
         break;
 
       case 'attack':
-        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_ATTACK', room);
-
-        room.nextPlayer();
-        room.penaltyMoves += 2;
-
-        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_TURN', room);
-        room.logs.push({
-          text: 'LOGS.PLAYER_MOVE',
-          options: {
-            player: room.currentPlayer.name,
-          },
-        });
-        gameUpdate(bridge, room);
+        Attack.apply(bridge, room, card);
 
         break;
 
       case 'nope':
-        const previousPart = room.history.current.parts[room.history.current.parts.length - 2];
-
-        if (previousPart) {
-          cardsCancel(bridge, previousPart.deck.cards, room, socket, options);
-        }
+        Nope.apply(bridge, room, card, options);
 
         break;
 
       case 'get-lower':
-        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_GET_LOWER', room, player.name);
-        playerGetCard(bridge, room, player.name, false);
+        GetLower.apply(bridge, room, card, player);
 
         break;
 
       case 'reverse':
-        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_REVERSE', room, player.name);
-        room.reverse();
-
-        if (!room.playerEndMove()) {
-          room.nextPlayer();
-        }
-
-        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_TURN', room);
-        gameUpdate(bridge, room);
+        Reverse.apply(bridge, room, card);
 
         break;
 
       case 'attack-target':
-        const attackedPlayer = room.getPlayer(options.name);
-
-        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_ATTACK_TARGET', room, player.name, {
-          whom: attackedPlayer.name,
-        });
-
-        room.nextPlayer(attackedPlayer.name);
-        room.penaltyMoves += 2;
-        gameUpdate(bridge, room);
+        AttackTarget.apply(bridge, room, card, options);
 
         break;
 
       case 'catomic-bomb':
-        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_CATOMIC_BOMB', room, player.name);
-
-        const explodingKittens = ['exploding-kitten', 'imploding-kitten'];
-        const explodingCards = room.deck.cards.filter(card => explodingKittens.includes(card.props.type));
-        const saveCards = room.deck.cards.filter(card => !explodingKittens.includes(card.props.type));
-
-        room.deck.cards = [].concat(saveCards, explodingCards);
-        room.nextPlayer();
-        gameUpdate(bridge, room);
-        setTimeout(() => {
-          gameUpdate(bridge, room);
-        }, 150);
+        CatomicBomb.apply(bridge, room, card);
 
         break;
 
       case 'swap':
-        console.log(options);
-        const swapPlayer = room.getPlayer(options.name);
-        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_SWAP', room, player.name, {
-          whom: swapPlayer.name,
-        });
-        const swapPlayerCards = swapPlayer.deck.cards;
-        swapPlayer.deck.cards = player.deck.cards;
-        player.deck.cards = swapPlayerCards;
-        gameUpdate(bridge, room);
+        Swap.apply(bridge, room, card, player, options);
 
         break;
 
       case 'garbage-collector':
-        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_GARBAGE_COLLECTOR', room, player.name);
+        GarbageCollector.apply(bridge, room, card, player);
 
-        room.players.forEach((somePlayer) => {
-          if (somePlayer.name === player.name) return;
-
-          const usedCard = somePlayer.deck.useRandomCard();
-          room.trash.addCard(...usedCard);
-          somePlayer.emit('looseCard', ...usedCard);
-          gameUpdate(bridge, room);
-
-        });
         break;
 
       case 'favor':
-        console.log(options);
-        const favorPlayer = room.getPlayer(options.name);
-        const playerHasStop = favorPlayer.deck.hasCardOfType('nope');
+        Favor.apply(bridge, room, card, player, options);
 
-        sendGameMessage(bridge, 'NOTIFICATIONS.GAME.PLAYER_USE_FAVOR', room, player.name, {
-          whom: favorPlayer.name,
-        });
-        gameUpdate(bridge, room);
-        room.logs.push({
-          text: 'LOGS.PLAYER_USE_FAVOR',
-          options: {
-            player: room.currentPlayer.name,
-            whom: favorPlayer.name,
-          },
-        });
+        break;
 
-        console.log('send favor event to', favorPlayer.name);
-        bridge.emit(favorPlayer.id, 'playerUseFavor', {
-          name: player.name,
-          actionEnabled: playerHasStop,
-        });
-
-        const onPlayerSelectFavorCard = (socket, { room, cards }) => {
-          const [card] = cards;
-          console.log(player);
-
-          try {
-            const usedCard = favorPlayer.deck.useCard(card.id);
-            player.deck.addCard(...usedCard);
-            player.emit('getCard', ...usedCard);
-            favorPlayer.emit('looseCard', ...usedCard);
-          } catch (e) {
-            console.error(e);
-            console.log(card.id, card.props.type);
-            console.log(favorPlayer.deck.cards.map(card => card.id));
-            room.currentPlayer.deck.addCard(Card.newCard('favor'));
-          }
-
-          gameUpdate(bridge, room);
-          bridge.off('playerSelectFavorCard', onPlayerSelectFavorCard);
-          room.logs.push({
-            text: 'LOGS.PLAYER_GIVE_CARD',
-            options: {
-              player: favorPlayer.name,
-            },
-            deck: [...cards],
-          });
-        };
-
-        bridge.on('playerSelectFavorCard', onPlayerSelectFavorCard);
+      case 'trash':
+        Trash.apply(bridge, room, card, player);
 
         break;
 
@@ -265,109 +122,10 @@ export default function cardsApply(bridge, cards, room, socket, options) {
         break;
     }
   } else if (cards.length === 2) {
-    console.log('choose player card');
-    const selectedPlayer = room.getPlayer(options.name);
-
-    bridge.emit(player.id, 'showCardList', {
-      deck: shuffle([...selectedPlayer.deck.inverted]),
-      event: 'selectPlayerCard',
-    });
-    room.logs.push({
-      text: 'LOGS.PLAYER_USE_TWO_CARDS_COMBO',
-      options: {
-        player: player.name,
-        whom: selectedPlayer.name,
-      },
-      deck: [...cards],
-    });
-
-    const onPlayerSelectCard = (socket, { card }) => {
-      const usedCard = selectedPlayer.deck.useCard(card.id);
-
-      if (usedCard === false) {
-        console.log(selectedPlayer.deck.cards, card);
-      } else {
-        room.logs.push({
-          text: 'LOGS.PLAYER_GET_CARD',
-          options: {
-            player: player.name,
-          },
-          deck: [{ ...usedCard }],
-        });
-
-        console.log(usedCard);
-        player.deck.addCard(...usedCard);
-        player.emit('getCard', ...usedCard);
-        selectedPlayer.emit('looseCard', ...usedCard);
-        gameUpdate(bridge, room);
-
-        bridge.off('selectPlayerCard', onPlayerSelectCard);
-      }
-    };
-
-    bridge.on('selectPlayerCard', onPlayerSelectCard);
+    BlindCombo.apply(bridge, room, player, options);
   } else if (cards.length === 3) {
-    console.log('get player card');
-    const selectedPlayer = room.getPlayer(options.name);
-    const selectedCard = options.card;
-    const selectedPlayerHasCard = selectedPlayer.deck.hasCardOfType(selectedCard.props.type);
-    room.logs.push({
-      text: 'LOGS.PLAYER_USE_THREE_CARDS_COMBO',
-      options: {
-        player: player.name,
-        whom: selectedPlayer.name,
-        card: selectedCard.props.type
-      },
-      deck: [...cards],
-    });
-
-    if (selectedPlayerHasCard) {
-      const usedCard = selectedPlayer.deck.useCardByType(selectedCard.props.type);
-      room.logs.push({
-        text: 'LOGS.PLAYER_GET_CARD',
-        options: {
-          player: player.name,
-        },
-        deck: [{ ...usedCard }],
-      });
-      player.deck.addCard(...usedCard);
-      player.emit('getCard', ...usedCard);
-      selectedPlayer.emit('looseCard', ...usedCard);
-      gameUpdate(bridge, room);
-    } else {
-      bridge.emit(player.id, 'gameMessage', {
-        text: 'NOTIFICATIONS.GAME.PLAYER_HAS_NOT_CARD',
-      });
-    }
+    SightedCombo.apply(bridge, room, player, options);
   } else if (cards.length === 5) {
-    console.log('select from trash');
-    bridge.emit(player.id, 'showCardList', {
-      deck: room.trash.cards,
-      event: 'selectTrashCard',
-    });
-    room.logs.push({
-      text: 'LOGS.PLAYER_USE_FIVE_CARDS_COMBO',
-      options: {
-        player: player.name,
-      },
-      deck: [...cards],
-    });
-
-    const onSelectTrashCard = (socket, { card }) => {
-      room.logs.push({
-        text: 'LOGS.PLAYER_GET_CARD',
-        options: {
-          player: player.name,
-        },
-        deck: [{ ...card }],
-      });
-      const usedCard = room.trash.useCard(card.id);
-      player.deck.addCard(...usedCard);
-      player.emit('getCard', ...usedCard);
-      gameUpdate(bridge, room);
-      bridge.off('selectTrashCard', onSelectTrashCard);
-    };
-
-    bridge.on('selectTrashCard', onSelectTrashCard);
+    TrashCombo.apply(bridge, room, player);
   }
 }

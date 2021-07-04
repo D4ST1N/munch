@@ -11,6 +11,8 @@ export default class Player extends Entity {
     this.active = true;
     this.exploded = false;
     this.deck = new Deck();
+    this.selected = false;
+    this.targeted = false;
   }
 
   disconnect() {
